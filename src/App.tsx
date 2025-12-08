@@ -18,6 +18,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import Profile from "./pages/Profile";
+import Articles from "./pages/Articles";
 
 const queryClient = new QueryClient();
 
@@ -47,14 +48,14 @@ const App = () => (
               </Layout>
             }
           />
-          {/* <Route
-            path="/workout"
+          <Route
+            path="/articles"
             element={
               <Layout>
-                <WorkoutPrograms />
+                <Articles />
               </Layout>
             }
-          /> */}
+          />
             <Route
             path="/calorie_calculator"
             element={

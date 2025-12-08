@@ -124,12 +124,15 @@ const handlelogout =()=>{
             </Collapsible>
 
             <SidebarMenuItem>
-              <SidebarMenuButton className="text-white hover:bg-white/10">
-                <FileText className="h-4 w-4" />
-                {!collapsed && <span>Articles</span>}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+              <NavLink to="/articles" activeClassName="bg-white/20">
 
+                            <SidebarMenuButton className="text-white hover:bg-white/10">
+                              <FileText className="h-4 w-4" />
+                              {!collapsed && <span>Articles</span>}
+                            </SidebarMenuButton>
+              </NavLink>
+
+            </SidebarMenuItem>
             <SidebarMenuItem>
               <SidebarMenuButton className="text-white hover:bg-white/10">
                 <BookOpen className="h-4 w-4" />
