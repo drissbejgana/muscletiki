@@ -8,23 +8,13 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-interface UserSubscription {
-  id: string;
-  status: string;
-  start_date: string;
-  end_date: string | null;
-  subscription_plans: {
-    name: string;
-    price: number;
-    period: string;
-  };
-}
+
 
 const Profile = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
-  const [subscription, setSubscription] = useState<UserSubscription | null>(null);
-  const [loadingSubscription, setLoadingSubscription] = useState(true);
+  // const [subscription, setSubscription] = useState<any>(user.sub);
+  // const [loadingSubscription, setLoadingSubscription] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -114,17 +104,13 @@ const Profile = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {loadingSubscription ? (
-              <div className="flex justify-center py-4">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-              </div>
-            ) : subscription ? (
+            {user.subscription ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Current Plan</span>
-                  <Badge variant={getPlanBadgeVariant(subscription.subscription_plans.name)}>
-                    {subscription.subscription_plans.name.charAt(0).toUpperCase() + 
-                     subscription.subscription_plans.name.slice(1)}
+                  <Badge variant={getPlanBadgeVariant(user.subscription.plan)}>
+                    {user.subscription.plan.charAt(0).toUpperCase() + 
+                     user.subscription.plan.slice(1)}
                   </Badge>
                 </div>
                 <Separator />
@@ -138,20 +124,20 @@ const Profile = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Price</span>
                   <span className="font-medium">
-                    ${subscription.subscription_plans.price}/{subscription.subscription_plans.period}
+                    ${user.subscription.amount}/{user.subscription.billingCycle}
                   </span>
                 </div>
                 <Separator />
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Started</span>
-                  <span className="font-medium">{formatDate(subscription.start_date)}</span>
+                  <span className="font-medium">{formatDate(user.subscription.startDate)}</span>
                 </div>
-                {subscription.end_date && (
+                {user.subscription.endDate && (
                   <>
                     <Separator />
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Renews</span>
-                      <span className="font-medium">{formatDate(subscription.end_date)}</span>
+                      <span className="font-medium">{formatDate(user.subscription.endDate)}</span>
                     </div>
                   </>
                 )}

@@ -63,9 +63,9 @@ async verifySession(sessionId) {
   },
 
   // Cancel subscription
-  async cancelSubscription() {
+  async cancelSubscription(userId) {
     try {
-      const response = await api.post('/subscriptions/cancel');
+      const response = await api.post('/subscriptions/cancel',{userId});
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Cancellation failed';

@@ -12,7 +12,7 @@ export default function AuthPages() {
   const {user}=useAuth()
   const navigate=useNavigate()
   if(user){
- navigate("/")
+      navigate("/")
   }
 
   const [formData, setFormData] = useState({

@@ -17,6 +17,7 @@ import SubscriptionPlans from "./pages/SubscriptionPlans";
 import AdminDashboard from "./pages/AdminDashboard";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -98,6 +99,15 @@ const App = () => (
             element={
               <Layout>
                 <SubscriptionPlans />
+              </Layout>
+            }
+          />
+
+         <Route
+            path="/profile"
+            element={
+              <Layout>
+                <Profile />
               </Layout>
             }
           />

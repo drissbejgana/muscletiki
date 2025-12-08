@@ -8,6 +8,7 @@ import { Users, CreditCard, TrendingUp, Search, MoreHorizontal, Loader2, AlertCi
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { adminService } from '@/services/adminService';
+import {subscriptionService} from '@/services/subscriptionService';
 
 const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -96,7 +97,7 @@ const AdminDashboard = () => {
   const handleCancelSubscription = async (userId) => {
     if (window.confirm("Are you sure you want to cancel this subscription?")) {
       try {
-        await adminService.updateUserSubscription(userId, { status: "cancelled" });
+        await subscriptionService.cancelSubscription(userId);
         fetchSubscriptions();
         fetchDashboardStats();
       } catch (err) {
@@ -219,7 +220,7 @@ const AdminDashboard = () => {
                     <th className="px-4 py-3 text-left font-medium text-gray-700">Start Date</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-700">End Date</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-700">Amount</th>
-                    {/* <th className="px-4 py-3 text-left font-medium text-gray-700 w-12"></th> */}
+                   <th className="px-4 py-3 text-left font-medium text-gray-700 w-12"></th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y">
@@ -251,28 +252,28 @@ const AdminDashboard = () => {
                         <td className="px-4 py-3 text-gray-700">{formatDate(sub.createdAt)}</td>
                         <td className="px-4 py-3 text-gray-700">{formatDate(sub.endDate)}</td>
                         <td className="px-4 py-3 font-medium text-gray-900">{getPlanAmount(sub.plan)}</td>
-                        {/* <td className="px-4 py-3">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handleViewDetails(sub.user?._id)}>
-                                View Details
-                              </DropdownMenuItem>
-                              <DropdownMenuItem>Edit Subscription</DropdownMenuItem>
-                              <DropdownMenuItem 
-                                className="text-red-600"
-                                onClick={() => handleCancelSubscription(sub.user?._id)}
-                              >
-                                Cancel Subscription
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </td> */}
-                      </tr>
+                      <td className="px-4 py-3">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleViewDetails(sub.user?._id)}>
+                                  View Details
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>Edit Subscription</DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  className="text-red-600"
+                                  onClick={() => handleCancelSubscription(sub.user?._id)}
+                                >
+                                  Cancel Subscription
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </td>
+                        </tr>
                     ))
                   )}
                 </tbody>
