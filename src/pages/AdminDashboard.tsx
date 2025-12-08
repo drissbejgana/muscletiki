@@ -8,7 +8,7 @@ import { Users, CreditCard, TrendingUp, Search, MoreHorizontal, Loader2, AlertCi
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {subscriptionService} from '@/services/subscriptionService';
-import { adminService } from '@/services/adminService';
+import { adminService } from '@/services/AdminService';
 
 
 
