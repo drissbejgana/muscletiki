@@ -13,8 +13,7 @@ import { toast } from "sonner";
 const Profile = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
-  // const [subscription, setSubscription] = useState<any>(user.sub);
-  // const [loadingSubscription, setLoadingSubscription] = useState(true);
+
 
   useEffect(() => {
     if (!loading && !user) {

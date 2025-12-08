@@ -2,8 +2,10 @@ import { Search, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const navigate=useNavigate()
   return (
     <header className="bg-card z-50 border-b border-border px-4 py-3 flex items-center justify-between gap-4">
       <SidebarTrigger />
@@ -32,7 +34,7 @@ const Header = () => {
           />
         </div>
 
-        <Button variant="ghost" size="icon">
+        <Button onClick={()=>navigate('/profile')} variant="ghost" size="icon">
           <User className="h-5 w-5" />
         </Button>
       </div>

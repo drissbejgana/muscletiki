@@ -31,8 +31,18 @@ export default function AuthPages() {
     try {
       if (isLogin) {
         
-        await authService.login(formData.email,formData.password)
-        window.location.href='/'
+      const {user} =  await authService.login(formData.email,formData.password)
+          
+      if( user.role == "admin")
+       {
+        window.location.href='/profile'
+
+       }
+       else{
+          window.location.href='/'
+
+       }
+
        
 
       } else {
