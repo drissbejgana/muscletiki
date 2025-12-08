@@ -35,12 +35,11 @@ export default function AuthPages() {
           
       if( user.role == "admin")
        {
-        window.location.href='/profile'
+        window.location.href='/admin'
 
        }
        else{
           window.location.href='/'
-
        }
 
        
