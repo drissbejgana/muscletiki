@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { User, Mail, Calendar, Crown, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,12 +8,9 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-
-
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, loading, signOut } = useAuth();
-
+  const { user, loading, logout } = useAuth();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -21,16 +18,9 @@ const Profile = () => {
     }
   }, [user, loading, navigate]);
 
-
-
   const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast.error("Failed to sign out");
-    } else {
-      toast.success("Signed out successfully");
-      navigate("/");
-    }
+        logout()
+
   };
 
   if (loading) {
@@ -73,6 +63,7 @@ const Profile = () => {
           <p className="text-muted-foreground mt-2">Manage your account settings</p>
         </div>
 
+        {/* Account Info */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -95,6 +86,7 @@ const Profile = () => {
           </CardContent>
         </Card>
 
+        {/* Subscription */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -108,8 +100,8 @@ const Profile = () => {
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground">Current Plan</span>
                   <Badge variant={getPlanBadgeVariant(user.subscription.plan)}>
-                    {user.subscription.plan.charAt(0).toUpperCase() + 
-                     user.subscription.plan.slice(1)}
+                    {user.subscription.plan.charAt(0).toUpperCase() +
+                      user.subscription.plan.slice(1)}
                   </Badge>
                 </div>
                 <Separator />
@@ -131,6 +123,7 @@ const Profile = () => {
                   <span className="text-muted-foreground">Started</span>
                   <span className="font-medium">{formatDate(user.subscription.startDate)}</span>
                 </div>
+
                 {user.subscription.endDate && (
                   <>
                     <Separator />
@@ -143,7 +136,9 @@ const Profile = () => {
               </div>
             ) : (
               <div className="text-center py-4">
-                <p className="text-muted-foreground mb-4">You don't have an active subscription</p>
+                <p className="text-muted-foreground mb-4">
+                  You don't have an active subscription
+                </p>
                 <Button onClick={() => navigate("/subscription")}>
                   View Plans
                 </Button>
@@ -152,6 +147,18 @@ const Profile = () => {
           </CardContent>
         </Card>
 
+        {/* ⭐ ADMIN ONLY NAVLINK */}
+        {user.role === "admin" && (
+          <Card>
+            <CardContent className="pt-6">
+              <NavLink to="/admin">
+                <Button className="w-full">Admin Dashboard</Button>
+              </NavLink>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Sign Out */}
         <Card>
           <CardContent className="pt-6">
             <Button 

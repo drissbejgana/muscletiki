@@ -177,7 +177,7 @@ const handlelogout =()=>{
 
       {!collapsed && (
         <SidebarFooter className="p-4 text-xs text-white/80 border-t border-white/10">
-          <p className="mb-2">© 2025 MuscleWiki SEZC</p>
+          <p className="mb-2">© 2025 MuscleTiki SEZC</p>
           <div className="flex flex-col gap-1">
             <a href="#" className="hover:underline">Conditions</a>
             <a href="#" className="hover:underline">Droits d'auteur</a>

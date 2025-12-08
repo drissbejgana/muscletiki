@@ -265,7 +265,7 @@ const AdminDashboard = () => {
                                 <DropdownMenuItem onClick={() => handleViewDetails(sub.user?._id)}>
                                   View Details
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>Edit Subscription</DropdownMenuItem>
+                                {/* <DropdownMenuItem>Edit Subscription</DropdownMenuItem> */}
                                 <DropdownMenuItem 
                                   className="text-red-600"
                                   onClick={() => handleCancelSubscription(sub.user?._id)}
