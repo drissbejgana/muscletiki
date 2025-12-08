@@ -19,6 +19,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import Profile from "./pages/Profile";
 import Articles from "./pages/Articles";
+import Routines from "./pages/routines";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,14 @@ const App = () => (
             element={
               <Layout>
                 <Articles />
+              </Layout>
+            }
+          />
+          <Route
+            path="/routines"
+            element={
+              <Layout>
+                <Routines />
               </Layout>
             }
           />

@@ -82,10 +82,12 @@ const handlelogout =()=>{
             </Collapsible>
 
             <SidebarMenuItem>
-              <SidebarMenuButton className="text-white hover:bg-white/10">
-                <Calendar className="h-4 w-4" />
-                {!collapsed && <span>Routines</span>}
-              </SidebarMenuButton>
+                   <NavLink to={'/routines'}>
+                              <SidebarMenuButton className="text-white hover:bg-white/10">
+                              <Calendar className="h-4 w-4" />
+                              {!collapsed && <span>Routines</span>}
+                            </SidebarMenuButton>
+                   </NavLink>
             </SidebarMenuItem>
 
             <Collapsible open={toolsOpen} onOpenChange={setToolsOpen}>
@@ -133,12 +135,12 @@ const handlelogout =()=>{
               </NavLink>
 
             </SidebarMenuItem>
-            <SidebarMenuItem>
+            {/* <SidebarMenuItem>
               <SidebarMenuButton className="text-white hover:bg-white/10">
                 <BookOpen className="h-4 w-4" />
                 {!collapsed && <span>Répertoire</span>}
               </SidebarMenuButton>
-            </SidebarMenuItem>
+            </SidebarMenuItem> */}
           </SidebarMenu>
         </SidebarGroup>
 
