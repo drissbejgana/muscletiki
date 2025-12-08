@@ -200,7 +200,7 @@ const isGif = (url) => {
         <div className="container mx-auto px-4">
           <div className="text-center space-y-6">
             <p className="text-muted-foreground text-sm">
-              © 2023 MuscleWiki SEZC — Some Rights Reserved.
+              © 2023 MuscleTiki — Some Rights Reserved.
             </p>
 
             <div className="flex justify-center gap-6">

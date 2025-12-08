@@ -9,7 +9,7 @@ const MobileHeader = () => {
     <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-border px-4 py-3 flex items-center justify-between">
       <div className="flex items-center gap-2">
         <Dumbbell className="w-6 h-6 text-[#2B4C8F]" />
-        <span className="font-bold text-lg text-[#2B4C8F]">MUSCLEWIKI</span>
+        <span className="font-bold text-lg text-[#2B4C8F]">MUSCLETIKI</span>
       </div>
 
       <div className="flex items-center gap-3">
