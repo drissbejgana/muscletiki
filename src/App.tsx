@@ -20,6 +20,8 @@ import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import Profile from "./pages/Profile";
 import Articles from "./pages/Articles";
 import Routines from "./pages/routines";
+import { InteractiveBodyMap } from "./components/FemalBodyFront";
+import { FemalBodyBack } from "./components/FemalBodyBack";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +56,15 @@ const App = () => (
             element={
               <Layout>
                 <Articles />
+              </Layout>
+            }
+          />
+        <Route
+            path="/test"
+            element={
+              <Layout>
+                <FemalBodyBack
+                  />
               </Layout>
             }
           />

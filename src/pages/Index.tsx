@@ -9,7 +9,7 @@ import MobileHeader from "@/components/MobileHeader";
 import MobileFeatured from "@/components/MobileFeatured";
 
 const Index = () => {
-    const { advanced} = useContext(MyContext);
+    const { advanced,homme} = useContext(MyContext);
   return (
    <div>
       <div className="lg:hidden flex flex-col h-screen overflow-hidden">
@@ -20,7 +20,7 @@ const Index = () => {
       </div>
       
     <div className="hidden lg:flex gap-4">
-      <BodyDiagram advanced={advanced} />
+      <BodyDiagram advanced={advanced} gendre={homme} />
       <div className="w-80">
         <ViewToggle />
         <EquipmentPanel />
