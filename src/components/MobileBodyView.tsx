@@ -75,7 +75,7 @@ const MobileBodyView = () => {
                   : "bg-white text-[#2B4C8F] border-[#2B4C8F]"
               }`}
             >
-              Featured
+              Advanced
             </Button>
           </div>
           
