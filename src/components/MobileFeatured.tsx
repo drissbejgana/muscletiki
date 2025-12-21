@@ -3,7 +3,7 @@ const MobileFeatured = () => {
     <div className="bg-white border-t border-border px-4 py-6 relative z-10">
       <h3 className="text-[#2B4C8F] font-bold text-lg mb-4">Featured</h3>
       
-      <div className="flex gap-3 justify-center">
+      {/* <div className="flex gap-3 justify-center">
         <a href="#" className="hover:opacity-80">
           <img 
             src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
@@ -18,7 +18,7 @@ const MobileFeatured = () => {
             className="h-12"
           />
         </a>
-      </div>
+      </div> */}
     </div>
   );
 };

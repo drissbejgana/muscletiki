@@ -17,7 +17,7 @@ const Footer = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex gap-2">
+          {/* <div className="flex gap-2">
             <a href="#" className="hover:opacity-80">
               <img 
                 src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" 
@@ -32,7 +32,7 @@ const Footer = () => {
                 className="h-10"
               />
             </a>
-          </div>
+          </div> */}
 
           <div className="flex gap-3 pl-4 border-l border-white/20">
             <a href="#" className="hover:text-accent transition-colors">
