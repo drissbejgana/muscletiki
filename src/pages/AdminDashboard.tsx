@@ -7,10 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Users, CreditCard, TrendingUp, Search, MoreHorizontal, Loader2, AlertCircle } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import {subscriptionService} from '@/services/subscriptionService';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { subscriptionService } from '@/services/subscriptionService';
 import { adminService } from '@/services/AdminService';
-
-
 
 const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,6 +20,18 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Edit modal state
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingSubscription, setEditingSubscription] = useState(null);
+  const [editForm, setEditForm] = useState({
+    plan: '',
+    status: ''
+  });
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState(null);
+  
+
 
   useEffect(() => {
     fetchDashboardStats();
@@ -115,6 +127,55 @@ const AdminDashboard = () => {
       console.log("User details:", user);
     } catch (err) {
       alert(err);
+    }
+  };
+
+  const handleOpenEditModal = (subscription) => {
+    setEditingSubscription(subscription);
+    setEditForm({
+      plan: subscription.plan,
+      status: subscription.status
+    });
+    setEditError(null);
+    setEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false);
+    setEditingSubscription(null);
+    setEditForm({ plan: '', status: '' });
+    setEditError(null);
+  };
+
+  const handleEditFormChange = (field, value) => {
+    setEditForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingSubscription) return;
+
+    setEditLoading(true);
+    setEditError(null);
+
+    try {
+      await adminService.updateUserSubscription(
+        editingSubscription.user._id,
+        editForm
+      );
+      
+      // Refresh data
+      await fetchSubscriptions();
+      await fetchDashboardStats();
+      
+      // Close modal
+      handleCloseEditModal();
+    } catch (err) {
+      setEditError(err);
+    } finally {
+      setEditLoading(false);
     }
   };
 
@@ -222,7 +283,7 @@ const AdminDashboard = () => {
                     <th className="px-4 py-3 text-left font-medium text-gray-700">Start Date</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-700">End Date</th>
                     <th className="px-4 py-3 text-left font-medium text-gray-700">Amount</th>
-                   <th className="px-4 py-3 text-left font-medium text-gray-700 w-12"></th>
+                    <th className="px-4 py-3 text-left font-medium text-gray-700 w-12"></th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y">
@@ -254,28 +315,30 @@ const AdminDashboard = () => {
                         <td className="px-4 py-3 text-gray-700">{formatDate(sub.createdAt)}</td>
                         <td className="px-4 py-3 text-gray-700">{formatDate(sub.endDate)}</td>
                         <td className="px-4 py-3 font-medium text-gray-900">{getPlanAmount(sub.plan)}</td>
-                      <td className="px-4 py-3">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handleViewDetails(sub.user?._id)}>
-                                  View Details
-                                </DropdownMenuItem>
-                                {/* <DropdownMenuItem>Edit Subscription</DropdownMenuItem> */}
-                                <DropdownMenuItem 
-                                  className="text-red-600"
-                                  onClick={() => handleCancelSubscription(sub.user?._id)}
-                                >
-                                  Cancel Subscription
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </td>
-                        </tr>
+                        <td className="px-4 py-3">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => handleViewDetails(sub.user?._id)}>
+                                View Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleOpenEditModal(sub)}>
+                                Edit Subscription
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                className="text-red-600"
+                                onClick={() => handleCancelSubscription(sub.user?._id)}
+                              >
+                                Cancel Subscription
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </td>
+                      </tr>
                     ))
                   )}
                 </tbody>
@@ -284,6 +347,101 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit Subscription Modal */}
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Subscription</DialogTitle>
+            <DialogDescription>
+              Update subscription details for {editingSubscription?.user?.name}
+            </DialogDescription>
+          </DialogHeader>
+
+          {editError && (
+            <Alert variant="destructive" className="mb-4">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{editError}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="edit-plan">Plan</Label>
+              <Select 
+                value={editForm.plan} 
+                onValueChange={(value) => handleEditFormChange('plan', value)}
+              >
+                <SelectTrigger id="edit-plan">
+                  <SelectValue placeholder="Select plan" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="free">Free</SelectItem>
+                  <SelectItem value="pro">Pro</SelectItem>
+                  <SelectItem value="premium">Premium</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="edit-status">Status</Label>
+              <Select 
+                value={editForm.status} 
+                onValueChange={(value) => handleEditFormChange('status', value)}
+              >
+                <SelectTrigger id="edit-status">
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectItem value="expired">Expired</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="bg-gray-50 p-3 rounded-md space-y-1 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">User:</span>
+                <span className="font-medium">{editingSubscription?.user?.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Email:</span>
+                <span className="font-medium">{editingSubscription?.user?.email}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-600">Current Plan:</span>
+                <Badge variant="outline" className="capitalize">
+                  {editingSubscription?.plan}
+                </Badge>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button 
+              variant="outline" 
+              onClick={handleCloseEditModal}
+              disabled={editLoading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSaveEdit}
+              disabled={editLoading}
+            >
+              {editLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

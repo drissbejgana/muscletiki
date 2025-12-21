@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
   
             
         {(!user || user?.plan === "free") && (
-          <FitnessPopup intervalMinutes={1} />
+          <FitnessPopup intervalMinutes={2} />
         )}
 
       <div className="flex min-h-screen w-full">
