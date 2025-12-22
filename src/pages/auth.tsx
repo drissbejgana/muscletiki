@@ -33,17 +33,19 @@ export default function AuthPages() {
         
       const {user} =  await authService.login(formData.email,formData.password)
           
-      if( user.role == "admin")
-       {
-        window.location.href='/admin'
+      if (user.role === "admin") {
+        localStorage.removeItem('fitness_app_restriction_time'); 
+        window.location.href = '/admin';
+      } 
+      else if(user.subscription.plan=="free"){
+        window.location.href = '/subscription';
+      }
+       else if(user.subscription.plan=="pro" || user.subscription.plan=="premium"){ 
+        localStorage.removeItem('fitness_app_restriction_time'); 
+        window.location.href = '/';
+      }
 
-       }
-       else{
-          window.location.href='/'
-       }
-
-       
-
+  
       } else {
         // Validate passwords match
         if (formData.password !== formData.confirmPassword) {

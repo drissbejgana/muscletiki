@@ -1,61 +1,98 @@
 import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { X, Dumbbell, Map, TrendingUp, ShieldOff } from "lucide-react";
+import { X, Dumbbell, Map, TrendingUp, ShieldOff, Lock, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cp } from "fs";
 import { useNavigate } from "react-router-dom";
 
 interface FitnessPopupProps {
-  intervalMinutes?: number;
+  timeExpired?: boolean;
+  remainingTime?: number | null;
+  formatTime?: (seconds: number | null) => string;
+  onClose?: () => void;
 }
 
-const FitnessPopup = ({ intervalMinutes = 3 }: FitnessPopupProps) => {
+const FitnessPopup = ({ 
+  timeExpired = false,
+  remainingTime = null,
+  formatTime = () => '',
+  onClose 
+}: FitnessPopupProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate= useNavigate()
+  const navigate = useNavigate();
 
-const handleClick=()=>{
-  setIsOpen(false)
-  navigate('/subscription')
-}
-  
   useEffect(() => {
-    const initialTimer = setTimeout(() => {
+    if (timeExpired) {
       setIsOpen(true);
-    }, 150000); 
+     }
 
-    // Set up recurring popup
-    const interval = setInterval(() => {
-      setIsOpen(true);
-    }, intervalMinutes * 60 * 1000);
+  }, [timeExpired, remainingTime]);
 
-    return () => {
-      clearTimeout(initialTimer);
-      clearInterval(interval);
-    };
-  }, [intervalMinutes]);
+  const handleClick = () => {
+    setIsOpen(false);
+    navigate('/subscription');
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (timeExpired) {
+      // Can't close when time expired
+      return;
+    }
+    setIsOpen(open);
+    if (!open && onClose) {
+      onClose();
+    }
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-[580px] p-0 !bg-[#1a1f2e] border-2 !border-[#2d3548] overflow-hidden rounded-2xl shadow-2xl">
-        {/* Solid dark background overlay to ensure visibility */}
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      <DialogContent 
+        className="max-w-[580px] p-0 !bg-[#1a1f2e] border-2 !border-[#2d3548] overflow-hidden rounded-2xl shadow-2xl"
+        onPointerDownOutside={(e) => timeExpired && e.preventDefault()}
+        onEscapeKeyDown={(e) => timeExpired && e.preventDefault()}
+      >
         <div className="absolute inset-0 bg-gradient-to-br from-[#1a1f2e] via-[#1e2433] to-[#1a1f2e] -z-10" />
         <div className="relative p-8 pb-6">
-          {/* Close Button */}
-          <button
-            onClick={() => setIsOpen(false)}
-            className="absolute top-4 right-4 text-fitness-muted hover:text-white transition-colors z-10"
-          >
-            <X className="h-5 w-5" />
-          </button>
+          {/* Close Button - Only show if time hasn't expired */}
+          {!timeExpired && (
+            <button
+              onClick={() => handleOpenChange(false)}
+              className="absolute top-4 right-4 text-fitness-muted hover:text-white transition-colors z-10"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
 
-          {/* Most Popular Badge */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 bg-fitness-red/10 border border-fitness-red/30 rounded-full px-4 py-1.5">
-              <div className="w-2 h-2 bg-fitness-red rounded-full animate-pulse" />
-              <span className="text-sm font-semibold text-white uppercase tracking-wide">
-                Most Popular
-              </span>
+          {/* Lock Icon for expired state */}
+          {timeExpired && (
+            <div className="absolute top-4 right-4 text-red-400 z-10">
+              <Lock className="h-6 w-6" />
             </div>
+          )}
+
+          {/* Badge with Timer */}
+          <div className="flex justify-center mb-6">
+            {timeExpired ? (
+              <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-500/50 rounded-full px-4 py-1.5">
+                <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span className="text-sm font-semibold text-white uppercase tracking-wide">
+                  Trial Period Ended
+                </span>
+              </div>
+            ) : remainingTime !== null ? (
+              <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/50 rounded-full px-4 py-1.5">
+                <Clock className="w-4 h-4 text-orange-300" />
+                <span className="text-sm font-semibold text-white uppercase tracking-wide">
+                  {formatTime(remainingTime)} Remaining
+                </span>
+              </div>
+            ) : (
+              <div className="inline-flex items-center gap-2 bg-fitness-red/10 border border-fitness-red/30 rounded-full px-4 py-1.5">
+                <div className="w-2 h-2 bg-fitness-red rounded-full animate-pulse" />
+                <span className="text-sm font-semibold text-white uppercase tracking-wide">
+                  Most Popular
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Heading */}
@@ -65,10 +102,12 @@ const handleClick=()=>{
               <span className="text-white">People</span>
             </h2>
             <h3 className="text-3xl font-bold text-white mb-4">
-              Are Already Training Smarter
+              {timeExpired ? "Continue Your Journey" : "Are Already Training Smarter"}
             </h3>
             <p className="text-green-100 text-base">
-              Join the fitness revolution. Get your first week free.
+              {timeExpired 
+                ? "Subscribe now to continue accessing premium features" 
+                : "Join the fitness revolution. Get your first week free."}
             </p>
           </div>
 
@@ -145,7 +184,7 @@ const handleClick=()=>{
             className="w-full h-14 text-lg font-bold !bg-[#10b981] hover:!bg-[#059669] !text-white rounded-xl shadow-lg hover:shadow-xl transition-all mb-3"
             onClick={handleClick}
           >
-            Redeem 1 Week FREE
+            {timeExpired ? "Subscribe Now" : "Redeem 1 Week FREE"}
           </Button>
 
           {/* Pricing Info */}

@@ -1,5 +1,6 @@
 import { muscles } from "@/lib/data";
-import React from "react";
+import { musclesf } from "@/lib/dataf";
+import React, { useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Dumbbell } from "lucide-react";
@@ -11,9 +12,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import MyContext from "@/contexts/MyContext";
 
 const MuscleTutorials = () => {
   const { muscle } = useParams();
+ const {homme} = useContext(MyContext);
+ 
   const navigate = useNavigate();
 
   const isVideo = (url) => {
@@ -29,7 +33,7 @@ const isGif = (url) => {
 };
 
 
-  const muscleDetails = muscles.find((m) => m.name === muscle);
+  const muscleDetails = homme ? musclesf.find((m) => m.name === muscle) : muscles.find((m) => m.name === muscle);
 
   if (!muscleDetails) {
     return (
