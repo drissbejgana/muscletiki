@@ -4,7 +4,7 @@ export const subscriptionService = {
   // Get plans
   async getPlans() {
     try {
-      const response = await api.get('https://muscletiki-backend.vercel.app/subscriptions/plans');
+      const response = await api.get('/subscriptions/plans');
       return response.data.data;
     } catch (error) {
       throw error.response?.data?.message || 'Failed to fetch plans';
