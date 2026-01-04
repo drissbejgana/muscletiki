@@ -8,8 +8,8 @@ export const musclesf = [
         name: "Crunches",
         difficulty: "Beginner",
         images: {
-          front: "/Images/female-bodyweight-crunch-front.gif",
-          side: "/Images/female-bodyweight-crunch-side.gif",
+          front: "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-crunch-front.mp4",
+          side: "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-crunch-side.mp4",
         },
         steps: [
           "Lay flat on your back with your knees bent and your feet flat on the ground, about a foot from your lower back.",
@@ -22,8 +22,8 @@ export const musclesf = [
         name: "Leg Raises",
         difficulty: "Beginner",
         images: {
-          front: "/Images/female-bodyweight-leg-raises-front.gif",
-          side: "/Images/female-bodyweight-leg-raises-side.gif",
+          front: "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-leg-raises-front.mp4",
+          side: "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-leg-raises-side.mp4",
         },
         steps: [
           "Lay on your back with your arms palms down on either side.",
@@ -37,8 +37,8 @@ export const musclesf = [
         name: "Plank",
         difficulty: "Beginner",
         images: {
-          front: "/Images/female-bodyweight-forearm-plank-front.gif",
-          side: "/Images/female-bodyweight-forarm-plank-side.gif",
+          front: "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-hand-plank-front_SFgElyI.mp4",
+          side: "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-hand-plank-side_PurCsSV.mp4",
         },
         steps: [
           "Place forearms on the ground with elbows at 90° beneath shoulders.",
@@ -51,8 +51,8 @@ export const musclesf = [
         name: "Russian Twist",
         difficulty: "Intermediate",
         images: {
-          front: "/Images/female-dumbbell-russian-twist-front.gif",
-          side: "/Images/female-dumbbell-russian-twist-side.gif",
+          front: "https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-russian-twist-front.mp4",
+          side: "https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-russian-twist-side.mp4",
         },
         steps: [
           "Sit on the floor with knees and hips flexed to 90°.",
@@ -71,8 +71,8 @@ export const musclesf = [
             "name": "Chin Ups",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-bodyweight-chinup-front.gif",
-                "side": "/Images/female-bodyweight-chinup-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-chinup-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-chinup-side.mp4"
             },
             "steps": [
                 "Grab the bar shoulder width apart with a supinated grip (palms facing you)",
@@ -85,8 +85,8 @@ export const musclesf = [
             "name": "Dumbbells Curl",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-curl-front.gif",
-                "side": "/Images/female-dumbbell-curl-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-curl-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-curl-side.mp4"
             },
             "steps": [
                 "Stand up straight with a dumbbell in each hand at arm's length.",
@@ -99,8 +99,8 @@ export const musclesf = [
             "name": "Dumbbells Hammer Curls",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-hammer-curl-front_JbvhNLU.gif",
-                "side": "/Images/female-dumbbell-hammer-curl-side_io6oHN7.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-hammer-curl-front_JbvhNLU.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-hammer-curl-side_io6oHN7.mp4"
             },
             "steps": [
                 "Hold the dumbbells with a neutral grip (thumbs facing the ceiling).",
@@ -113,8 +113,8 @@ export const musclesf = [
             "name": "Dumbbells Reverse Curls",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-dumbbell-reverse-curl-front.gif",
-                "side": "/Images/female-dumbbell-reverse-curl-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-reverse-curl-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-reverse-curl-side.mp4"
             },
             "steps": [
                 "Grab the dumbbells with a pronated (overhand) grip. You can do this exercise thumbless if it's more comfortable on your wrists.",
@@ -126,8 +126,8 @@ export const musclesf = [
             "name": "Barbell Curl",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-barbell-curl-front_uKPCb8P.gif",
-                "side": "/Images/female-barbell-curl-side_NN1ZFmi.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-curl-side.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-curl-side.mp4"
             },
             "steps": [
                 "While holding the upper arms stationary, curl the weights forward while contracting the biceps as you breathe out.",
@@ -141,8 +141,8 @@ export const musclesf = [
             "name": "Reverse Barbell Curl",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-reverse-curl-front_ysdi82M.gif",
-                "side": "/Images/female-barbell-reverse-curl-side_EGHsY3f.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-curl-front_ysdi82M.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-curl-side_EGHsY3f.mp4"
             },
             "steps": [
                 "Take a double overhand grip that's about shoulder width. Flex your elbows while keeping your elbows tucked in. Try not to let them flare out.",
@@ -160,8 +160,8 @@ export const musclesf = [
             "name": "Dips",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-bodyweight-dips-front.gif",
-                "side": "/Images/female-bodyweight-dips-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-dips-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-dips-side.mp4"
             },
             "steps": [
                 "Hold your body with arms locked above the equipment",
@@ -174,8 +174,8 @@ export const musclesf = [
             "name": "Diamond Push Ups",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/-bodyweight-diamond-pushup-front.gif",
-                "side": "/Images/female-bodyweight-diamond-pushup-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/-bodyweight-diamond-pushup-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-diamond-pushup-side.mp4"
             },
             "steps": [
                 "Position your index fingers and thumbs so they are touching, forming a diamond shape",
@@ -189,8 +189,8 @@ export const musclesf = [
             "name": "Bench Dips",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-tricep-dips-front.gif",
-                "side": "/Images/female-bodyweight-tricep-dips-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-tricep-dips-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-tricep-dips-side.mp4"
             },
             "steps": [
                 "Grip the edge of the bench with your hands, Keep your feet together and legs straight.",
@@ -204,8 +204,8 @@ export const musclesf = [
             "name": "Seated Overhead Triceps Extension",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-dumbbell-overhead-tricep-extension-front.gif",
-                "side": "/Images/female-dumbbell-overhead-tricep-extension-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-overhead-tricep-extension-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-overhead-tricep-extension-side.mp4"
             },
             "steps": [
                 "Sit on the bench and hold a dumbbell with both hands. Raise the dumbbell overhead at arms length, holding the weight up with the palms of your hands.",
@@ -218,8 +218,8 @@ export const musclesf = [
             "name": "Laying Triceps Extension",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-laying-tricep-extensions-front.gif",
-                "side": "/Images/female-barbell-laying-tricep-extensions-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-laying-tricep-extensions-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-laying-tricep-extensions-side.mp4"
             },
             "steps": [
                 "Lay on a flat bench while holding a barbell with a shoulder-width grip.",
@@ -233,8 +233,8 @@ export const musclesf = [
             "name": "Barbell SkullCrusher",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-skullcrusher-front_qpHWUa8.gif",
-                "side": "/Images/female-barbell-skullcrusher-side_B7Z6225.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-skullcrusher-front_qpHWUa8.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-skullcrusher-side_B7Z6225.mp4"
             },
             "steps": [
                 "Take a shoulder width grip. Break at the elbows. Try to keep your elbows tucked in. Don't let them flare out.",
@@ -252,8 +252,8 @@ export const musclesf = [
             "name": "Push Up",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-pushup-front.gif",
-                "side": "/Images/female-bodyweight-pushup-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Bodyweight-push-up-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Bodyweight-push-up-side.mp4"
             },
             "steps": [
                 "Place your hands firmly on the ground, directly under shoulders.",
@@ -264,32 +264,30 @@ export const musclesf = [
         },
         {
             "id": 102,
-            "name": "Incline Push Ups",
+            "name": "Dumbbell Incline Bench Press",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-incline-pushup-front.gif",
-                "side": "/Images/female-bodyweight-incline-pushup-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-bench-press-front_ctz2966.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-bench-press-side_cQCX9or.mp4"
             },
             "steps": [
-                "Stand facing bench or sturdy elevated platform.",
-                "Place hands on edge of bench or platform, slightly wider than shoulder width.",
-                "Slowly lower your body until your chest almost touches the bench.",
-                "Push body up until arms are extended."
+                "Lay flat on the incline bench with your feet on the ground. Raise the dumbbells until you have straight arms",
+                "Lower the dumbbells to your mid chest",
+                "Raise the dumbbells until you've locked your elbows.",
             ]
         },
         {
             "id": 103,
-            "name": "Dumbbells Incline Chest Flys",
+            "name": "Machine Pec Fly",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-incline-chest-flys-front.gif",
-                "side": "/Images/female-dumbbell-incline-chest-flys-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-pec-fly-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Machine-machine-pec-fly-side.mp4"
             },
             "steps": [
-                "Lay flat on the bench and place your feet on the ground.",
-                "Begin the exercise with the dumbbells held together above your chest, elbows slightly bent.",
-                "Simultaneously lower the weights to either side.",
-                "Pause when the weights are parallel to the bench, then raise your arms to the starting position."
+                "Adjust seat height so handles align with chest. Sit and grip handles with elbows slightly bent.",
+                "Slowly bring handles together in front, keeping tension. Focus on squeezing chest muscles.",
+                "Return handles to starting position with controlled motion. Keep chest up throughout. Repeat for reps.",
             ]
         },
         {
@@ -297,8 +295,8 @@ export const musclesf = [
             "name": "Incline Dumbbells Bench Press",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-incline-bench-press-front.gif",
-                "side": "/Images/female-dumbbell-incline-bench-press-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-bench-press-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-bench-press-side.mp4"
             },
             "steps": [
                 "Raise the bench to a 30 - 45 degree angle",
@@ -312,8 +310,8 @@ export const musclesf = [
             "name": "Barbell Bench Press",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-bench-press-front_C2G7O8r.gif",
-                "side": "/Images/female-barbell-bench-press-side_giVNk12.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-bench-press-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-bench-press-side.mp4"
             },
             "steps": [
                 "Lay flat on the bench with your feet on the ground. With straight arms unrack the bar.",
@@ -326,8 +324,8 @@ export const musclesf = [
             "name": "Incline Barbell Bench Press",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-incline-bench-press-front.gif",
-                "side": "/Images/female-barbell-incline-bench-press-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-incline-bench-press-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-incline-bench-press-side.mp4"
             },
             "steps": [
                 "Position the bench between 30 and 45 degrees.",
@@ -349,26 +347,26 @@ export const musclesf = [
     "exercises": [
         {
             "id": 901,
-            "name": "Elevated Pike Press",
-            "difficulty": "Beginner",
+            "name": "Barbell Overhead Press",
+            "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/Elevated Pike Press.gif",
-                "side": "/Images/Elevated Pike Press Side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-overhead-press-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-overhead-press-side.mp4"
             },
             "steps": [
-                "Use a bench or an object to elevate your feet.",
-                "Lower your head towards the floor by bending your elbows",
-                "Push through your hands and return to the starting pike position.",
-                "Repeat"
+                "Take a roughly shoulder width grip. There should be a straight line from your elbow to fist (vertical forearms).",
+                "Pull your chin back and press the weight toward the ceiling by extending at the elbow joint and flexing at the shoulder joint.",
+                "Press until your elbows are extended and push your head forward slightly.",
+                "Return to the start position with control. Pulling your chin back to allow the bar to pass your face safely."
             ]
         },
         {
             "id": 902,
-            "name": "Elevated Pike Shoulders Shrug",
+            "name": "Dumbbell Seated Overhead Press",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/Elevated Pike Shoulder Shrug.gif",
-                "side": "/Images/Elevated Pike Shoulder Shrug Side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/Elevated Pike Shoulder Shrug.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/Elevated Pike Shoulder Shrug Side.mp4"
             },
             "steps": [
                 "Use a bench or an object like a chair to elevate your feet.",
@@ -379,10 +377,10 @@ export const musclesf = [
         {
             "id": 903,
             "name": "Dumbbell Seated Overhead Press",
-            "difficulty": "Beginner",
+            "difficulty": "Novice",
             "images": {
-                "front": "/Images/female-dumbbell-seated-overhead-press-front.gif",
-                "side": "/Images/female-dumbbell-seated-overhead-press-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-seated-overhead-press-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-seated-overhead-press-side.mp4"
             },
             "steps": [
                 "Sit on a bench with back support. Raise the dumbbells to shoulder height with your palms forward.",
@@ -392,47 +390,32 @@ export const musclesf = [
         },
         {
             "id": 904,
-            "name": "Lateral Raise",
+            "name": "Dumbbell Incline Bench Press",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-lateral-raise-front.gif",
-                "side": "/Images/female-dumbbell-lateral-raise-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-bench-press-front_ctz2966.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-incline-bench-press-side_cQCX9or.mp4"
             },
             "steps": [
-                "Stand up straight with dumbbells at either side, palms facing your hips.",
-                "Raise your arms on either side with a slight bend in your elbow until they are parallel with the floor.",
-                "Pause at the top of the motion.",
-                "Slowly return your arms down to starting position."
+                "Lay flat on the incline bench with your feet on the ground. Raise the dumbbells until you have straight arms",
+                "Lower the dumbbells to your mid chest",
+                "Raise the dumbbells until you've locked your elbows.",
             ]
         },
         {
             "id": 905,
-            "name": "Barbell Overhead Raise",
-            "difficulty": "Intermediate",
+            "name": "Cable Low Single Arm Lateral Raise",
+            "difficulty": "Novice",
             "images": {
-                "front": "/Images/female-barbell-overhead-press-front_OJMNLxU.gif",
-                "side": "/Images/female-barbell-overhead-press-side_rFqqcjI.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-lateral-raise-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-lateral-raise-side.mp4"
             },
             "steps": [
-                "Take a roughly shoulder width grip. There should be a straight line from your elbow to fist (vertical forearms).",
-                "Pull your chin back and press the weight toward the ceiling by extending at the elbow joint and flexing at the shoulder joint.",
-                "Press until your elbows are extended and push your head forward slightly.",
-                "Return to the start position with control. Pulling your chin back to allow the bar to pass your face safely."
+                "Use a handle attachment with the cable set all the way to the bottom of the machine.",
+                "You should vertically abduct at the shoulder raising your arm straight out to the side.",
+                "Raise until your arm is parallel with the ground and then back to the starting position.",
             ]
         },
-        {
-            "id": 906,
-            "name": "Barbell Upright Row",
-            "difficulty": "Advanced",
-            "images": {
-                "front": "/Images/female-barbell-upright-row-front_3ROsKgm.gif",
-                "side": "/Images/female-barbell-upright-row-side_NBzD3il.gif"
-            },
-            "steps": [
-                "Take a double overhand roughly shoulder width grip.",
-                "Pull your elbows straight up the ceiling. Aim to get the bar to chin level or slightly higher."
-            ]
-        }
     ]
 },
   {
@@ -449,8 +432,8 @@ export const musclesf = [
             "name": "Squats",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-squat-front.gif",
-                "side": "/Images/female-bodyweight-squat-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-squat-side.mp4"
             },
             "steps": [
                 "Stand with your feet shoulder width apart.",
@@ -464,8 +447,8 @@ export const musclesf = [
             "name": "Forward Lunges",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-forward-lunge-front.gif",
-                "side": "/Images/female-bodyweight-forward-lunge-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-forward-lunge-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-forward-lunge-side.mp4"
             },
             "steps": [
                 "Step forward with one leg.",
@@ -479,8 +462,8 @@ export const musclesf = [
             "name": "Glute Bridge",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-glute-bridge-front.gif",
-                "side": "/Images/female-bodyweight-glute-bridge-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-glute-bridge-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-glute-bridge-side.mp4"
             },
             "steps": [
                 "Lie down with your knees bent and your feet flat on the floor.",
@@ -494,8 +477,8 @@ export const musclesf = [
             "name": "Dumbells Goblet Squats",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-goblet-squat-front.gif",
-                "side": "/Images/female-dumbbell-goblet-squat-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-goblet-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-goblet-squat-side.mp4"
             },
             "steps": [
                 "Hold the weight tucked into your upper chest area, keeping your elbows in. Your feet should be slightly wider than shoulder width.",
@@ -508,8 +491,8 @@ export const musclesf = [
             "name": "Barbell Squats",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-highbar-squat-front.gif",
-                "side": "/Images/female-barbell-highbar-squat-side_bU7Qudy.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-highbar-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-highbar-squat-side_bU7Qudy.mp4"
             },
             "steps": [
                 "Stand with your feet shoulder-width apart. Maintain the natural arch in your back, squeezing your shoulder blades and raising your chest.",
@@ -529,8 +512,8 @@ export const musclesf = [
             "name": "Chin Ups",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-bodyweight-chinup-front.gif",
-                "side": "/Images/female-bodyweight-chinup-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-chinup-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-chinup-side.mp4"
             },
             "steps": [
                 "Grab the bar shoulder width apart with a supinated grip (palms facing you)",
@@ -543,8 +526,8 @@ export const musclesf = [
             "name": "Dumbbells Wrist Curl",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-wrist-curl-front.gif",
-                "side": "/Images/female-dumbbell-wrist-curl-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-wrist-curl-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-wrist-curl-side.mp4"
             },
             "steps": [
                 "Grip the dumbbell with your palm facing upwards with your forearm rested against the bench.",
@@ -557,8 +540,8 @@ export const musclesf = [
             "name": "Dumbbells Wrist Extension",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-wrist-extension-front.gif",
-                "side": "/Images/female-dumbbell-wrist-extension-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-wrist-extension-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-wrist-extension-side.mp4"
             },
             "steps": [
                 "Grab two dumbbells with an overhand grip and lay your forearms across your knees.",
@@ -570,8 +553,8 @@ export const musclesf = [
             "name": "Dumbbells Reverse Curls",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-dumbbell-reverse-curl-front.gif",
-                "side": "/Images/female-dumbbell-reverse-curl-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-reverse-curl-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-reverse-curl-side.mp4"
             },
             "steps": [
                 "Grab the dumbbells with a pronated (overhand) grip. You can do this exercise thumbless if it's more comfortable on your wrists.",
@@ -583,8 +566,8 @@ export const musclesf = [
             "name": "Barbell Wrist Curl",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/barbell-wristcurl-female-front.gif",
-                "side": "/Images/barbell-wristcurl-female-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/barbell-wristcurl-female-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/barbell-wristcurl-female-side.mp4"
             },
             "steps": [
                 "Grab a straight bar with a supinated (underhand) grip.",
@@ -599,8 +582,8 @@ export const musclesf = [
             "name": "Reverse Barbell Curl",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-reverse-curl-front_ysdi82M.gif",
-                "side": "/Images/female-barbell-reverse-curl-side_EGHsY3f.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-curl-front_ysdi82M.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-reverse-curl-side_EGHsY3f.mp4"
             },
             "steps": [
                 "Take a double overhand grip that's about shoulder width. Flex your elbows while keeping your elbows tucked in. Try not to let them flare out.",
@@ -618,8 +601,8 @@ export const musclesf = [
             "name": "Calf Raises",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-calve-raise-front.gif",
-                "side": "/Images/female-bodyweight-calve-raise-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-calve-raise-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-calve-raise-side.mp4"
             },
             "steps": [
                 "Balance on the balls of your feet on the platform or plates, leaning forward to use the wall to assist with balance.",
@@ -632,8 +615,8 @@ export const musclesf = [
             "name": "Dumbells Calf Raises",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-calf-raise-front.gif",
-                "side": "/Images/female-dumbbell-calf-raise-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-calf-raise-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-calf-raise-side.mp4"
             },
             "steps": [
                 "Stand tall with your feet on the ground. You can put the the balls of your feet on top of a plate to extend the range of motion.",
@@ -645,8 +628,8 @@ export const musclesf = [
             "name": "Barbell Calf Raises",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-calve-raise-front.gif",
-                "side": "/Images/female-barbell-calve-raise-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-calve-raise-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-calve-raise-side.mp4"
             },
             "steps": [
                 "Place the bar on your back",
@@ -666,8 +649,8 @@ export const musclesf = [
             "name": "Pull Ups",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-bodyweight-pullup-front.gif",
-                "side": "/Images/female-bodyweight-pullup-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-pullup-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-pullup-side.mp4"
             },
             "steps": [
                 "Grasp the bar with an overhand grip, arms and shoulders fully extended.",
@@ -680,8 +663,8 @@ export const musclesf = [
             "name": "Dumbbell Row Unilateral",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-row-unilateral-front.gif",
-                "side": "/Images/female-dumbbell-unilateral-row-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-row-unilateral-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-unilateral-row-side.mp4"
             },
             "steps": [
                 "Brace your off arm against something stable (bench, box). Stagger your stance so your leg on the side of your working arm is back.",
@@ -694,8 +677,8 @@ export const musclesf = [
             "name": "Deadlift",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-deadlift-front.gif",
-                "side": "/Images/female-barbell-deadlift-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-deadlift-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-deadlift-side.mp4"
             },
             "steps": [
                 "Stand with your mid-foot under the bar and grip the bar with your hands, about a shoulder width apart.",
@@ -715,8 +698,8 @@ export const musclesf = [
             "name": "Deadlift",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-deadlift-front.gif",
-                "side": "/Images/female-barbell-deadlift-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-deadlift-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-deadlift-side.mp4"
             },
             "steps": [
                 "Stand with your mid-foot under the bar and grip the bar with your hands, about a shoulder width apart.",
@@ -730,8 +713,8 @@ export const musclesf = [
             "name": "Sumo Deadlift",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-sumo-deadlift-front_aeM2BqT.gif",
-                "side": "/Images/female-barbell-sumo-deadlift-side_av3A2PM.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-sumo-deadlift-front_aeM2BqT.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-sumo-deadlift-side_av3A2PM.mp4"
             },
             "steps": [
                 "Stance width can vary with a sumo DL. Some prefer toes near the plates. Others prefer a more narrow stance to get more drive off the floor.",
@@ -750,8 +733,8 @@ export const musclesf = [
             "name": "Russian Twist",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-dumbbell-russian-twist-front.gif",
-                "side": "/Images/female-dumbbell-russian-twist-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-russian-twist-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-russian-twist-side.mp4"
             },
             "steps": [
                 "Sit on the floor and flex your knees and hips to a 90 degree angle.",
@@ -770,8 +753,8 @@ export const musclesf = [
             "name": "Squats",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-squat-front.gif",
-                "side": "/Images/female-bodyweight-squat-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-squat-side.mp4"
             },
             "steps": [
                 "Stand with your feet shoulder width apart",
@@ -785,8 +768,8 @@ export const musclesf = [
             "name": "Forward Lunges",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-forward-lunge-front.gif",
-                "side": "/Images/female-bodyweight-forward-lunge-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-forward-lunge-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-forward-lunge-side.mp4"
             },
             "steps": [
                 "Step forward with one leg.",
@@ -800,8 +783,8 @@ export const musclesf = [
             "name": "Bulgarian Split Squats",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-bulgarian-split-squat-front.gif",
-                "side": "/Images/female-bodyweight-bulgarian-split-squat-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-bulgarian-split-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-bulgarian-split-squat-side.mp4"
             },
             "steps": [
                 "Stand with your back to a bench (or raised surface) and place one of your feet on the bench.",
@@ -814,8 +797,8 @@ export const musclesf = [
             "name": "Dumbells Goblet Squats",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-goblet-squat-front.gif",
-                "side": "/Images/female-dumbbell-goblet-squat-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-goblet-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-goblet-squat-side.mp4"
             },
             "steps": [
                 "Hold the weight tucked into your upper chest area, keeping your elbows in. Your feet should be slightly wider than shoulder width.",
@@ -828,8 +811,8 @@ export const musclesf = [
             "name": "Barbell Squats",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-highbar-squat-front.gif",
-                "side": "/Images/female-barbell-highbar-squat-side_bU7Qudy.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-highbar-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-highbar-squat-side_bU7Qudy.mp4"
             },
             "steps": [
                 "Stand with your feet shoulder-width apart. Maintain the natural arch in your back, squeezing your shoulder blades and raising your chest.",
@@ -849,28 +832,28 @@ export const musclesf = [
             "name": "Elevated Pike Press",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/Elevated Pike Press.gif",
-                "side": "/Images/Elevated Pike Press Side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-silverback-shrug-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-silverback-shrug-side.mp4"
             },
             "steps": [
-                "Use a bench or an object to elevate your feet.",
-                "Lower your head by bending your elbows towards the floor",
-                "Push through your hands and reach the starting pike position",
-                "Repeat"
+                "Stand with your feet shoulder width apart holding the Barbell with both hands in front just past shoulder width.",
+                "Bend forward at the hips with a slight bend in your knees, keeping your back straight.",
+                "Engage your shoulder blades, as if you are trying to touch them together.",
+                "Release the shrug."
             ]
         },
         {
             "id": 1002,
-            "name": "Elevated Pike Shoulder Shrug",
+            "name": "Cable 30 Degree Shrug",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/Elevated Pike Shoulder Shrug.gif",
-                "side": "/Images/Elevated Pike Shoulder Shrug Side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-30-degree-shrug-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Cables-cable-30-degree-shrug-side.mp4"
             },
             "steps": [
-                "Use a bench or an object like a chair to elevate your feet.",
-                "Slowly lower your body (scapula) while keeping your elbows locked(this is key)",
-                "Slowly raise your body back to the starting position"
+                "Use a handle attachment on both sides of crossover. With cable attachment set all the way to the bottom.",
+                "Grab both handles and make sure you are centered in the machine. Let your arms hang freely.",
+                "Pull your shoulder blades up and in towards your ears. Let your shoulder blades depress back to the starting position."
             ]
         },
         {
@@ -878,8 +861,8 @@ export const musclesf = [
             "name": "Dumbbells Shrugs",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-shrug-front.gif",
-                "side": "/Images/female-dumbbell-shrug-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-shrug-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-shrug-side.mp4"
             },
             "steps": [
                 "Stand tall with two dumbbells. Pull your shoulder blades up. Give a one second squeeze at the top."
@@ -887,16 +870,14 @@ export const musclesf = [
         },
         {
             "id": 1004,
-            "name": "Dumbbells Seated Shrugs",
+            "name": "Dumbbell Shrug",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-seated-shrug-front.gif",
-                "side": "/Images/female-dumbbell-seated-shrug-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-shrug-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Dumbbells-dumbbell-shrug-side.mp4"
             },
             "steps": [
-                "Sit on a bench with dumbbells in both hands, palms facing your body, back straight.",
-                "Elevate your shoulders and hold the contracted position at the apex of the motion",
-                "Slowly lower your shoulders back to starting position."
+                "Stand tall with two dumbbells. Pull your shoulder blades up. Give a one second squeeze at the top.",
             ]
         },
         {
@@ -904,8 +885,8 @@ export const musclesf = [
             "name": "Barbell Upright Row",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-upright-row-front_3ROsKgm.gif",
-                "side": "/Images/female-barbell-upright-row-side_NBzD3il.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-upright-row-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-Barbell-barbell-upright-row-side.mp4"
             },
             "steps": [
                 "Take a double overhand roughly shoulder width grip.",
@@ -923,8 +904,8 @@ export const musclesf = [
             "name": "Pull Ups",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-bodyweight-pullup-front.gif",
-                "side": "/Images/female-bodyweight-pullup-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-pullup-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-pullup-side.mp4"
             },
             "steps": [
                 "Grasp the bar with an overhand grip, arms and shoulders fully extended.",
@@ -937,8 +918,8 @@ export const musclesf = [
             "name": "Elevated Pike Press",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/Elevated Pike Press.gif",
-                "side": "/Images/Elevated Pike Press Side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/Elevated Pike Press.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/Elevated Pike Press Side.mp4"
             },
             "steps": [
                 "Use a bench or an object to elevate your feet.",
@@ -952,8 +933,8 @@ export const musclesf = [
             "name": "Dumbbell Row Unilateral",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-row-unilateral-front.gif",
-                "side": "/Images/female-dumbbell-unilateral-row-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-row-unilateral-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-unilateral-row-side.mp4"
             },
             "steps": [
                 "Brace your off arm against something stable (bench, box). Stagger your stance so your leg on the side of your working arm is back.",
@@ -966,8 +947,8 @@ export const musclesf = [
             "name": "Bent Over Barbell Row",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-bent-over-row-front.gif",
-                "side": "/Images/female-barbell-bent-over-row-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-bent-over-row-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-bent-over-row-side.mp4"
             },
             "steps": [
                 "Grab a barbell with a shoulder width pronated or supinated grip.",
@@ -987,8 +968,8 @@ export const musclesf = [
             "name": "Glute Bridge",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-bodyweight-glute-bridge-front.gif",
-                "side": "/Images/female-bodyweight-glute-bridge-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-glute-bridge-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-bodyweight-glute-bridge-side.mp4"
             },
             "steps": [
                 "Lie down with your knees bent and your feet flat on the floor.",
@@ -1002,8 +983,8 @@ export const musclesf = [
             "name": "Dumbells Goblet Squats",
             "difficulty": "Beginner",
             "images": {
-                "front": "/Images/female-dumbbell-goblet-squat-front.gif",
-                "side": "/Images/female-dumbbell-goblet-squat-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-goblet-squat-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-dumbbell-goblet-squat-side.mp4"
             },
             "steps": [
                 "Hold the weight tucked into your upper chest area, keeping your elbows in. Your feet should be slightly wider than shoulder width.",
@@ -1016,8 +997,8 @@ export const musclesf = [
             "name": "Deadlift",
             "difficulty": "Advanced",
             "images": {
-                "front": "/Images/female-barbell-deadlift-front.gif",
-                "side": "/Images/female-barbell-deadlift-side.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-deadlift-front.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-deadlift-side.mp4"
             },
             "steps": [
                 "Stand with your mid-foot under the bar and grip the bar with your hands, about a shoulder width apart.",
@@ -1031,8 +1012,8 @@ export const musclesf = [
             "name": "Sumo Deadlift",
             "difficulty": "Intermediate",
             "images": {
-                "front": "/Images/female-barbell-sumo-deadlift-front_aeM2BqT.gif",
-                "side": "/Images/female-barbell-sumo-deadlift-side_av3A2PM.gif"
+                "front": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-sumo-deadlift-front_aeM2BqT.mp4",
+                "side": "https://media.musclewiki.com/media/uploads/videos/branded/female-barbell-sumo-deadlift-side_av3A2PM.mp4"
             },
             "steps": [
                 "Stance width can vary with a sumo DL. Some prefer toes near the plates. Others prefer a more narrow stance to get more drive off the floor.",

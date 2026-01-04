@@ -9,13 +9,14 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Lock, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {authService} from '@/services/authService';
 
 const Layout = ({ children }) => {
-  const { user } = useAuth();
+  const user= authService.getCurrentUser();
   const navigate = useNavigate();
   const location = useLocation();
   
-  const shouldRestrict = !user || user?.plan === "free";
+  const shouldRestrict = !user || user?.subscription.plan === "free";
   const { isRestricted, timeExpired, remainingTime, formatTime } = useTimeRestriction(shouldRestrict, 2);
 
   // Allowed pages for restricted users

@@ -10,6 +10,7 @@ export const useAuth = () => {
     setUser(currentUser);
     setLoading(false);
   }, []);
+  console.log('useAuth user:', user);
 
   const login = async (email, password) => {
     const data = await authService.login(email, password);

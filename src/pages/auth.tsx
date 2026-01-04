@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import {authService} from '@/services/authService'
-import { useAuth } from '@/hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 export default function AuthPages() {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,7 +8,7 @@ export default function AuthPages() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const {user}=useAuth()
+  const user= authService.getCurrentUser();
   const navigate=useNavigate()
   if(user){
       navigate("/")
