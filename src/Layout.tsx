@@ -19,13 +19,11 @@ const Layout = ({ children }) => {
   const shouldRestrict = !user || user?.subscription.plan === "free";
   const { isRestricted, timeExpired, remainingTime, formatTime } = useTimeRestriction(shouldRestrict, 2);
 
-  // Allowed pages for restricted users
   const allowedPaths = ['/subscription', '/auth'];
   const isOnAllowedPage = allowedPaths.some(path => 
     location.pathname.startsWith(path)
   );
 
-  // Redirect to subscription when time expires
   useEffect(() => {
     if (isRestricted && !isOnAllowedPage) {
       navigate('/subscription');
