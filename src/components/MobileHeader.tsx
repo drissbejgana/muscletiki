@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Dumbbell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { AppSidebar } from "./AppSidebar";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const MobileHeader = () => {
   return (
@@ -13,9 +14,7 @@ const MobileHeader = () => {
       </div>
 
       <div className="flex items-center gap-3">
-        <Button variant="outline" size="sm" className="gap-2 h-8 px-2">
-          <span className="text-lg">🇫🇷</span>
-        </Button>
+        <LanguageSwitcher compact />
 
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <Search className="h-4 w-4" />

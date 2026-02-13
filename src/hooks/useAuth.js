@@ -10,10 +10,15 @@ export const useAuth = () => {
     setUser(currentUser);
     setLoading(false);
   }, []);
-  console.log('useAuth user:', user);
 
   const login = async (email, password) => {
     const data = await authService.login(email, password);
+    setUser(data.user);
+    return data;
+  };
+
+  const googleLogin = async (credential) => {
+    const data = await authService.googleLogin(credential);
     setUser(data.user);
     return data;
   };
@@ -40,6 +45,7 @@ export const useAuth = () => {
     loading,
     isAuthenticated: !!user,
     login,
+    googleLogin,
     register,
     logout,
     updateUser

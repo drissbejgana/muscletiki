@@ -1,45 +1,34 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { cn } from "@/lib/utils";
-import MyContext from "@/contexts/MyContext"; // Import your context
+import MyContext from "@/contexts/MyContext";
+import { useTranslation } from "@/i18n";
 
-// Define type for the available keys
 type ToggleKeys = "homme" | "avance" | "articulations";
 
 const ViewToggle = () => {
-  // Get all states from context
   const { advanced, homme, articulations, updateAdvanced, updateHomme, updateArticulations } = useContext(MyContext);
+  const { t } = useTranslation();
 
-  const toggles: { key: ToggleKeys; label: string }[] = [
-    { key: "homme", label: "Homme" },
-    { key: "avance", label: "Avancé" },
-    { key: "articulations", label: "Articulations" },
+  const toggles: { key: ToggleKeys; labelKey: string }[] = [
+    { key: "homme", labelKey: "bodyMap.male" },
+    { key: "avance", labelKey: "bodyMap.advanced" },
+    { key: "articulations", labelKey: "bodyMap.joints" },
   ];
 
   const handleToggle = (key: ToggleKeys) => {
     switch (key) {
-      case "avance":
-        updateAdvanced(!advanced);
-        break;
-      case "homme":
-        updateHomme(!homme);
-        break;
-      case "articulations":
-        updateArticulations(!articulations);
-        break;
+      case "avance": updateAdvanced(!advanced); break;
+      case "homme": updateHomme(!homme); break;
+      case "articulations": updateArticulations(!articulations); break;
     }
   };
 
-  // Get the active state for each toggle
   const getIsActive = (key: ToggleKeys): boolean => {
     switch (key) {
-      case "avance":
-        return advanced;
-      case "homme":
-        return homme;
-      case "articulations":
-        return articulations;
-      default:
-        return false;
+      case "avance": return advanced;
+      case "homme": return homme;
+      case "articulations": return articulations;
+      default: return false;
     }
   };
 
@@ -48,7 +37,6 @@ const ViewToggle = () => {
       <div className="flex justify-around items-start gap-8">
         {toggles.map((toggle) => {
           const isActive = getIsActive(toggle.key);
-
           return (
             <div key={toggle.key} className="flex flex-col items-center gap-3">
               <button
@@ -62,14 +50,12 @@ const ViewToggle = () => {
                 <span
                   className={cn(
                     "absolute top-1 w-6 h-6 rounded-full transition-all duration-300 ease-in-out shadow-md",
-                    isActive
-                      ? "left-9 bg-white" // Active: slider on the right
-                      : "left-1 bg-slate-400" // Inactive: slider on the left
+                    isActive ? "left-9 bg-white" : "left-1 bg-slate-400"
                   )}
                 />
               </button>
               <span className="text-sm font-medium text-slate-200 whitespace-nowrap">
-                {toggle.label}
+                {t(toggle.labelKey)}
               </span>
             </div>
           );

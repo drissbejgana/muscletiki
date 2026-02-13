@@ -4,7 +4,6 @@ import { FemalBodyBack } from "./FemalBodyBack";
 import { InteractiveBodyMap } from "./FemalBodyFront";
 
 const BodyDiagram = ({advanced,gendre}) => {
-  console.log(advanced,gendre)
   return (
     <div className="flex flex-col items-center justify-center flex-1 bg-card rounded-lg p-8">
       <div className="relative max-w-3xl w-full aspect-[2/1] flex items-center justify-center gap-8">

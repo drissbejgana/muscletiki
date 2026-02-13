@@ -3,8 +3,6 @@ import { useAuth } from '../hooks/useAuth';
 
 export const ProtectedRoute = ({ children, requiredPlan = 'free' }) => {
   const { user, loading } = useAuth();
-  console.log('ProtectedRoute user:', user);
-  console.log('ProtectedRoute loading:', requiredPlan);
 
   if (loading) {
     return <div>Loading...</div>;

@@ -9,7 +9,6 @@ export const authService = {
         email,
         password
       });
-        
 
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
@@ -31,7 +30,6 @@ export const authService = {
       });
 
       if (response.data.token) {
-        console.log(response.data.token)
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
@@ -39,6 +37,22 @@ export const authService = {
       return response.data;
     } catch (error) {
       throw error.response?.data?.message || 'Login failed';
+    }
+  },
+
+  // Google Login
+  async googleLogin(credential) {
+    try {
+      const response = await api.post('/auth/google', { credential });
+
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+
+      return response.data;
+    } catch (error) {
+      throw error.response?.data?.message || 'Google login failed';
     }
   },
 

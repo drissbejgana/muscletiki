@@ -18,6 +18,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import Profile from "./pages/Profile";
+import TrainingLog from "./pages/TrainingLog";
 import Articles from "./pages/Articles";
 import Routines from "./pages/routines";
 import { InteractiveBodyMap } from "./components/FemalBodyFront";
@@ -155,6 +156,14 @@ const App = () => (
               <ProtectedRoute requiredPlan="pro">
                 <Layout>
                     <WorkoutPrograms />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/training" element={
+              <ProtectedRoute requiredPlan="pro">
+                <Layout>
+                    <TrainingLog />
                 </Layout>
               </ProtectedRoute>
             } />
