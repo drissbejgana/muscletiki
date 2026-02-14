@@ -123,7 +123,13 @@
     "noSubscription": "You don't have an active subscription",
     "viewPlans": "View Plans",
     "adminDashboard": "Admin Dashboard",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "expired": "Expired",
+    "expiredStatus": "Expired",
+    "expiredOn": "Expired on",
+    "expiresOn": "Expires on",
+    "expiringAlert": "Your subscription expires in {days} days!",
+    "renewSubscription": "Renew Subscription"
   },
   "subscription": {
     "title": "Choose Your Plan",
@@ -155,8 +161,21 @@
       "videoTutorials": "Video tutorials",
       "nutritionPlans": "Nutrition plans",
       "prioritySupport": "Priority support",
-      "exclusiveContent": "Exclusive content"
-    }
+      "exclusiveContent": "Exclusive content",
+      "fiveDayAccess": "5-day full access trial",
+      "fullYearAccess": "Full year of unlimited access"
+    },
+    "premium5day": "Premium 5-Day",
+    "premium5dayDesc": "Try premium features for 5 days",
+    "premiumAnnual": "Premium Annual",
+    "premiumAnnualDesc": "Full premium access for a whole year",
+    "fiveDays": "5 days",
+    "year": "year",
+    "bestValue": "Best Value",
+    "currentPlan": "Current Plan",
+    "processing": "Processing...",
+    "daysRemaining": "{days} days remaining",
+    "expired": "Your subscription has expired"
   },
   "subscriptionSuccess": {
     "verifying": "Verifying Payment...",

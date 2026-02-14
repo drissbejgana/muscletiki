@@ -88,11 +88,12 @@ export default function AuthPages() {
     try {
       const data = await authService.googleLogin(response.credential);
       const loggedUser = data.user;
+      const isExpired = loggedUser.subscription?.endDate && new Date(loggedUser.subscription.endDate) < new Date();
 
       if (loggedUser.role === "admin") {
         localStorage.removeItem('fitness_app_restriction_time');
         window.location.href = '/admin';
-      } else if (loggedUser.subscription?.plan === "free") {
+      } else if (loggedUser.subscription?.plan === "free" || isExpired) {
         window.location.href = '/subscription';
       } else {
         localStorage.removeItem('fitness_app_restriction_time');
@@ -111,8 +112,9 @@ export default function AuthPages() {
     try {
       if (isLogin) {
         const { user } = await authService.login(formData.email, formData.password);
+        const isExpired = user.subscription?.endDate && new Date(user.subscription.endDate) < new Date();
         if (user.role === "admin") { localStorage.removeItem('fitness_app_restriction_time'); window.location.href = '/admin'; }
-        else if (user.subscription.plan === "free") { window.location.href = '/subscription'; }
+        else if (user.subscription.plan === "free" || isExpired) { window.location.href = '/subscription'; }
         else if (user.subscription.plan === "pro" || user.subscription.plan === "premium") { localStorage.removeItem('fitness_app_restriction_time'); window.location.href = '/'; }
       } else {
         if (formData.password !== formData.confirmPassword) { setError(t('auth.passwordsNoMatch')); setLoading(false); return; }

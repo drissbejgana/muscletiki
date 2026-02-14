@@ -123,7 +123,13 @@
     "noSubscription": "Vous n'avez pas d'abonnement actif",
     "viewPlans": "Voir les plans",
     "adminDashboard": "Tableau de bord admin",
-    "signOut": "Déconnexion"
+    "signOut": "Déconnexion",
+    "expired": "Expiré",
+    "expiredStatus": "Expiré",
+    "expiredOn": "Expiré le",
+    "expiresOn": "Expire le",
+    "expiringAlert": "Votre abonnement expire dans {days} jours !",
+    "renewSubscription": "Renouveler l'abonnement"
   },
   "subscription": {
     "title": "Choisissez votre plan",
@@ -155,8 +161,21 @@
       "videoTutorials": "Tutoriels vidéo",
       "nutritionPlans": "Plans de nutrition",
       "prioritySupport": "Support prioritaire",
-      "exclusiveContent": "Contenu exclusif"
-    }
+      "exclusiveContent": "Contenu exclusif",
+      "fiveDayAccess": "Accès complet de 5 jours",
+      "fullYearAccess": "Accès illimité pendant un an"
+    },
+    "premium5day": "Premium 5 Jours",
+    "premium5dayDesc": "Essayez les fonctionnalités premium pendant 5 jours",
+    "premiumAnnual": "Premium Annuel",
+    "premiumAnnualDesc": "Accès premium complet pour une année entière",
+    "fiveDays": "5 jours",
+    "year": "an",
+    "bestValue": "Meilleur rapport",
+    "currentPlan": "Plan actuel",
+    "processing": "Traitement...",
+    "daysRemaining": "{days} jours restants",
+    "expired": "Votre abonnement a expiré"
   },
   "subscriptionSuccess": {
     "verifying": "Vérification du paiement...",

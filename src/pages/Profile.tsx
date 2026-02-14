@@ -45,18 +45,56 @@ const Profile = () => {
         <Card>
           <CardHeader><CardTitle className="flex items-center gap-2"><Crown className="w-5 h-5" />{t('profile.subscription')}</CardTitle></CardHeader>
           <CardContent>
-            {user.subscription ? (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center"><span className="text-muted-foreground">{t('profile.currentPlan')}</span><Badge variant={getPlanBadgeVariant(user.subscription.plan)}>{user.subscription.plan.charAt(0).toUpperCase() + user.subscription.plan.slice(1)}</Badge></div>
-                <Separator />
-                <div className="flex justify-between items-center"><span className="text-muted-foreground">{t('profile.status')}</span><Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">{t('profile.active')}</Badge></div>
-                <Separator />
-                <div className="flex justify-between items-center"><span className="text-muted-foreground">{t('profile.price')}</span><span className="font-medium">${user.subscription.amount}/{user.subscription.billingCycle}</span></div>
-                <Separator />
-                <div className="flex justify-between items-center"><span className="text-muted-foreground">{t('profile.started')}</span><span className="font-medium">{formatDate(user.subscription.startDate)}</span></div>
-                {user.subscription.endDate && (<><Separator /><div className="flex justify-between items-center"><span className="text-muted-foreground">{t('profile.renews')}</span><span className="font-medium">{formatDate(user.subscription.endDate)}</span></div></>)}
-              </div>
-            ) : (
+            {user.subscription ? (() => {
+              const isExpired = user.subscription.endDate && new Date(user.subscription.endDate) < new Date();
+              const daysLeft = user.subscription.endDate
+                ? Math.max(0, Math.ceil((new Date(user.subscription.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+                : null;
+
+              return (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">{t('profile.currentPlan')}</span>
+                    <Badge variant={isExpired ? "outline" : getPlanBadgeVariant(user.subscription.plan)}>
+                      {isExpired ? t('profile.expired') : user.subscription.plan.charAt(0).toUpperCase() + user.subscription.plan.slice(1)}
+                    </Badge>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">{t('profile.status')}</span>
+                    <Badge variant="outline" className={isExpired ? "bg-red-100 text-red-800 border-red-200" : "bg-green-100 text-green-800 border-green-200"}>
+                      {isExpired ? t('profile.expiredStatus') : t('profile.active')}
+                    </Badge>
+                  </div>
+                  {user.subscription.startDate && (
+                    <><Separator />
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">{t('profile.started')}</span>
+                      <span className="font-medium">{formatDate(user.subscription.startDate)}</span>
+                    </div></>
+                  )}
+                  {user.subscription.endDate && (
+                    <><Separator />
+                    <div className="flex justify-between items-center">
+                      <span className="text-muted-foreground">{isExpired ? t('profile.expiredOn') : t('profile.expiresOn')}</span>
+                      <span className={`font-medium ${isExpired ? 'text-destructive' : ''}`}>{formatDate(user.subscription.endDate)}</span>
+                    </div></>
+                  )}
+                  {!isExpired && daysLeft !== null && daysLeft <= 7 && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                      <span className="text-sm text-yellow-800 font-medium">
+                        ⚠️ {t('profile.expiringAlert', { days: String(daysLeft) })}
+                      </span>
+                    </div>
+                  )}
+                  {isExpired && (
+                    <Button onClick={() => navigate("/subscription")} className="w-full mt-2">
+                      {t('profile.renewSubscription')}
+                    </Button>
+                  )}
+                </div>
+              );
+            })() : (
               <div className="text-center py-4">
                 <p className="text-muted-foreground mb-4">{t('profile.noSubscription')}</p>
                 <Button onClick={() => navigate("/subscription")}>{t('profile.viewPlans')}</Button>

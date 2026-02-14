@@ -85,10 +85,24 @@ export const authService = {
     }
   },
 
-  // Get current user from localStorage
+  // Get current user from localStorage (with expiration check)
   getCurrentUser() {
     const user = localStorage.getItem('user');
-    return user ? JSON.parse(user) : null;
+    if (!user) return null;
+
+    const parsed = JSON.parse(user);
+
+    // Check if subscription has expired — update local state
+    if (parsed.subscription?.endDate) {
+      const endDate = new Date(parsed.subscription.endDate);
+      if (endDate < new Date() && parsed.subscription.plan !== 'free') {
+        parsed.subscription.plan = 'free';
+        parsed.subscription.status = 'expired';
+        localStorage.setItem('user', JSON.stringify(parsed));
+      }
+    }
+
+    return parsed;
   },
 
   // Check if user is logged in
