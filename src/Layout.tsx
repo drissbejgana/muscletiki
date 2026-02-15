@@ -57,7 +57,7 @@ const Layout = ({ children }) => {
 
   return (
     <SidebarProvider>
-      {shouldRestrict && (
+      {shouldRestrict && !isOnAllowedPage && (
         <FitnessPopup
           timeExpired={timeExpired}
           remainingTime={remainingTime}
