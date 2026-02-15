@@ -623,10 +623,6 @@ const AdminDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Muscle Tutorial Videos</CardTitle>
-                <CardDescription>
-                  Browse every muscle group. Expand to see exercises and edit their male/female video URLs directly.
-                  Videos come from the database (seeded from your musclesData.ts).
-                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-3 mb-5">
