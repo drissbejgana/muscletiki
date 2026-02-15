@@ -1,63 +1,139 @@
 import api from './api';
 
 export const adminService = {
-  // Get dashboard stats
+  // ─── Stats ─────────────────────────────────────────────────────────────────
   async getDashboardStats() {
     try {
-      const response = await api.get('/admin/stats');
-      return response.data.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Failed to fetch stats';
-    }
+      const r = await api.get('/admin/stats');
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch stats'; }
   },
 
-  // Get all subscriptions
-  async getAllSubscriptions(params = {}) {
-    try {
-      const response = await api.get('/admin/subscriptions', { params });
-      return response.data.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Failed to fetch subscriptions';
-    }
-  },
-
-  // Get all users
+  // ─── Users ─────────────────────────────────────────────────────────────────
   async getAllUsers(params = {}) {
     try {
-      const response = await api.get('/admin/users', { params });
-      return response.data.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Failed to fetch users';
-    }
+      const r = await api.get('/admin/users', { params });
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch users'; }
   },
-
-  // Get user details
   async getUserDetails(userId) {
     try {
-      const response = await api.get(`/admin/users/${userId}`);
-      return response.data.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Failed to fetch user details';
-    }
+      const r = await api.get(`/admin/users/${userId}`);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch user'; }
   },
-
-  // Update user subscription
-  async updateUserSubscription(userId, data) {
-    try {
-      const response = await api.put(`/admin/subscriptions/${userId}`, data);
-      return response.data.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Failed to update subscription';
-    }
-  },
-
-  // Delete user
   async deleteUser(userId) {
     try {
-      const response = await api.delete(`/admin/users/${userId}`);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data?.message || 'Failed to delete user';
-    }
-  }
+      const r = await api.delete(`/admin/users/${userId}`);
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to delete user'; }
+  },
+
+  // ─── Subscriptions ─────────────────────────────────────────────────────────
+  async getAllSubscriptions(params = {}) {
+    try {
+      const r = await api.get('/admin/subscriptions', { params });
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch subscriptions'; }
+  },
+  async updateUserSubscription(userId, data) {
+    try {
+      const r = await api.put(`/admin/subscriptions/${userId}`, data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to update subscription'; }
+  },
+
+  // ─── Workouts ──────────────────────────────────────────────────────────────
+  async getWorkouts(params = {}) {
+    try {
+      const r = await api.get('/admin/workouts', { params });
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch workouts'; }
+  },
+  async createWorkout(data) {
+    try {
+      const r = await api.post('/admin/workouts', data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to create workout'; }
+  },
+  async updateWorkout(id, data) {
+    try {
+      const r = await api.put(`/admin/workouts/${id}`, data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to update workout'; }
+  },
+  async deleteWorkout(id) {
+    try {
+      const r = await api.delete(`/admin/workouts/${id}`);
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to delete workout'; }
+  },
+
+  // ─── Routines ──────────────────────────────────────────────────────────────
+  async getRoutines(params = {}) {
+    try {
+      const r = await api.get('/admin/routines', { params });
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch routines'; }
+  },
+  async createRoutine(data) {
+    try {
+      const r = await api.post('/admin/routines', data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to create routine'; }
+  },
+  async updateRoutine(id, data) {
+    try {
+      const r = await api.put(`/admin/routines/${id}`, data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to update routine'; }
+  },
+  async deleteRoutine(id) {
+    try {
+      const r = await api.delete(`/admin/routines/${id}`);
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to delete routine'; }
+  },
+
+  // ─── Muscle Exercises ──────────────────────────────────────────────────────
+  /** Get all muscle groups with their exercises (admin) */
+  async getMuscleExercises() {
+    try {
+      const r = await api.get('/admin/muscle-exercises');
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch muscle exercises'; }
+  },
+
+  /** Get one muscle group by muscleId */
+  async getOneMuscle(muscleId) {
+    try {
+      const r = await api.get(`/admin/muscle-exercises/${muscleId}`);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch muscle'; }
+  },
+
+  /**
+   * Update video URLs for a specific exercise + gender.
+   * gender: 'male' | 'female' | 'both'
+   */
+  async updateExerciseVideos(muscleId, exerciseId, { gender, front, side }) {
+    try {
+      const r = await api.put(
+        `/admin/muscle-exercises/${muscleId}/exercises/${exerciseId}/videos`,
+        { gender, front, side }
+      );
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to update videos'; }
+  },
+
+  /** Toggle isActive on an exercise */
+  async toggleExerciseActive(muscleId, exerciseId, isActive) {
+    try {
+      const r = await api.put(
+        `/admin/muscle-exercises/${muscleId}/exercises/${exerciseId}/active`,
+        { isActive }
+      );
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to toggle exercise'; }
+  },
 };

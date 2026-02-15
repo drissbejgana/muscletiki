@@ -28,7 +28,6 @@ import WorkoutDetail from "./pages/WorkoutDetail";
 const queryClient = new QueryClient();
 
 const App = () => (
-
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -36,154 +35,86 @@ const App = () => (
 
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Layout>
-                <Index />
-              </Layout>
-            }
-          />
+          <Route path="/" element={<Layout><Index /></Layout>} />
 
-          <Route
-            path="/muscle/:muscle"
-            element={
-              <Layout>
-                <MuscleTutorials />
-              </Layout>
-            }
-          />
-          <Route
-            path="/articles"
-            element={
-              <Layout>
-                <Articles />
-              </Layout>
-            }
-          />
-        <Route
-            path="/test"
-            element={
-              <Layout>
-                <FemalBodyBack
-                  />
-              </Layout>
-            }
-          />
-          <Route
-            path="/routines"
-            element={
-              <Layout>
-                <Routines />
-              </Layout>
-            }
-          />
-            <Route
-            path="/calorie_calculator"
-            element={
-              <Layout>
-                <CalorieCalculator />
-              </Layout>
-            }
-          />
+          <Route path="/muscle/:muscle" element={<Layout><MuscleTutorials /></Layout>} />
+
+          <Route path="/articles" element={<Layout><Articles /></Layout>} />
+
+          <Route path="/test" element={<Layout><FemalBodyBack /></Layout>} />
+
+          <Route path="/routines" element={<Layout><Routines /></Layout>} />
+
+          <Route path="/calorie_calculator" element={<Layout><CalorieCalculator /></Layout>} />
 
           <Route
             path="/one_rep_max_tool"
             element={
               <ProtectedRoute requiredPlan="pro">
-              <Layout>
-                <OneRMCalculator />
-              </Layout>
-               </ProtectedRoute>
+                <Layout><OneRMCalculator /></Layout>
+              </ProtectedRoute>
             }
           />
 
-                              <Route
+          <Route
             path="/macro_calculator"
             element={
               <ProtectedRoute requiredPlan="pro">
-              <Layout>
-                <MacroCalculator />
-              </Layout>
+                <Layout><MacroCalculator /></Layout>
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/auth"
-            element={
-              <Layout>
-                <AuthPages />
-              </Layout>
-            }
-          />
 
-          <Route
-            path="/subscription"
-            element={
-              <Layout>
-                <SubscriptionPlans />
-              </Layout>
-            }
-          />
+          <Route path="/auth" element={<Layout><AuthPages /></Layout>} />
 
-         <Route
-            path="/profile"
-            element={
-              <Layout>
-                <Profile />
-              </Layout>
-            }
-          />
+          <Route path="/subscription" element={<Layout><SubscriptionPlans /></Layout>} />
 
+          <Route path="/profile" element={<Layout><Profile /></Layout>} />
+
+          {/* Admin route — only accessible to users with role === 'admin' */}
           <Route
             path="/admin"
             element={
-              <Layout>
-                <AdminDashboard />
-              </Layout>
+              <ProtectedRoute adminOnly={true}>
+                <Layout><AdminDashboard /></Layout>
+              </ProtectedRoute>
             }
           />
 
-            <Route
-              path="/subscription/success"
-              element={
-                <Layout>
-                  <SubscriptionSuccess/>
-                </Layout>
-              }
-            />
+          <Route path="/subscription/success" element={<Layout><SubscriptionSuccess /></Layout>} />
 
-            <Route path="/workout" element={
+          <Route
+            path="/workout"
+            element={
               <ProtectedRoute requiredPlan="pro">
-                <Layout>
-                    <WorkoutPrograms />
-                </Layout>
+                <Layout><WorkoutPrograms /></Layout>
               </ProtectedRoute>
-            } />
+            }
+          />
 
-            <Route path="/workouts/:id" element={
+          <Route
+            path="/workouts/:id"
+            element={
               <ProtectedRoute requiredPlan="pro">
-                <Layout>
-                    <WorkoutDetail />
-                </Layout>
+                <Layout><WorkoutDetail /></Layout>
               </ProtectedRoute>
-            } />
+            }
+          />
 
-
-            <Route path="/training" element={
+          <Route
+            path="/training"
+            element={
               <ProtectedRoute requiredPlan="pro">
-                <Layout>
-                    <TrainingLog />
-                </Layout>
+                <Layout><TrainingLog /></Layout>
               </ProtectedRoute>
-            } />
+            }
+          />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
-
 );
 
 export default App;
