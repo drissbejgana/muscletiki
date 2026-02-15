@@ -1,5 +1,3 @@
-import { muscles } from "@/lib/data";
-import { musclesf } from "@/lib/dataf";
 import React, { useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,17 +6,32 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import MyContext from "@/contexts/MyContext";
 import { useTranslation } from "@/i18n";
+import { getMuscles } from '@/lib/musclesData';
 
 const MuscleTutorials = () => {
   const { muscle } = useParams();
-  const { homme } = useContext(MyContext);
+  const { homme } = useContext(MyContext); 
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
 
-  const isVideo = (url) => { if (!url) return false; const ext = url.split('.').pop()?.toLowerCase(); return ["mp4", "webm", "ogg"].includes(ext); };
-  const isGif = (url) => { if (!url) return false; return url.split('.').pop()?.toLowerCase() === "gif"; };
+  // ✅ homme=true → male, homme=false → female
+  const gender = !homme ? 'male' : 'female';
 
-  const muscleDetails = homme ? musclesf.find((m) => m.name === muscle) : muscles.find((m) => m.name === muscle);
+  // ✅ Always get both languages so we can match URL param regardless of lang
+  const musclesEN = getMuscles('en', gender);
+  const musclesCurrent = getMuscles(lang, gender);
+
+  const isVideo = (url: string) => {
+    if (!url) return false;
+    const ext = url.split('.').pop()?.toLowerCase();
+    return ["mp4", "webm", "ogg"].includes(ext ?? '');
+  };
+
+  // ✅ Find by English name (URL always uses EN name) then get translated version
+  const enIndex = musclesEN.findIndex(
+    (m) => m.name.toLowerCase() === decodeURIComponent(muscle ?? '').toLowerCase()
+  );
+  const muscleDetails = enIndex !== -1 ? musclesCurrent[enIndex] : undefined;
 
   if (!muscleDetails) {
     return (
@@ -38,10 +51,16 @@ const MuscleTutorials = () => {
     );
   }
 
+  // ✅ Difficulty colors support both EN and FR labels
   const difficultyColors: Record<string, string> = {
-    Beginner: "bg-green-500/20 text-green-400 border-green-500/50",
+    // English
+    Beginner:     "bg-green-500/20 text-green-400 border-green-500/50",
     Intermediate: "bg-orange-500/20 text-orange-400 border-orange-500/50",
-    Expert: "bg-red-500/20 text-red-400 border-red-500/50",
+    Advanced:     "bg-red-500/20 text-red-400 border-red-500/50",
+    // French
+    Débutant:     "bg-green-500/20 text-green-400 border-green-500/50",
+    Intermédiaire:"bg-orange-500/20 text-orange-400 border-orange-500/50",
+    Avancé:       "bg-red-500/20 text-red-400 border-red-500/50",
   };
 
   const count = muscleDetails.exercises.length;
@@ -50,7 +69,11 @@ const MuscleTutorials = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card/50 backdrop-blur-xl sticky top-0 z-50">
         <div className="container mx-auto flex items-center justify-between py-4 px-4">
-          <Button variant="ghost" onClick={() => navigate("/")} className="transition-all duration-300 hover:scale-105">
+          <Button
+            variant="ghost"
+            onClick={() => navigate("/")}
+            className="transition-all duration-300 hover:scale-105"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />{t('common.back')}
           </Button>
         </div>
@@ -61,10 +84,15 @@ const MuscleTutorials = () => {
         <div className="container mx-auto px-4 py-12 relative">
           <div className="flex items-center gap-4 mb-2">
             <Dumbbell className="h-10 w-10 text-primary" />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">{muscleDetails.name}</h1>
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              {muscleDetails.name}
+            </h1>
           </div>
           <p className="text-muted-foreground text-lg">
-            {count} {count > 1 ? t('muscle.exerciseCount_other', { count: String(count) }).replace(`${count} `, '') : t('muscle.exerciseCount_one', { count: String(count) }).replace(`${count} `, '')}
+            {count} {count > 1
+              ? t('muscle.exerciseCount_other', { count: String(count) }).replace(`${count} `, '')
+              : t('muscle.exerciseCount_one', { count: String(count) }).replace(`${count} `, '')
+            }
           </p>
         </div>
       </section>
@@ -72,26 +100,62 @@ const MuscleTutorials = () => {
       <section className="container mx-auto px-4 pb-16">
         <div className="grid grid-cols-1 gap-8">
           {muscleDetails.exercises.map((ex, index) => (
-            <Card key={ex.id} className="group bg-gradient-card border-border shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden hover:scale-[1.02]" style={{ animationDelay: `${index * 100}ms` }}>
+            <Card
+              key={ex.id}
+              className="group bg-gradient-card border-border shadow-xl hover:shadow-2xl transition-all duration-500 overflow-hidden hover:scale-[1.02]"
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="relative">
                 <div className="flex items-start justify-between flex-wrap gap-4">
                   <div className="space-y-2">
-                    <CardTitle className="text-3xl font-bold group-hover:text-primary transition-colors duration-300">{ex.name}</CardTitle>
+                    <CardTitle className="text-3xl font-bold group-hover:text-primary transition-colors duration-300">
+                      {ex.name}
+                    </CardTitle>
                     <CardDescription className="text-base">{t('muscle.masterExercise')}</CardDescription>
                   </div>
-                  <Badge variant="outline" className={`${difficultyColors[ex.difficulty] || 'bg-muted'} text-sm px-4 py-1 font-semibold border`}>{ex.difficulty}</Badge>
+                  <Badge
+                    variant="outline"
+                    className={`${difficultyColors[ex.difficulty] ?? 'bg-muted'} text-sm px-4 py-1 font-semibold border`}
+                  >
+                    {ex.difficulty}
+                  </Badge>
                 </div>
               </CardHeader>
+
               <CardContent className="relative">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
-                  {[{ url: ex.images.front, label: t('muscle.frontView') }, { url: ex.images.side, label: t('muscle.sideView') }].map(({ url, label }, i) => (
-                    <div key={i} className="relative overflow-hidden rounded-xl border border-border/50 bg-muted/30 group/img">
-                      {isVideo(url) ? (<video src={url} className="w-full h-auto" autoPlay loop muted playsInline />) : (<img src={url} className="w-full h-auto transition-transform duration-500 group-hover/img:scale-110" alt={label} />)}
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent p-4"><p className="text-sm font-semibold text-foreground">{label}</p></div>
+                  {[
+                    { url: ex.images.front, label: t('muscle.frontView') },
+                    { url: ex.images.side,  label: t('muscle.sideView')  },
+                  ].map(({ url, label }, i) => (
+                    <div
+                      key={i}
+                      className="relative overflow-hidden rounded-xl border border-border/50 bg-muted/30 group/img"
+                    >
+                      {isVideo(url) ? (
+                        <video
+                          src={url}
+                          className="w-full h-auto"
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                        />
+                      ) : (
+                        <img
+                          src={url}
+                          className="w-full h-auto transition-transform duration-500 group-hover/img:scale-110"
+                          alt={label}
+                        />
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent p-4">
+                        <p className="text-sm font-semibold text-foreground">{label}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
+
                 <div className="space-y-4 mt-8">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
@@ -100,8 +164,13 @@ const MuscleTutorials = () => {
                   </div>
                   <ol className="space-y-4">
                     {ex.steps.map((step, idx) => (
-                      <li key={idx} className="flex gap-4 p-4 rounded-lg bg-muted/30 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:bg-muted/50">
-                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold text-sm">{idx + 1}</span>
+                      <li
+                        key={idx}
+                        className="flex gap-4 p-4 rounded-lg bg-muted/30 border border-border/50 hover:border-primary/50 transition-all duration-300 hover:bg-muted/50"
+                      >
+                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center text-white font-bold text-sm">
+                          {idx + 1}
+                        </span>
                         <span className="text-foreground/90 leading-relaxed pt-0.5">{step}</span>
                       </li>
                     ))}
@@ -118,7 +187,9 @@ const MuscleTutorials = () => {
           <div className="text-center space-y-6">
             <p className="text-muted-foreground text-sm">{t('footer.rights')}</p>
             <div className="pt-6 border-t border-border/50">
-              <p className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">{t('footer.simplify')}</p>
+              <p className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                {t('footer.simplify')}
+              </p>
             </div>
           </div>
         </div>
