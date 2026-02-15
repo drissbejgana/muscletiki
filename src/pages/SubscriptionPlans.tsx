@@ -95,22 +95,26 @@ const SubscriptionPlans = () => {
   };
 
   const getButtonText = (plan: typeof plans[0]) => {
-    if (plan.id === 'free') {
-      return currentPlan === 'free' || isExpired ? t('subscription.currentPlan') : t('subscription.getStarted');
+    if (!isExpired && currentPlan === 'premium') {
+      const cycle = user?.subscription?.billingCycle;
+      const matchesCycle = (plan.id === 'premium_5day' && cycle === '5day') ||
+                          (plan.id === 'premium_annual' && cycle === 'yearly');
+      if (matchesCycle) return t('subscription.currentPlan');
     }
-    if (loading === plan.id) return t('subscription.processing');
-    // If user has active matching plan
-    if (!isExpired && currentPlan === 'pro' && plan.id.startsWith('premium')) return t('subscription.currentPlan');
-    if (!isExpired && currentPlan === 'premium' && plan.id.startsWith('premium')) return t('subscription.currentPlan');
-    return t('subscription.subscribe');
   };
 
-  const isCurrentPlan = (plan: typeof plans[0]) => {
+const isCurrentPlan = (plan: typeof plans[0]) => {
     if (isExpired) return plan.id === 'free';
     if (plan.id === 'free') return currentPlan === 'free';
-    return (currentPlan === 'pro' || currentPlan === 'premium') && plan.id.startsWith('premium');
+    if (currentPlan !== 'premium') return false;
+    
+    const cycle = user?.subscription?.billingCycle;
+    if (plan.id === 'premium_5day') return cycle === '5day';
+    if (plan.id === 'premium_annual') return cycle === 'yearly';
+    return false;
   };
 
+  
   const getDaysRemaining = () => {
     if (!user?.subscription?.endDate) return null;
     const end = new Date(user.subscription.endDate);
