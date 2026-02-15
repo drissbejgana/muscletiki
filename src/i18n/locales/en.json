@@ -128,7 +128,7 @@
     "expiredStatus": "Expired",
     "expiredOn": "Expired on",
     "expiresOn": "Expires on",
-    "expiringAlert": "Your subscription expires in {days} days!",
+    "expiringAlert": "Your subscription expires in {{days}} days!",
     "renewSubscription": "Renew Subscription"
   },
   "subscription": {
@@ -174,7 +174,7 @@
     "bestValue": "Best Value",
     "currentPlan": "Current Plan",
     "processing": "Processing...",
-    "daysRemaining": "{days} days remaining",
+    "daysRemaining": "{{days}} days remaining",
     "expired": "Your subscription has expired"
   },
   "subscriptionSuccess": {

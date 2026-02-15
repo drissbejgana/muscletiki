@@ -113,6 +113,33 @@ export const adminService = {
   },
 
   /**
+   * Add a new exercise to a muscle group.
+   * data: { exerciseId, name:{en,fr}, difficulty, videos:{male,female}, steps:{en,fr} }
+   */
+  async addExercise(muscleId, data) {
+    try {
+      const r = await api.post(`/admin/muscle-exercises/${muscleId}/exercises`, data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to add exercise'; }
+  },
+
+  /** Update all fields of an existing exercise */
+  async updateExercise(muscleId, exerciseId, data) {
+    try {
+      const r = await api.put(`/admin/muscle-exercises/${muscleId}/exercises/${exerciseId}`, data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to update exercise'; }
+  },
+
+  /** Permanently delete an exercise from a muscle group */
+  async deleteExercise(muscleId, exerciseId) {
+    try {
+      const r = await api.delete(`/admin/muscle-exercises/${muscleId}/exercises/${exerciseId}`);
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to delete exercise'; }
+  },
+
+  /**
    * Update video URLs for a specific exercise + gender.
    * gender: 'male' | 'female' | 'both'
    */

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -176,6 +176,121 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
 // ─────────────────────────────────────────────────────────────────────────────
 // MAIN DASHBOARD
 // ─────────────────────────────────────────────────────────────────────────────
+
+// ─── ExercisePicker ───────────────────────────────────────────────────────────
+// Inline searchable popover: shows all DB exercises, lets admin click to select
+interface FlatExercise {
+  exerciseId: number;
+  muscleName: string;
+  name:       string; // en
+}
+
+const ExercisePicker = ({
+  value,
+  onChange,
+  allExercises,
+}: {
+  value: number | null;
+  onChange: (ex: FlatExercise) => void;
+  allExercises: FlatExercise[];
+}) => {
+  const [open, setOpen]       = useState(false);
+  const [query, setQuery]     = useState("");
+  const containerRef          = useRef<HTMLDivElement>(null);
+  const inputRef              = useRef<HTMLInputElement>(null);
+
+  // Close on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase().trim();
+    if (!q) return allExercises.slice(0, 60); // show first 60 when no query
+    return allExercises.filter(
+      (ex) =>
+        ex.name.toLowerCase().includes(q) ||
+        ex.muscleName.toLowerCase().includes(q) ||
+        String(ex.exerciseId).includes(q)
+    ).slice(0, 60);
+  }, [query, allExercises]);
+
+  const selected = value ? allExercises.find((ex) => ex.exerciseId === value) : null;
+
+  return (
+    <div ref={containerRef} className="relative w-full">
+      {/* Trigger button */}
+      <button
+        type="button"
+        onClick={() => { setOpen((o) => !o); setTimeout(() => inputRef.current?.focus(), 50); }}
+        className="w-full flex items-center justify-between gap-2 px-3 py-2 text-sm rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors text-left"
+      >
+        {selected ? (
+          <span className="truncate">
+            <span className="font-medium">{selected.name}</span>
+            <span className="text-muted-foreground ml-1 text-xs">#{selected.exerciseId} · {selected.muscleName}</span>
+          </span>
+        ) : allExercises.length === 0 ? (
+          <span className="text-muted-foreground flex items-center gap-1.5">
+            <svg className="h-3 w-3 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+            Loading exercises…
+          </span>
+        ) : (
+          <span className="text-muted-foreground">Search exercise…</span>
+        )}
+        <svg className="h-4 w-4 shrink-0 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+      </button>
+
+      {/* Dropdown */}
+      {open && (
+        <div className="absolute z-50 mt-1 w-full min-w-[280px] rounded-md border bg-popover shadow-lg overflow-hidden">
+          {/* Search input */}
+          <div className="flex items-center gap-2 px-3 py-2 border-b bg-muted/30">
+            <svg className="h-4 w-4 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by name, muscle or ID…"
+              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+            />
+            {query && (
+              <button onClick={() => setQuery("")} className="text-muted-foreground hover:text-foreground">
+                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            )}
+          </div>
+
+          {/* Results list */}
+          <div className="max-h-56 overflow-y-auto">
+            {filtered.length === 0 ? (
+              <p className="py-6 text-center text-sm text-muted-foreground">No exercises found.</p>
+            ) : (
+              filtered.map((ex) => (
+                <button
+                  key={ex.exerciseId}
+                  type="button"
+                  onClick={() => { onChange(ex); setOpen(false); setQuery(""); }}
+                  className={`w-full flex items-center justify-between gap-3 px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors text-left ${value === ex.exerciseId ? "bg-primary/10 text-primary font-medium" : ""}`}
+                >
+                  <span className="truncate">{ex.name}</span>
+                  <span className="text-xs text-muted-foreground shrink-0">#{ex.exerciseId} · {ex.muscleName}</span>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const AdminDashboard = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("overview");
@@ -227,7 +342,22 @@ const AdminDashboard = () => {
   const [musclesError, setMusclesError]   = useState<any>(null);
   const [muscleSearch, setMuscleSearch]   = useState("");
   const [expandedMuscles, setExpandedMuscles] = useState<Set<number>>(new Set());
-  const [togglingEx, setTogglingEx]       = useState<string | null>(null); // "muscleId-exId"
+  const [togglingEx, setTogglingEx]       = useState<string | null>(null);
+  // Flat list of all exercises for the ExercisePicker (populated when muscles load)
+  const [allExercises, setAllExercises]   = useState<FlatExercise[]>([]);
+
+  // Add / Edit exercise modal
+  const emptyExForm = {
+    exerciseId: "", name: { en: "", fr: "" }, difficulty: "Beginner",
+    videos: { male: { front: "", side: "" }, female: { front: "", side: "" } },
+    steps: { en: "", fr: "" },
+  };
+  const [exModal, setExModal]                 = useState(false);
+  const [exModalMuscle, setExModalMuscle]     = useState<any>(null);
+  const [editingExercise, setEditingExercise] = useState<any>(null);
+  const [exForm, setExForm]                   = useState<any>(emptyExForm);
+  const [exSaving, setExSaving]               = useState(false);
+  const [exError, setExError]                 = useState<string | null>(null);
 
   // ─── Fetchers ───────────────────────────────────────────────────────────────
   const fetchStats = useCallback(async () => {
@@ -260,16 +390,28 @@ const AdminDashboard = () => {
 
   const fetchMuscles = useCallback(async () => {
     setMusclesLoading(true); setMusclesError(null);
-    try { setMuscles(await adminService.getMuscleExercises()); }
+    try {
+      const data = await adminService.getMuscleExercises();
+      setMuscles(data);
+      // Build flat list for ExercisePicker
+      const flat: FlatExercise[] = [];
+      (data || []).forEach((m: any) => {
+        (m.exercises || []).forEach((ex: any) => {
+          flat.push({ exerciseId: ex.exerciseId, muscleName: m.name?.en || "", name: ex.name?.en || "" });
+        });
+      });
+      flat.sort((a, b) => a.name.localeCompare(b.name));
+      setAllExercises(flat);
+    }
     catch (e) { setMusclesError(e); }
     finally { setMusclesLoading(false); }
   }, []);
 
   useEffect(() => { fetchStats(); }, [fetchStats]);
+  useEffect(() => { fetchMuscles(); }, [fetchMuscles]); // always load — needed by workout exercise picker
   useEffect(() => { if (activeTab === "subscriptions") fetchSubs(); }, [activeTab, fetchSubs]);
   useEffect(() => { if (activeTab === "workouts")      fetchWorkouts(); }, [activeTab, fetchWorkouts]);
   useEffect(() => { if (activeTab === "routines")      fetchRoutines(); }, [activeTab, fetchRoutines]);
-  useEffect(() => { if (activeTab === "videos")        fetchMuscles(); }, [activeTab, fetchMuscles]);
 
   // ─── Subscription handlers ──────────────────────────────────────────────────
   const openEditSub = (sub: any) => {
@@ -368,6 +510,68 @@ const AdminDashboard = () => {
       }));
     } catch (e) { alert(e); }
     finally { setTogglingEx(null); }
+  };
+
+  // ─── Exercise modal handlers ────────────────────────────────────────────────
+  const openAddExercise = (muscle: any) => {
+    setExModalMuscle(muscle);
+    setEditingExercise(null);
+    setExForm({ ...emptyExForm, exerciseId: "" });
+    setExError(null);
+    setExModal(true);
+  };
+
+  const openEditExercise = (muscle: any, ex: any) => {
+    setExModalMuscle(muscle);
+    setEditingExercise(ex);
+    setExForm({
+      exerciseId: ex.exerciseId,
+      name: { en: ex.name?.en || "", fr: ex.name?.fr || "" },
+      difficulty: ex.difficulty || "Beginner",
+      videos: {
+        male:   { front: ex.videos?.male?.front   || "", side: ex.videos?.male?.side   || "" },
+        female: { front: ex.videos?.female?.front || "", side: ex.videos?.female?.side || "" },
+      },
+      steps: {
+        en: (ex.steps?.en || []).join("\n"),
+        fr: (ex.steps?.fr || []).join("\n"),
+      },
+    });
+    setExError(null);
+    setExModal(true);
+  };
+
+  const saveExercise = async () => {
+    if (!exModalMuscle) return;
+    setExSaving(true); setExError(null);
+    try {
+      const payload = {
+        exerciseId: Number(exForm.exerciseId),
+        name:       exForm.name,
+        difficulty: exForm.difficulty,
+        videos:     exForm.videos,
+        steps: {
+          en: exForm.steps.en.split("\n").map((s: string) => s.trim()).filter(Boolean),
+          fr: exForm.steps.fr.split("\n").map((s: string) => s.trim()).filter(Boolean),
+        },
+      };
+      if (editingExercise) {
+        await adminService.updateExercise(exModalMuscle.muscleId, editingExercise.exerciseId, payload);
+      } else {
+        await adminService.addExercise(exModalMuscle.muscleId, payload);
+      }
+      setExModal(false);
+      await fetchMuscles();
+    } catch (e: any) { setExError(String(e)); }
+    finally { setExSaving(false); }
+  };
+
+  const handleDeleteExercise = async (muscleId: number, exerciseId: number, name: string) => {
+    if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
+    try {
+      await adminService.deleteExercise(muscleId, exerciseId);
+      await fetchMuscles();
+    } catch (e: any) { alert(e); }
   };
 
   const filteredMuscles = muscles.filter(m =>
@@ -623,6 +827,9 @@ const AdminDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Muscle Tutorial Videos</CardTitle>
+                <CardDescription>
+                  Browse every muscle group. Expand to see exercises, add new ones, and edit their male/female video URLs.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex gap-3 mb-5">
@@ -639,17 +846,18 @@ const AdminDashboard = () => {
                   <div className="text-center py-16 space-y-3">
                     <Video className="h-10 w-10 text-gray-300 mx-auto" />
                     <p className="text-gray-500">No muscle data in database.</p>
-                    <p className="text-sm text-gray-400">Run <code className="bg-gray-100 px-1 rounded">node scripts/seedMuscleExercises.js</code> to populate it.</p>
+                    <p className="text-sm text-gray-400">The database will be seeded automatically on next server start.</p>
                   </div>
                 )}
 
                 <div className="space-y-2">
                   {filteredMuscles.map(muscle => {
-                    const isOpen = expandedMuscles.has(muscle.muscleId);
-                    const totalEx   = muscle.exercises?.length || 0;
-                    const activeEx  = muscle.exercises?.filter((e: any) => e.isActive).length || 0;
+                    const isOpen   = expandedMuscles.has(muscle.muscleId);
+                    const totalEx  = muscle.exercises?.length || 0;
+                    const activeEx = muscle.exercises?.filter((e: any) => e.isActive).length || 0;
                     return (
                       <Collapsible key={muscle.muscleId} open={isOpen} onOpenChange={() => toggleMuscleOpen(muscle.muscleId)}>
+                        {/* ── Muscle group header ── */}
                         <CollapsibleTrigger asChild>
                           <button className="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-white border border-border hover:bg-gray-50 transition-colors text-left">
                             <div className="flex items-center gap-3">
@@ -664,64 +872,98 @@ const AdminDashboard = () => {
                           </button>
                         </CollapsibleTrigger>
 
+                        {/* ── Exercises list ── */}
                         <CollapsibleContent>
-                          <div className="ml-4 mt-1 space-y-2 pb-2">
-                            {totalEx === 0 ? (
-                              <p className="text-xs text-gray-400 px-4 py-2">No exercises in this muscle group.</p>
-                            ) : muscle.exercises.map((ex: any) => {
-                              const key = `${muscle.muscleId}-${ex.exerciseId}`;
+                          <div className="ml-4 mt-1 space-y-2 pb-3">
+
+                            {totalEx === 0 && (
+                              <p className="text-xs text-gray-400 px-4 py-2 italic">No exercises yet.</p>
+                            )}
+
+                            {muscle.exercises?.map((ex: any) => {
+                              const key        = `${muscle.muscleId}-${ex.exerciseId}`;
                               const isToggling = togglingEx === key;
+                              const mF = ex.videos?.male?.front;
+                              const mS = ex.videos?.male?.side;
+                              const fF = ex.videos?.female?.front;
+                              const fS = ex.videos?.female?.side;
                               return (
-                                <div key={ex.exerciseId} className={`rounded-lg border p-3 ${ex.isActive ? "bg-white border-border" : "bg-gray-50 border-dashed border-gray-200 opacity-60"}`}>
+                                <div key={ex.exerciseId} className={`rounded-lg border p-3 transition-opacity ${ex.isActive ? "bg-white border-border" : "bg-gray-50 border-dashed border-gray-200 opacity-60"}`}>
                                   <div className="flex items-start justify-between gap-2">
+
+                                    {/* Left: exercise info */}
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2 flex-wrap">
                                         <span className="font-medium text-sm">{ex.name?.en}</span>
                                         <span className="text-xs text-gray-400">/ {ex.name?.fr}</span>
-                                        <Badge className={`text-xs ${diffColor[ex.difficulty] || "bg-gray-100 text-gray-600"}`}>
-                                          {ex.difficulty}
-                                        </Badge>
+                                        <Badge className={`text-xs ${diffColor[ex.difficulty] || "bg-gray-100 text-gray-600"}`}>{ex.difficulty}</Badge>
                                         <span className="text-xs text-gray-400">ID: {ex.exerciseId}</span>
                                       </div>
 
-                                      {/* Video status summary */}
-                                      <div className="flex gap-3 mt-1 text-xs text-gray-500">
-                                        {(["male","female"] as const).map(g => {
-                                          const f = ex.videos?.[g]?.front;
-                                          const s = ex.videos?.[g]?.side;
-                                          return (
-                                            <span key={g} className={`capitalize flex items-center gap-1 ${f||s ? "text-green-600" : "text-gray-400"}`}>
-                                              {g}: {f ? "front✓" : "front✗"} {s ? "side✓" : "side✗"}
-                                            </span>
-                                          );
-                                        })}
-                                        {ex.updatedAt && <span className="text-gray-400">· updated {formatDate(ex.updatedAt)}</span>}
+                                      {/* Video status pills */}
+                                      <div className="flex gap-2 mt-1.5 flex-wrap">
+                                        {([["male", mF, mS], ["female", fF, fS]] as [string,string,string][]).map(([g, front, side]) => (
+                                          <span key={g} className={`text-xs px-2 py-0.5 rounded-full border capitalize ${front||side ? "border-green-200 bg-green-50 text-green-700" : "border-gray-200 text-gray-400"}`}>
+                                            {g}: {front ? "front✓" : "front✗"} {side ? "side✓" : "side✗"}
+                                          </span>
+                                        ))}
                                       </div>
 
-                                      {/* Per-gender edit buttons */}
+                                      {/* Video edit buttons (male / female) */}
                                       <VideoEditor muscleId={muscle.muscleId} exercise={ex} onSaved={fetchMuscles} />
                                     </div>
 
-                                    {/* Toggle active */}
-                                    <button
-                                      disabled={isToggling}
-                                      onClick={() => handleToggleExercise(muscle.muscleId, ex.exerciseId, !ex.isActive)}
-                                      className={`shrink-0 flex items-center gap-1 px-2 py-1 rounded text-xs border transition-colors ${
-                                        ex.isActive
-                                          ? "border-green-300 text-green-700 bg-green-50 hover:bg-green-100"
-                                          : "border-gray-200 text-gray-500 bg-white hover:bg-gray-50"
-                                      }`}
-                                      title={ex.isActive ? "Click to hide from users" : "Click to show to users"}
-                                    >
-                                      {isToggling
-                                        ? <Loader2 className="h-3 w-3 animate-spin" />
-                                        : ex.isActive ? <><Eye className="h-3 w-3" /> Visible</> : <><EyeOff className="h-3 w-3" /> Hidden</>
-                                      }
-                                    </button>
+                                    {/* Right: actions */}
+                                    <div className="flex flex-col gap-1 shrink-0">
+                                      {/* Edit full exercise */}
+                                      <button
+                                        onClick={() => openEditExercise(muscle, ex)}
+                                        className="flex items-center gap-1 px-2 py-1 rounded text-xs border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                                        title="Edit this exercise"
+                                      >
+                                        <Pencil className="h-3 w-3" /> Edit
+                                      </button>
+
+                                      {/* Toggle visible */}
+                                      <button
+                                        disabled={isToggling}
+                                        onClick={() => handleToggleExercise(muscle.muscleId, ex.exerciseId, !ex.isActive)}
+                                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs border transition-colors ${
+                                          ex.isActive
+                                            ? "border-green-300 text-green-700 bg-green-50 hover:bg-green-100"
+                                            : "border-gray-200 text-gray-500 bg-white hover:bg-gray-50"
+                                        }`}
+                                      >
+                                        {isToggling
+                                          ? <Loader2 className="h-3 w-3 animate-spin" />
+                                          : ex.isActive
+                                            ? <><Eye className="h-3 w-3" /> Visible</>
+                                            : <><EyeOff className="h-3 w-3" /> Hidden</>
+                                        }
+                                      </button>
+
+                                      {/* Delete */}
+                                      <button
+                                        onClick={() => handleDeleteExercise(muscle.muscleId, ex.exerciseId, ex.name?.en)}
+                                        className="flex items-center gap-1 px-2 py-1 rounded text-xs border border-red-200 text-red-500 hover:bg-red-50 transition-colors"
+                                        title="Delete exercise"
+                                      >
+                                        <Trash2 className="h-3 w-3" /> Delete
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                               );
                             })}
+
+                            {/* ── Add Exercise button ── */}
+                            <button
+                              onClick={() => openAddExercise(muscle)}
+                              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 border-dashed border-primary/30 text-primary/70 hover:border-primary/60 hover:text-primary hover:bg-primary/5 transition-colors text-sm font-medium"
+                            >
+                              <Plus className="h-4 w-4" />
+                              Add Exercise to {muscle.name?.en}
+                            </button>
                           </div>
                         </CollapsibleContent>
                       </Collapsible>
@@ -799,21 +1041,74 @@ const AdminDashboard = () => {
             </div>
 
             {/* Exercises section */}
-            <div className="md:col-span-2 space-y-2">
-              <Label>Exercises <span className="text-xs text-muted-foreground">(each can reference a muscleExerciseId for video linking)</span></Label>
-              {(workoutForm.exercises || []).map((ex: any, i: number) => (
-                <div key={i} className="grid grid-cols-12 gap-2 p-3 rounded-lg border bg-muted/30 text-sm">
-                  <div className="col-span-4"><Input placeholder="Name" value={ex.name} onChange={e => { const arr = [...workoutForm.exercises]; arr[i] = { ...arr[i], name: e.target.value }; setWorkoutForm((p: any) => ({ ...p, exercises: arr })); }} /></div>
-                  <div className="col-span-2"><Input type="number" placeholder="Sets" value={ex.sets || ""} onChange={e => { const arr = [...workoutForm.exercises]; arr[i] = { ...arr[i], sets: Number(e.target.value) }; setWorkoutForm((p: any) => ({ ...p, exercises: arr })); }} /></div>
-                  <div className="col-span-2"><Input placeholder="Reps" value={ex.reps || ""} onChange={e => { const arr = [...workoutForm.exercises]; arr[i] = { ...arr[i], reps: e.target.value }; setWorkoutForm((p: any) => ({ ...p, exercises: arr })); }} /></div>
-                  <div className="col-span-2"><Input type="number" placeholder="ExID" title="Exercise ID from musclesData" value={ex.muscleExerciseId || ""} onChange={e => { const arr = [...workoutForm.exercises]; arr[i] = { ...arr[i], muscleExerciseId: Number(e.target.value) }; setWorkoutForm((p: any) => ({ ...p, exercises: arr })); }} /></div>
-                  <div className="col-span-2 flex justify-end"><Button variant="ghost" size="icon" className="text-red-500" onClick={() => { const arr = workoutForm.exercises.filter((_: any, j: number) => j !== i); setWorkoutForm((p: any) => ({ ...p, exercises: arr })); }}><Trash2 className="h-4 w-4" /></Button></div>
-                </div>
-              ))}
-              <Button variant="outline" size="sm" onClick={() => setWorkoutForm((p: any) => ({ ...p, exercises: [...(p.exercises || []), { name: "", sets: 3, reps: "10", muscleExerciseId: null }] }))}>
+            <div className="md:col-span-2 space-y-3">
+              <Label>Exercises</Label>
+
+              {(workoutForm.exercises || []).map((ex: any, i: number) => {
+                const updateEx = (patch: any) => {
+                  const arr = [...workoutForm.exercises];
+                  arr[i] = { ...arr[i], ...patch };
+                  setWorkoutForm((p: any) => ({ ...p, exercises: arr }));
+                };
+                return (
+                  <div key={i} className="rounded-lg border bg-muted/20 p-3 space-y-2">
+                    {/* Row 1: Sets + Reps + Delete */}
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        placeholder="Sets"
+                        value={ex.sets || ""}
+                        onChange={e => updateEx({ sets: Number(e.target.value) })}
+                        className="w-20 text-center"
+                      />
+                      <span className="text-muted-foreground text-xs">×</span>
+                      <Input
+                        placeholder="Reps"
+                        value={ex.reps || ""}
+                        onChange={e => updateEx({ reps: e.target.value })}
+                        className="w-24 text-center"
+                      />
+                      <span className="text-xs text-muted-foreground flex-1 pl-1">sets × reps</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="text-red-500 shrink-0"
+                        onClick={() => {
+                          const arr = workoutForm.exercises.filter((_: any, j: number) => j !== i);
+                          setWorkoutForm((p: any) => ({ ...p, exercises: arr }));
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* Row 2: Exercise picker (searchable) */}
+                    <div className="space-y-1">
+                      <p className="text-xs text-muted-foreground">Link to muscle exercise video (optional):</p>
+                      <ExercisePicker
+                        value={ex.muscleExerciseId || null}
+                        allExercises={allExercises}
+                        onChange={(picked) => updateEx({ muscleExerciseId: picked.exerciseId, name: ex.name || picked.name })}
+                      />
+                    </div>
+
+                    {/* Row 3: Custom exercise name (pre-filled from picker, editable) */}
+                    <Input
+                      placeholder="Exercise name (auto-filled from picker, or type manually)"
+                      value={ex.name || ""}
+                      onChange={e => updateEx({ name: e.target.value })}
+                    />
+                  </div>
+                );
+              })}
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setWorkoutForm((p: any) => ({ ...p, exercises: [...(p.exercises || []), { name: "", sets: 3, reps: "10", muscleExerciseId: null }] }))}
+              >
                 <Plus className="mr-1 h-3 w-3" />Add Exercise
               </Button>
-              <p className="text-xs text-muted-foreground">ExID = Exercise ID from the Muscle Videos tab (e.g. 101 = Crunches). Linking it allows the frontend to pull the tutorial video.</p>
             </div>
           </div>
           <DialogFooter>
@@ -859,6 +1154,165 @@ const AdminDashboard = () => {
             <Button variant="outline" onClick={() => setRoutineModal(false)} disabled={routineSaving}>Cancel</Button>
             <Button onClick={saveRoutine} disabled={routineSaving}>
               {routineSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving…</> : editingRoutine ? "Update Routine" : "Create Routine"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── ADD / EDIT EXERCISE MODAL ─────────────────────────────────────── */}
+      <Dialog open={exModal} onOpenChange={setExModal}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingExercise ? `Edit Exercise — ${editingExercise.name?.en}` : `Add Exercise to ${exModalMuscle?.name?.en}`}
+            </DialogTitle>
+            <DialogDescription>
+              {editingExercise
+                ? "Update the exercise details, steps, and video URLs for both genders."
+                : "Fill in the exercise details and video URLs. Both male and female videos can be added now or edited later."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {exError && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{exError}</AlertDescription></Alert>}
+
+          <div className="space-y-5 py-2">
+
+            {/* ── Basic info ── */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label>Exercise ID <span className="text-xs text-muted-foreground">(unique number)</span></Label>
+                <Input
+                  type="number"
+                  value={exForm.exerciseId}
+                  disabled={!!editingExercise}
+                  onChange={e => setExForm((p: any) => ({ ...p, exerciseId: e.target.value }))}
+                  placeholder="e.g. 9999"
+                />
+                {!editingExercise && <p className="text-xs text-muted-foreground">Pick any number not already used in this muscle group.</p>}
+              </div>
+              <div className="space-y-1">
+                <Label>Difficulty</Label>
+                <Select value={exForm.difficulty} onValueChange={v => setExForm((p: any) => ({ ...p, difficulty: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {["Beginner","Intermediate","Advanced","Novice"].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label>Name (English)</Label>
+                <Input value={exForm.name.en} onChange={e => setExForm((p: any) => ({ ...p, name: { ...p.name, en: e.target.value } }))} placeholder="e.g. Dumbbell Curl" />
+              </div>
+              <div className="space-y-1">
+                <Label>Name (French)</Label>
+                <Input value={exForm.name.fr} onChange={e => setExForm((p: any) => ({ ...p, name: { ...p.name, fr: e.target.value } }))} placeholder="e.g. Curl haltères" />
+              </div>
+            </div>
+
+            {/* ── Male Videos ── */}
+            <div className="rounded-lg border p-4 space-y-3 bg-blue-50/30">
+              <p className="text-sm font-semibold text-blue-700 flex items-center gap-2"><Video className="h-4 w-4" /> Male Videos</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">Front URL (.gif / .mp4)</Label>
+                  <Input
+                    value={exForm.videos.male.front}
+                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, male: { ...p.videos.male, front: e.target.value } } }))}
+                    placeholder="/Images/male-exercise-front.gif"
+                  />
+                  {exForm.videos.male.front && (
+                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.male.front.endsWith('.mp4')
+                        ? <video src={exForm.videos.male.front} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
+                        : <img src={exForm.videos.male.front} alt="" className="w-full max-h-24 object-contain" />}
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Side URL (.gif / .mp4)</Label>
+                  <Input
+                    value={exForm.videos.male.side}
+                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, male: { ...p.videos.male, side: e.target.value } } }))}
+                    placeholder="/Images/male-exercise-side.gif"
+                  />
+                  {exForm.videos.male.side && (
+                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.male.side.endsWith('.mp4')
+                        ? <video src={exForm.videos.male.side} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
+                        : <img src={exForm.videos.male.side} alt="" className="w-full max-h-24 object-contain" />}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ── Female Videos ── */}
+            <div className="rounded-lg border p-4 space-y-3 bg-pink-50/30">
+              <p className="text-sm font-semibold text-pink-700 flex items-center gap-2"><Video className="h-4 w-4" /> Female Videos</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <Label className="text-xs">Front URL (.gif / .mp4)</Label>
+                  <Input
+                    value={exForm.videos.female.front}
+                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, female: { ...p.videos.female, front: e.target.value } } }))}
+                    placeholder="https://media.musclewiki.com/…front.mp4"
+                  />
+                  {exForm.videos.female.front && (
+                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.female.front.endsWith('.mp4')
+                        ? <video src={exForm.videos.female.front} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
+                        : <img src={exForm.videos.female.front} alt="" className="w-full max-h-24 object-contain" />}
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Side URL (.gif / .mp4)</Label>
+                  <Input
+                    value={exForm.videos.female.side}
+                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, female: { ...p.videos.female, side: e.target.value } } }))}
+                    placeholder="https://media.musclewiki.com/…side.mp4"
+                  />
+                  {exForm.videos.female.side && (
+                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.female.side.endsWith('.mp4')
+                        ? <video src={exForm.videos.female.side} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
+                        : <img src={exForm.videos.female.side} alt="" className="w-full max-h-24 object-contain" />}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* ── Steps ── */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <Label>Steps (English) <span className="text-xs text-muted-foreground">— one step per line</span></Label>
+                <Textarea
+                  rows={5}
+                  value={exForm.steps.en}
+                  onChange={e => setExForm((p: any) => ({ ...p, steps: { ...p.steps, en: e.target.value } }))}
+                  placeholder={"Lay flat on your back.\nLift legs to 90°.\nLower slowly."}
+                />
+              </div>
+              <div className="space-y-1">
+                <Label>Steps (French) <span className="text-xs text-muted-foreground">— une étape par ligne</span></Label>
+                <Textarea
+                  rows={5}
+                  value={exForm.steps.fr}
+                  onChange={e => setExForm((p: any) => ({ ...p, steps: { ...p.steps, fr: e.target.value } }))}
+                  placeholder={"Allongez-vous sur le dos.\nMontez les jambes à 90°.\nRedescendez lentement."}
+                />
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setExModal(false)} disabled={exSaving}>Cancel</Button>
+            <Button onClick={saveExercise} disabled={exSaving}>
+              {exSaving
+                ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving…</>
+                : editingExercise ? "Update Exercise" : "Add Exercise"
+              }
             </Button>
           </DialogFooter>
         </DialogContent>
