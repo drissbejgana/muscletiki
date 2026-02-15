@@ -11,10 +11,9 @@ export const subscriptionService = {
     }
   },
 
-  async createCheckout(priceId, planType) {
+  async createCheckout(planType) {
     try {
       const response = await api.post('/subscriptions/create-checkout-session', {
-        priceId,
         planType  // 'premium_5day' or 'premium_annual'
       });
       

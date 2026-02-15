@@ -86,7 +86,7 @@ const SubscriptionPlans = () => {
 
     setLoading(plan.id);
     try {
-      await subscriptionService.createCheckout(plan.stripePriceId, plan.id);
+      await subscriptionService.createCheckout(plan.id);
     } catch (err) {
       console.error('Checkout error:', err);
     } finally {
@@ -95,12 +95,14 @@ const SubscriptionPlans = () => {
   };
 
   const getButtonText = (plan: typeof plans[0]) => {
-    if (!isExpired && currentPlan === 'premium') {
-      const cycle = user?.subscription?.billingCycle;
-      const matchesCycle = (plan.id === 'premium_5day' && cycle === '5day') ||
-                          (plan.id === 'premium_annual' && cycle === 'yearly');
-      if (matchesCycle) return t('subscription.currentPlan');
+    if (plan.id === 'free') {
+      return currentPlan === 'free' || isExpired ? t('subscription.currentPlan') : t('subscription.getStarted');
     }
+    if (loading === plan.id) return t('subscription.processing');
+    // If user has active matching plan
+    if (!isExpired && currentPlan === 'pro' && plan.id.startsWith('premium')) return t('subscription.currentPlan');
+    if (!isExpired && currentPlan === 'premium' && plan.id.startsWith('premium')) return t('subscription.currentPlan');
+    return t('subscription.subscribe');
   };
 
 const isCurrentPlan = (plan: typeof plans[0]) => {

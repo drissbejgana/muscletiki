@@ -112,7 +112,7 @@ const AdminDashboard = () => {
                         <td className="px-4 py-3">{getStatusBadge(sub.status)}</td>
                         <td className="px-4 py-3 text-gray-700">{formatDate(sub.createdAt)}</td>
                         <td className="px-4 py-3 text-gray-700">{formatDate(sub.endDate)}</td>
-                        <td className="px-4 py-3 font-medium text-gray-900">{getPlanAmount(sub.plan)}</td>
+                        <td className="px-4 py-3 font-medium text-gray-900">{sub.amount}</td>
                         <td className="px-4 py-3">
                           <DropdownMenu><DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
