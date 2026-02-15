@@ -10,7 +10,7 @@ const ViewToggle = () => {
   const { t } = useTranslation();
 
   const toggles: { key: ToggleKeys; labelKey: string }[] = [
-    { key: "homme", labelKey: "bodyMap.male" },
+    { key: "homme", labelKey: !homme ? "bodyMap.male" :  "bodyMap.female"},
     { key: "avance", labelKey: "bodyMap.advanced" },
     { key: "articulations", labelKey: "bodyMap.joints" },
   ];

@@ -32,7 +32,7 @@ const MobileBodyView = () => {
                 !homme ? "bg-[#2B4C8F] text-white border-[#2B4C8F]" : "bg-white text-[#2B4C8F] border-[#2B4C8F]"
               }`}
             >
-              {t('bodyMap.male')}
+             {`${!homme ? t('bodyMap.male') : t('bodyMap.female') }`}
             </Button>
             <Button
               onClick={() => updateHomme(true)}
@@ -41,7 +41,7 @@ const MobileBodyView = () => {
                 homme ? "bg-[#2B4C8F] text-white border-[#2B4C8F]" : "bg-white text-[#2B4C8F] border-[#2B4C8F]"
               }`}
             >
-              {t('bodyMap.female')}
+              {`${!homme ? t('bodyMap.male') : t('bodyMap.female') }`}
             </Button>
           </div>
 
