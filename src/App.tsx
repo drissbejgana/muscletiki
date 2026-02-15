@@ -23,6 +23,7 @@ import Articles from "./pages/Articles";
 import Routines from "./pages/routines";
 import { InteractiveBodyMap } from "./components/FemalBodyFront";
 import { FemalBodyBack } from "./components/FemalBodyBack";
+import WorkoutDetail from "./pages/WorkoutDetail";
 
 const queryClient = new QueryClient();
 
@@ -159,6 +160,15 @@ const App = () => (
                 </Layout>
               </ProtectedRoute>
             } />
+
+            <Route path="/workouts/:id" element={
+              <ProtectedRoute requiredPlan="pro">
+                <Layout>
+                    <WorkoutDetail />
+                </Layout>
+              </ProtectedRoute>
+            } />
+
 
             <Route path="/training" element={
               <ProtectedRoute requiredPlan="pro">

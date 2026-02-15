@@ -222,22 +222,38 @@ const TrainingLog = () => {
       }));
 
       // Build workout data matching backend Workout model
-      const workoutData = {
-        title: activeSession.name,
-        description: `${lang === "fr" ? "Séance enregistrée" : "Logged session"} - ${new Date().toLocaleDateString()}`,
-        level: "intermediate",
-        type: "strength",
-        duration: Math.floor(timer / 60),
-        exercises: activeSession.exercises.map((ex) => ({
-          name: ex.name,
-          muscleGroup: ex.muscleGroup || "other",
-          sets: ex.sets.filter((s) => s.completed).length,
-          reps: ex.sets.filter((s) => s.completed).map((s) => s.reps),
-          weight: ex.sets.filter((s) => s.completed).map((s) => s.weight),
-          restTime: 60,
-        })),
-        isPublic: false,
-      };
+const workoutData = {
+  title: activeSession.name,
+  description: `${lang === "fr" ? "Séance enregistrée" : "Logged session"} - ${new Date().toLocaleDateString()}`,
+
+  // ✅ Fix 1: match exact enum values from schema
+  level: "Débutant",
+  
+  // ✅ Fix 2: match exact enum value from schema
+  type: "Full Body",
+
+  duration: Math.floor(timer / 60),
+  isPublic: false,
+
+  exercises: activeSession.exercises.map((ex) => ({
+    name: ex.name,
+    muscleGroup: ex.muscleGroup || "other",
+    
+    // ✅ Fix 3: sets is Number in schema
+    sets: ex.sets.filter((s) => s.completed).length || ex.sets.length,
+    
+    // ✅ Fix 4: reps is String in schema — join array to string
+    reps: ex.sets
+      .filter((s) => s.completed)
+      .map((s) => s.reps)
+      .join(", ") || "10",
+
+    // ✅ Fix 5: rest is Number (seconds)
+    rest: 60,
+
+    notes: "",
+  })),
+};
 
       // 1. Create the workout on backend
       const createdWorkout = await workoutService.createWorkout(workoutData);
