@@ -126,6 +126,11 @@ export function AppSidebar() {
                       {t('nav.oneRMCalculator')}
                     </SidebarMenuButton>
                   </NavLink>
+                  <NavLink to="/tdee_calculator" activeClassName="bg-white/20">
+                    <SidebarMenuButton className="pl-8 text-white hover:bg-white/10">
+                      {t('nav.tdeeCalculator')}
+                    </SidebarMenuButton>
+                  </NavLink>
                 </CollapsibleContent>
               )}
             </Collapsible>

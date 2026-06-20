@@ -12,6 +12,7 @@ import WorkoutPrograms from "./pages/workouts";
 import CalorieCalculator from "./pages/calorie_calculator";
 import MacroCalculator from "./pages/macro_calculator";
 import OneRMCalculator from "./pages/one_rep_max_tool";
+import TDEECalculator from "./pages/tdee_calculator";
 import AuthPages from "./pages/auth";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -46,6 +47,8 @@ const App = () => (
           <Route path="/routines" element={<Layout><Routines /></Layout>} />
 
           <Route path="/calorie_calculator" element={<Layout><CalorieCalculator /></Layout>} />
+
+          <Route path="/tdee_calculator" element={<Layout><TDEECalculator /></Layout>} />
 
           <Route
             path="/one_rep_max_tool"
