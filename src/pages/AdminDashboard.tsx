@@ -24,9 +24,9 @@ import { useTranslation } from "@/i18n";
 const formatDate = (d: any) => (d ? new Date(d).toLocaleDateString() : "–");
 
 const diffColor: Record<string, string> = {
-  Beginner:     "bg-green-100 text-green-700",
-  Intermediate: "bg-orange-100 text-orange-700",
-  Advanced:     "bg-red-100 text-red-700",
+  Beginner:     "bg-primary/20 text-primary",
+  Intermediate: "bg-accent/20 text-accent",
+  Advanced:     "bg-destructive/20 text-destructive",
 };
 
 // Empty forms
@@ -52,7 +52,6 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
   const [error, setError]     = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  // When opening, pre-fill from selected gender
   const openForGender = (g: "male" | "female") => {
     setGender(g);
     setFront(exercise.videos?.[g]?.front || "");
@@ -86,12 +85,14 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
               className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs border transition-colors ${
                 hasAny
                   ? "border-primary/40 bg-primary/5 text-primary hover:bg-primary/10"
-                  : "border-gray-200 text-gray-400 hover:border-gray-400"
+                  : "border-border text-muted-foreground/50 hover:border-muted-foreground/50"
               }`}
             >
               <Video className="h-3 w-3" />
               <span className="capitalize">{g}</span>
-              {hasAny ? <Check className="h-3 w-3 text-green-500" /> : <X className="h-3 w-3 text-gray-300" />}
+              {hasAny
+                ? <Check className="h-3 w-3 text-primary" />
+                : <X className="h-3 w-3 text-muted-foreground/40" />}
             </button>
           );
         })}
@@ -102,20 +103,18 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Edit Videos — {exercise.name?.en}</DialogTitle>
-            <DialogDescription>
-              Set the front and side video/GIF URLs for this exercise.
-            </DialogDescription>
+            <DialogDescription>Set the front and side video/GIF URLs for this exercise.</DialogDescription>
           </DialogHeader>
 
           {error   && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{error}</AlertDescription></Alert>}
-          {success && <Alert className="border-green-300 bg-green-50 text-green-800"><Check className="h-4 w-4" /><AlertDescription>Saved!</AlertDescription></Alert>}
+          {success && <Alert className="border-primary/30 bg-primary/10 text-primary"><Check className="h-4 w-4" /><AlertDescription>Saved!</AlertDescription></Alert>}
 
           <div className="space-y-4 py-2">
             <div className="space-y-1">
               <Label>Gender</Label>
               <Select value={gender} onValueChange={(v: any) => {
                 setGender(v);
-                if (v !== 'both') {
+                if (v !== "both") {
                   setFront(exercise.videos?.[v]?.front || "");
                   setSide(exercise.videos?.[v]?.side   || "");
                 }
@@ -127,7 +126,7 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
                   <SelectItem value="both">Both (same URLs)</SelectItem>
                 </SelectContent>
               </Select>
-              {gender !== 'both' && (
+              {gender !== "both" && (
                 <p className="text-xs text-muted-foreground">
                   Current {gender} front: <span className="font-mono">{exercise.videos?.[gender]?.front || "—"}</span>
                 </p>
@@ -139,7 +138,7 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
               <Input value={front} onChange={(e) => setFront(e.target.value)} placeholder="https://… or /Images/…" />
               {front && (
                 <div className="mt-1 rounded-md overflow-hidden border border-border/50 bg-muted/30 max-h-32">
-                  {front.endsWith('.mp4') || front.endsWith('.webm')
+                  {front.endsWith(".mp4") || front.endsWith(".webm")
                     ? <video src={front} className="w-full max-h-32 object-contain" autoPlay loop muted playsInline />
                     : <img src={front} alt="front preview" className="w-full max-h-32 object-contain" />
                   }
@@ -152,7 +151,7 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
               <Input value={side} onChange={(e) => setSide(e.target.value)} placeholder="https://… or /Images/…" />
               {side && (
                 <div className="mt-1 rounded-md overflow-hidden border border-border/50 bg-muted/30 max-h-32">
-                  {side.endsWith('.mp4') || side.endsWith('.webm')
+                  {side.endsWith(".mp4") || side.endsWith(".webm")
                     ? <video src={side} className="w-full max-h-32 object-contain" autoPlay loop muted playsInline />
                     : <img src={side} alt="side preview" className="w-full max-h-32 object-contain" />
                   }
@@ -178,7 +177,6 @@ const VideoEditor = ({ muscleId, exercise, onSaved }: { muscleId: number; exerci
 // ─────────────────────────────────────────────────────────────────────────────
 
 // ─── ExercisePicker ───────────────────────────────────────────────────────────
-// Inline searchable popover: shows all DB exercises, lets admin click to select
 interface FlatExercise {
   exerciseId: number;
   muscleName: string;
@@ -194,17 +192,14 @@ const ExercisePicker = ({
   onChange: (ex: FlatExercise) => void;
   allExercises: FlatExercise[];
 }) => {
-  const [open, setOpen]       = useState(false);
-  const [query, setQuery]     = useState("");
-  const containerRef          = useRef<HTMLDivElement>(null);
-  const inputRef              = useRef<HTMLInputElement>(null);
+  const [open, setOpen]   = useState(false);
+  const [query, setQuery] = useState("");
+  const containerRef      = useRef<HTMLDivElement>(null);
+  const inputRef          = useRef<HTMLInputElement>(null);
 
-  // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) setOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -212,7 +207,7 @@ const ExercisePicker = ({
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
-    if (!q) return allExercises.slice(0, 60); // show first 60 when no query
+    if (!q) return allExercises.slice(0, 60);
     return allExercises.filter(
       (ex) =>
         ex.name.toLowerCase().includes(q) ||
@@ -225,7 +220,6 @@ const ExercisePicker = ({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      {/* Trigger button */}
       <button
         type="button"
         onClick={() => { setOpen((o) => !o); setTimeout(() => inputRef.current?.focus(), 50); }}
@@ -247,10 +241,8 @@ const ExercisePicker = ({
         <svg className="h-4 w-4 shrink-0 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
       </button>
 
-      {/* Dropdown */}
       {open && (
         <div className="absolute z-50 mt-1 w-full min-w-[280px] rounded-md border bg-popover shadow-lg overflow-hidden">
-          {/* Search input */}
           <div className="flex items-center gap-2 px-3 py-2 border-b bg-muted/30">
             <svg className="h-4 w-4 text-muted-foreground shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
             <input
@@ -266,8 +258,6 @@ const ExercisePicker = ({
               </button>
             )}
           </div>
-
-          {/* Results list */}
           <div className="max-h-56 overflow-y-auto">
             {filtered.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">No exercises found.</p>
@@ -296,68 +286,65 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
   // Stats
-  const [stats, setStats]             = useState<any>(null);
+  const [stats, setStats]               = useState<any>(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
   // Subscriptions
-  const [subscriptions, setSubs]     = useState<any[]>([]);
-  const [subsLoading, setSubsLoading] = useState(false);
-  const [subsError, setSubsError]     = useState<any>(null);
-  const [subSearch, setSubSearch]     = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [planFilter, setPlanFilter]   = useState("all");
-  const [editSubModal, setEditSubModal] = useState(false);
-  const [editingSub, setEditingSub]   = useState<any>(null);
-  const [editSubForm, setEditSubForm] = useState({ plan: "", status: "" });
+  const [subscriptions, setSubs]           = useState<any[]>([]);
+  const [subsLoading, setSubsLoading]       = useState(false);
+  const [subsError, setSubsError]           = useState<any>(null);
+  const [subSearch, setSubSearch]           = useState("");
+  const [statusFilter, setStatusFilter]     = useState("all");
+  const [planFilter, setPlanFilter]         = useState("all");
+  const [editSubModal, setEditSubModal]     = useState(false);
+  const [editingSub, setEditingSub]         = useState<any>(null);
+  const [editSubForm, setEditSubForm]       = useState({ plan: "", status: "" });
   const [editSubLoading, setEditSubLoading] = useState(false);
   const [editSubError, setEditSubError]     = useState<any>(null);
 
   // Workouts
-  const [workouts, setWorkouts]             = useState<any[]>([]);
-  const [workoutsLoading, setWorkoutsLoading] = useState(false);
-  const [workoutsError, setWorkoutsError]   = useState<any>(null);
-  const [workoutSearch, setWorkoutSearch]   = useState("");
-  const [workoutModal, setWorkoutModal]     = useState(false);
-  const [editingWorkout, setEditingWorkout] = useState<any>(null);
-  const [workoutForm, setWorkoutForm]       = useState<any>(emptyWorkout);
-  const [workoutSaving, setWorkoutSaving]   = useState(false);
-  const [workoutError, setWorkoutError]     = useState<any>(null);
+  const [workouts, setWorkouts]                 = useState<any[]>([]);
+  const [workoutsLoading, setWorkoutsLoading]   = useState(false);
+  const [workoutsError, setWorkoutsError]       = useState<any>(null);
+  const [workoutSearch, setWorkoutSearch]       = useState("");
+  const [workoutModal, setWorkoutModal]         = useState(false);
+  const [editingWorkout, setEditingWorkout]     = useState<any>(null);
+  const [workoutForm, setWorkoutForm]           = useState<any>(emptyWorkout);
+  const [workoutSaving, setWorkoutSaving]       = useState(false);
+  const [workoutError, setWorkoutError]         = useState<any>(null);
 
   // Routines
-  const [routines, setRoutines]             = useState<any[]>([]);
-  const [routinesLoading, setRoutinesLoading] = useState(false);
-  const [routinesError, setRoutinesError]   = useState<any>(null);
-  const [routineSearch, setRoutineSearch]   = useState("");
-  const [routineModal, setRoutineModal]     = useState(false);
-  const [editingRoutine, setEditingRoutine] = useState<any>(null);
-  const [routineForm, setRoutineForm]       = useState<any>(emptyRoutine);
-  const [routineSaving, setRoutineSaving]   = useState(false);
-  const [routineError, setRoutineError]     = useState<any>(null);
-  // Workout exercise picker for routines
-  const [routineExerciseSearch, setRoutineExerciseSearch] = useState("");
+  const [routines, setRoutines]                 = useState<any[]>([]);
+  const [routinesLoading, setRoutinesLoading]   = useState(false);
+  const [routinesError, setRoutinesError]       = useState<any>(null);
+  const [routineSearch, setRoutineSearch]       = useState("");
+  const [routineModal, setRoutineModal]         = useState(false);
+  const [editingRoutine, setEditingRoutine]     = useState<any>(null);
+  const [routineForm, setRoutineForm]           = useState<any>(emptyRoutine);
+  const [routineSaving, setRoutineSaving]       = useState(false);
+  const [routineError, setRoutineError]         = useState<any>(null);
 
   // Muscle exercises
-  const [muscles, setMuscles]             = useState<any[]>([]);
-  const [musclesLoading, setMusclesLoading] = useState(false);
-  const [musclesError, setMusclesError]   = useState<any>(null);
-  const [muscleSearch, setMuscleSearch]   = useState("");
-  const [expandedMuscles, setExpandedMuscles] = useState<Set<number>>(new Set());
-  const [togglingEx, setTogglingEx]       = useState<string | null>(null);
-  // Flat list of all exercises for the ExercisePicker (populated when muscles load)
-  const [allExercises, setAllExercises]   = useState<FlatExercise[]>([]);
+  const [muscles, setMuscles]                   = useState<any[]>([]);
+  const [musclesLoading, setMusclesLoading]     = useState(false);
+  const [musclesError, setMusclesError]         = useState<any>(null);
+  const [muscleSearch, setMuscleSearch]         = useState("");
+  const [expandedMuscles, setExpandedMuscles]   = useState<Set<number>>(new Set());
+  const [togglingEx, setTogglingEx]             = useState<string | null>(null);
+  const [allExercises, setAllExercises]         = useState<FlatExercise[]>([]);
 
-  // Add / Edit exercise modal
+  // Exercise modal
   const emptyExForm = {
     exerciseId: "", name: { en: "", fr: "" }, difficulty: "Beginner",
     videos: { male: { front: "", side: "" }, female: { front: "", side: "" } },
     steps: { en: "", fr: "" },
   };
-  const [exModal, setExModal]                 = useState(false);
-  const [exModalMuscle, setExModalMuscle]     = useState<any>(null);
-  const [editingExercise, setEditingExercise] = useState<any>(null);
-  const [exForm, setExForm]                   = useState<any>(emptyExForm);
-  const [exSaving, setExSaving]               = useState(false);
-  const [exError, setExError]                 = useState<string | null>(null);
+  const [exModal, setExModal]                   = useState(false);
+  const [exModalMuscle, setExModalMuscle]       = useState<any>(null);
+  const [editingExercise, setEditingExercise]   = useState<any>(null);
+  const [exForm, setExForm]                     = useState<any>(emptyExForm);
+  const [exSaving, setExSaving]                 = useState(false);
+  const [exError, setExError]                   = useState<string | null>(null);
 
   // ─── Fetchers ───────────────────────────────────────────────────────────────
   const fetchStats = useCallback(async () => {
@@ -393,7 +380,6 @@ const AdminDashboard = () => {
     try {
       const data = await adminService.getMuscleExercises();
       setMuscles(data);
-      // Build flat list for ExercisePicker
       const flat: FlatExercise[] = [];
       (data || []).forEach((m: any) => {
         (m.exercises || []).forEach((ex: any) => {
@@ -408,7 +394,7 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => { fetchStats(); }, [fetchStats]);
-  useEffect(() => { fetchMuscles(); }, [fetchMuscles]); // always load — needed by workout exercise picker
+  useEffect(() => { fetchMuscles(); }, [fetchMuscles]);
   useEffect(() => { if (activeTab === "subscriptions") fetchSubs(); }, [activeTab, fetchSubs]);
   useEffect(() => { if (activeTab === "workouts")      fetchWorkouts(); }, [activeTab, fetchWorkouts]);
   useEffect(() => { if (activeTab === "routines")      fetchRoutines(); }, [activeTab, fetchRoutines]);
@@ -457,7 +443,7 @@ const AdminDashboard = () => {
     try { await adminService.deleteWorkout(id); fetchWorkouts(); fetchStats(); }
     catch (e) { alert(e); }
   };
-  const filteredWorkouts = workouts.filter(w => w.title?.toLowerCase().includes(workoutSearch.toLowerCase()));
+  const filteredWorkouts = workouts.filter((w) => w.title?.toLowerCase().includes(workoutSearch.toLowerCase()));
 
   // ─── Routine handlers ───────────────────────────────────────────────────────
   const openRoutineModal = (r: any = null) => {
@@ -479,14 +465,14 @@ const AdminDashboard = () => {
     try { await adminService.deleteRoutine(id); fetchRoutines(); fetchStats(); }
     catch (e) { alert(e); }
   };
-  const filteredRoutines = routines.filter(r =>
+  const filteredRoutines = routines.filter((r) =>
     (r.title?.en || "").toLowerCase().includes(routineSearch.toLowerCase()) ||
     (r.title?.fr || "").toLowerCase().includes(routineSearch.toLowerCase())
   );
 
   // ─── Muscle exercise handlers ───────────────────────────────────────────────
   const toggleMuscleOpen = (muscleId: number) => {
-    setExpandedMuscles(prev => {
+    setExpandedMuscles((prev) => {
       const next = new Set(prev);
       next.has(muscleId) ? next.delete(muscleId) : next.add(muscleId);
       return next;
@@ -498,8 +484,7 @@ const AdminDashboard = () => {
     setTogglingEx(key);
     try {
       await adminService.toggleExerciseActive(muscleId, exerciseId, isActive);
-      // Optimistic update
-      setMuscles(prev => prev.map(m => {
+      setMuscles((prev) => prev.map((m) => {
         if (m.muscleId !== muscleId) return m;
         return {
           ...m,
@@ -514,31 +499,23 @@ const AdminDashboard = () => {
 
   // ─── Exercise modal handlers ────────────────────────────────────────────────
   const openAddExercise = (muscle: any) => {
-    setExModalMuscle(muscle);
-    setEditingExercise(null);
-    setExForm({ ...emptyExForm, exerciseId: "" });
-    setExError(null);
-    setExModal(true);
+    setExModalMuscle(muscle); setEditingExercise(null);
+    setExForm({ ...emptyExForm, exerciseId: "" }); setExError(null); setExModal(true);
   };
 
   const openEditExercise = (muscle: any, ex: any) => {
-    setExModalMuscle(muscle);
-    setEditingExercise(ex);
+    setExModalMuscle(muscle); setEditingExercise(ex);
     setExForm({
       exerciseId: ex.exerciseId,
-      name: { en: ex.name?.en || "", fr: ex.name?.fr || "" },
+      name:       { en: ex.name?.en || "", fr: ex.name?.fr || "" },
       difficulty: ex.difficulty || "Beginner",
       videos: {
         male:   { front: ex.videos?.male?.front   || "", side: ex.videos?.male?.side   || "" },
         female: { front: ex.videos?.female?.front || "", side: ex.videos?.female?.side || "" },
       },
-      steps: {
-        en: (ex.steps?.en || []).join("\n"),
-        fr: (ex.steps?.fr || []).join("\n"),
-      },
+      steps: { en: (ex.steps?.en || []).join("\n"), fr: (ex.steps?.fr || []).join("\n") },
     });
-    setExError(null);
-    setExModal(true);
+    setExError(null); setExModal(true);
   };
 
   const saveExercise = async () => {
@@ -555,57 +532,51 @@ const AdminDashboard = () => {
           fr: exForm.steps.fr.split("\n").map((s: string) => s.trim()).filter(Boolean),
         },
       };
-      if (editingExercise) {
-        await adminService.updateExercise(exModalMuscle.muscleId, editingExercise.exerciseId, payload);
-      } else {
-        await adminService.addExercise(exModalMuscle.muscleId, payload);
-      }
-      setExModal(false);
-      await fetchMuscles();
+      if (editingExercise) await adminService.updateExercise(exModalMuscle.muscleId, editingExercise.exerciseId, payload);
+      else                 await adminService.addExercise(exModalMuscle.muscleId, payload);
+      setExModal(false); await fetchMuscles();
     } catch (e: any) { setExError(String(e)); }
     finally { setExSaving(false); }
   };
 
   const handleDeleteExercise = async (muscleId: number, exerciseId: number, name: string) => {
     if (!window.confirm(`Delete "${name}"? This cannot be undone.`)) return;
-    try {
-      await adminService.deleteExercise(muscleId, exerciseId);
-      await fetchMuscles();
-    } catch (e: any) { alert(e); }
+    try { await adminService.deleteExercise(muscleId, exerciseId); await fetchMuscles(); }
+    catch (e: any) { alert(e); }
   };
 
-  const filteredMuscles = muscles.filter(m =>
+  const filteredMuscles = muscles.filter((m) =>
     m.name?.en?.toLowerCase().includes(muscleSearch.toLowerCase()) ||
     m.name?.fr?.toLowerCase().includes(muscleSearch.toLowerCase())
   );
 
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4">
+    <div className="min-h-screen bg-background py-8 px-4">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-1">{t("admin.title")}</h1>
-          <p className="text-gray-500 text-sm">{t("admin.subtitle")}</p>
+          <p className="text-muted-foreground text-sm">{t("admin.subtitle")}</p>
         </div>
 
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: t("admin.totalUsers"),           icon: Users,      value: stats?.totalUsers },
-            { label: t("admin.activeSubscriptions"),  icon: CreditCard, value: stats?.activeSubscriptions },
-            { label: t("admin.monthlyRevenue"),       icon: TrendingUp, value: stats ? `$${stats.monthlyRevenue}` : null },
-            { label: "Exercises in DB",               icon: Dumbbell,   value: stats?.totalExercises },
+            { label: t("admin.totalUsers"),          icon: Users,      value: stats?.totalUsers },
+            { label: t("admin.activeSubscriptions"), icon: CreditCard, value: stats?.activeSubscriptions },
+            { label: t("admin.monthlyRevenue"),      icon: TrendingUp, value: stats ? `$${stats.monthlyRevenue}` : null },
+            { label: "Exercises in DB",              icon: Dumbbell,   value: stats?.totalExercises },
           ].map(({ label, icon: Icon, value }) => (
             <Card key={label}>
               <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <CardTitle className="text-xs font-medium text-gray-500">{label}</CardTitle>
-                <Icon className="h-4 w-4 text-gray-400" />
+                <CardTitle className="text-xs font-medium text-muted-foreground">{label}</CardTitle>
+                <Icon className="h-4 w-4 text-muted-foreground/60" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-gray-400" /> : (value ?? "–")}
+                  {statsLoading ? <Loader2 className="h-5 w-5 animate-spin text-muted-foreground/60" /> : (value ?? "–")}
                 </div>
               </CardContent>
             </Card>
@@ -629,17 +600,17 @@ const AdminDashboard = () => {
                 <CardHeader><CardTitle>Platform Summary</CardTitle></CardHeader>
                 <CardContent className="space-y-3 text-sm">
                   {[
-                    ["Total Users", stats?.totalUsers],
-                    ["Active Subscriptions", stats?.activeSubscriptions],
-                    ["Monthly Revenue", stats ? `$${stats.monthlyRevenue}` : null],
-                    ["New Users (30d)", stats?.recentSignups],
-                    ["Total Workouts", stats?.totalWorkouts],
-                    ["Total Routines", stats?.totalRoutines],
-                    ["Muscle Groups", stats?.totalMuscleGroups],
-                    ["Total Exercises", stats?.totalExercises],
+                    ["Total Users",           stats?.totalUsers],
+                    ["Active Subscriptions",  stats?.activeSubscriptions],
+                    ["Monthly Revenue",       stats ? `$${stats.monthlyRevenue}` : null],
+                    ["New Users (30d)",       stats?.recentSignups],
+                    ["Total Workouts",        stats?.totalWorkouts],
+                    ["Total Routines",        stats?.totalRoutines],
+                    ["Muscle Groups",         stats?.totalMuscleGroups],
+                    ["Total Exercises",       stats?.totalExercises],
                   ].map(([label, val]) => (
-                    <div key={label as string} className="flex justify-between border-b pb-2 last:border-0">
-                      <span className="text-gray-500">{label}</span>
+                    <div key={label as string} className="flex justify-between border-b border-border pb-2 last:border-0">
+                      <span className="text-muted-foreground">{label}</span>
                       <span className="font-semibold">{statsLoading ? "…" : (val ?? "–")}</span>
                     </div>
                   ))}
@@ -649,11 +620,11 @@ const AdminDashboard = () => {
                 <CardHeader><CardTitle>Subscriptions by Plan</CardTitle></CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   {stats?.subscriptionsByPlan?.map((item: any) => (
-                    <div key={item._id} className="flex justify-between border-b pb-2">
+                    <div key={item._id} className="flex justify-between border-b border-border pb-2">
                       <Badge variant="outline" className="capitalize">{item._id || "free"}</Badge>
                       <span className="font-semibold">{item.count}</span>
                     </div>
-                  )) ?? <span className="text-gray-400">Loading…</span>}
+                  )) ?? <span className="text-muted-foreground/60">Loading…</span>}
                 </CardContent>
               </Card>
             </div>
@@ -669,49 +640,56 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="flex flex-col md:flex-row gap-3 mb-5">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input placeholder={t("admin.searchPlaceholder")} value={subSearch} onChange={e => setSubSearch(e.target.value)} className="pl-9" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input placeholder={t("admin.searchPlaceholder")} value={subSearch} onChange={(e) => setSubSearch(e.target.value)} className="pl-9" />
                   </div>
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
                     <SelectTrigger className="w-full md:w-36"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {["all","active","cancelled","expired"].map(v => <SelectItem key={v} value={v}>{v === "all" ? "All Status" : v}</SelectItem>)}
+                      {["all","active","cancelled","expired"].map((v) => <SelectItem key={v} value={v}>{v === "all" ? "All Status" : v}</SelectItem>)}
                     </SelectContent>
                   </Select>
                   <Select value={planFilter} onValueChange={setPlanFilter}>
                     <SelectTrigger className="w-full md:w-36"><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      {["all","free","pro","premium"].map(v => <SelectItem key={v} value={v}>{v === "all" ? "All Plans" : v}</SelectItem>)}
+                      {["all","free","pro","premium"].map((v) => <SelectItem key={v} value={v}>{v === "all" ? "All Plans" : v}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
                 {subsError && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{subsError}</AlertDescription></Alert>}
-                <div className="rounded-md border overflow-x-auto">
+                <div className="rounded-md border border-border overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-gray-50 border-b">
-                      <tr>{["User","Plan","Status","Start","End","Amount",""].map((h,i) => <th key={i} className="px-4 py-3 text-left font-medium text-gray-600">{h}</th>)}</tr>
+                    <thead className="bg-secondary border-b border-border">
+                      <tr>{["User","Plan","Status","Start","End","Amount",""].map((h,i) => <th key={i} className="px-4 py-3 text-left font-medium text-muted-foreground">{h}</th>)}</tr>
                     </thead>
-                    <tbody className="divide-y">
+                    <tbody className="divide-y divide-border">
                       {subsLoading ? (
-                        <tr><td colSpan={7} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-gray-400" /></td></tr>
+                        <tr><td colSpan={7} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground/60" /></td></tr>
                       ) : filteredSubs.length === 0 ? (
-                        <tr><td colSpan={7} className="text-center py-8 text-gray-400">No subscriptions found</td></tr>
-                      ) : filteredSubs.map(sub => (
-                        <tr key={sub._id} className="hover:bg-gray-50">
-                          <td className="px-4 py-3"><div className="font-medium">{sub.user?.name}</div><div className="text-xs text-gray-400">{sub.user?.email}</div></td>
+                        <tr><td colSpan={7} className="text-center py-8 text-muted-foreground/60">No subscriptions found</td></tr>
+                      ) : filteredSubs.map((sub) => (
+                        <tr key={sub._id} className="hover:bg-muted/30">
+                          <td className="px-4 py-3">
+                            <div className="font-medium">{sub.user?.name}</div>
+                            <div className="text-xs text-muted-foreground/60">{sub.user?.email}</div>
+                          </td>
                           <td className="px-4 py-3"><Badge variant="outline" className="capitalize">{sub.plan}</Badge></td>
                           <td className="px-4 py-3">
-                            <Badge className={sub.status === "active" ? "bg-green-100 text-green-700" : sub.status === "expired" ? "bg-red-100 text-red-700" : "bg-gray-100 text-gray-600"}>{sub.status}</Badge>
+                            <Badge className={
+                              sub.status === "active"  ? "bg-primary/20 text-primary" :
+                              sub.status === "expired" ? "bg-destructive/20 text-destructive" :
+                                                         "bg-secondary text-muted-foreground"
+                            }>{sub.status}</Badge>
                           </td>
-                          <td className="px-4 py-3 text-gray-600">{formatDate(sub.createdAt)}</td>
-                          <td className="px-4 py-3 text-gray-600">{formatDate(sub.endDate)}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{formatDate(sub.createdAt)}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{formatDate(sub.endDate)}</td>
                           <td className="px-4 py-3 font-medium">{sub.amount}</td>
                           <td className="px-4 py-3">
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild><Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button></DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                 <DropdownMenuItem onClick={() => openEditSub(sub)}>Edit Subscription</DropdownMenuItem>
-                                <DropdownMenuItem className="text-red-600" onClick={() => handleCancelSub(sub.user?._id)}>Cancel Subscription</DropdownMenuItem>
+                                <DropdownMenuItem className="text-destructive" onClick={() => handleCancelSub(sub.user?._id)}>Cancel Subscription</DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </td>
@@ -733,35 +711,35 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="relative mb-4">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input placeholder="Search workouts…" value={workoutSearch} onChange={e => setWorkoutSearch(e.target.value)} className="pl-9" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input placeholder="Search workouts…" value={workoutSearch} onChange={(e) => setWorkoutSearch(e.target.value)} className="pl-9" />
                 </div>
                 {workoutsError && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{workoutsError}</AlertDescription></Alert>}
-                <div className="rounded-md border overflow-x-auto">
+                <div className="rounded-md border border-border overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-gray-50 border-b">
-                      <tr>{["Title","Level","Type","Duration","Premium","Public",""].map((h,i) => <th key={i} className="px-4 py-3 text-left font-medium text-gray-600">{h}</th>)}</tr>
+                    <thead className="bg-secondary border-b border-border">
+                      <tr>{["Title","Level","Type","Duration","Premium","Public",""].map((h,i) => <th key={i} className="px-4 py-3 text-left font-medium text-muted-foreground">{h}</th>)}</tr>
                     </thead>
-                    <tbody className="divide-y">
+                    <tbody className="divide-y divide-border">
                       {workoutsLoading ? (
-                        <tr><td colSpan={7} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-gray-400" /></td></tr>
+                        <tr><td colSpan={7} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground/60" /></td></tr>
                       ) : filteredWorkouts.length === 0 ? (
-                        <tr><td colSpan={7} className="text-center py-8 text-gray-400">No workouts. Click "Add Workout" to create one.</td></tr>
-                      ) : filteredWorkouts.map(w => (
-                        <tr key={w._id} className="hover:bg-gray-50">
+                        <tr><td colSpan={7} className="text-center py-8 text-muted-foreground/60">No workouts. Click "Add Workout" to create one.</td></tr>
+                      ) : filteredWorkouts.map((w) => (
+                        <tr key={w._id} className="hover:bg-muted/30">
                           <td className="px-4 py-3">
                             <div className="font-medium">{w.title}</div>
-                            {w.exercises?.length > 0 && <div className="text-xs text-gray-400">{w.exercises.length} exercises linked</div>}
+                            {w.exercises?.length > 0 && <div className="text-xs text-muted-foreground/60">{w.exercises.length} exercises linked</div>}
                           </td>
                           <td className="px-4 py-3"><Badge variant="outline">{w.level}</Badge></td>
-                          <td className="px-4 py-3 text-gray-600">{w.type}</td>
-                          <td className="px-4 py-3 text-gray-600">{w.duration} min</td>
-                          <td className="px-4 py-3">{w.isPremium ? <Badge className="bg-yellow-100 text-yellow-800">Yes</Badge> : <span className="text-gray-400">—</span>}</td>
-                          <td className="px-4 py-3">{w.isPublic ? <Badge className="bg-green-100 text-green-800">Public</Badge> : <Badge variant="secondary">Private</Badge>}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{w.type}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{w.duration} min</td>
+                          <td className="px-4 py-3">{w.isPremium ? <Badge className="bg-accent/20 text-accent">Yes</Badge> : <span className="text-muted-foreground/50">—</span>}</td>
+                          <td className="px-4 py-3">{w.isPublic ? <Badge className="bg-primary/20 text-primary">Public</Badge> : <Badge variant="secondary">Private</Badge>}</td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <Button variant="ghost" size="icon" onClick={() => openWorkoutModal(w)}><Pencil className="h-4 w-4" /></Button>
-                              <Button variant="ghost" size="icon" className="text-red-500" onClick={() => handleDeleteWorkout(w._id)}><Trash2 className="h-4 w-4" /></Button>
+                              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteWorkout(w._id)}><Trash2 className="h-4 w-4" /></Button>
                             </div>
                           </td>
                         </tr>
@@ -782,35 +760,35 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="relative mb-4">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input placeholder="Search routines…" value={routineSearch} onChange={e => setRoutineSearch(e.target.value)} className="pl-9" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input placeholder="Search routines…" value={routineSearch} onChange={(e) => setRoutineSearch(e.target.value)} className="pl-9" />
                 </div>
                 {routinesError && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{routinesError}</AlertDescription></Alert>}
-                <div className="rounded-md border overflow-x-auto">
+                <div className="rounded-md border border-border overflow-x-auto">
                   <table className="w-full text-sm">
-                    <thead className="bg-gray-50 border-b">
-                      <tr>{["Title (EN / FR)","Level","Duration","Days/wk","Exercises","Public",""].map((h,i) => <th key={i} className="px-4 py-3 text-left font-medium text-gray-600">{h}</th>)}</tr>
+                    <thead className="bg-secondary border-b border-border">
+                      <tr>{["Title (EN / FR)","Level","Duration","Days/wk","Exercises","Public",""].map((h,i) => <th key={i} className="px-4 py-3 text-left font-medium text-muted-foreground">{h}</th>)}</tr>
                     </thead>
-                    <tbody className="divide-y">
+                    <tbody className="divide-y divide-border">
                       {routinesLoading ? (
-                        <tr><td colSpan={7} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-gray-400" /></td></tr>
+                        <tr><td colSpan={7} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground/60" /></td></tr>
                       ) : filteredRoutines.length === 0 ? (
-                        <tr><td colSpan={7} className="text-center py-8 text-gray-400">No routines. Click "Add Routine".</td></tr>
-                      ) : filteredRoutines.map(r => (
-                        <tr key={r._id} className="hover:bg-gray-50">
+                        <tr><td colSpan={7} className="text-center py-8 text-muted-foreground/60">No routines. Click "Add Routine".</td></tr>
+                      ) : filteredRoutines.map((r) => (
+                        <tr key={r._id} className="hover:bg-muted/30">
                           <td className="px-4 py-3">
                             <div className="font-medium">{r.title?.en}</div>
-                            <div className="text-xs text-gray-400">{r.title?.fr}</div>
+                            <div className="text-xs text-muted-foreground/50">{r.title?.fr}</div>
                           </td>
                           <td className="px-4 py-3"><Badge variant="outline">{r.level}</Badge></td>
-                          <td className="px-4 py-3 text-gray-600">{r.duration}</td>
-                          <td className="px-4 py-3 text-gray-600">{r.daysPerWeek}</td>
-                          <td className="px-4 py-3 text-gray-600">{r.exercises}</td>
-                          <td className="px-4 py-3">{r.isPublic ? <Badge className="bg-green-100 text-green-800">Public</Badge> : <Badge variant="secondary">Private</Badge>}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{r.duration}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{r.daysPerWeek}</td>
+                          <td className="px-4 py-3 text-muted-foreground">{r.exercises}</td>
+                          <td className="px-4 py-3">{r.isPublic ? <Badge className="bg-primary/20 text-primary">Public</Badge> : <Badge variant="secondary">Private</Badge>}</td>
                           <td className="px-4 py-3">
                             <div className="flex gap-1">
                               <Button variant="ghost" size="icon" onClick={() => openRoutineModal(r)}><Pencil className="h-4 w-4" /></Button>
-                              <Button variant="ghost" size="icon" className="text-red-500" onClick={() => handleDeleteRoutine(r._id)}><Trash2 className="h-4 w-4" /></Button>
+                              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteRoutine(r._id)}><Trash2 className="h-4 w-4" /></Button>
                             </div>
                           </td>
                         </tr>
@@ -834,36 +812,37 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="flex gap-3 mb-5">
                   <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input placeholder="Search muscle groups…" value={muscleSearch} onChange={e => setMuscleSearch(e.target.value)} className="pl-9" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                    <Input placeholder="Search muscle groups…" value={muscleSearch} onChange={(e) => setMuscleSearch(e.target.value)} className="pl-9" />
                   </div>
-                  {musclesLoading && <Loader2 className="h-5 w-5 animate-spin text-gray-400 self-center" />}
+                  {musclesLoading && <Loader2 className="h-5 w-5 animate-spin text-muted-foreground/60 self-center" />}
                 </div>
 
                 {musclesError && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{String(musclesError)}</AlertDescription></Alert>}
 
                 {!musclesLoading && muscles.length === 0 && (
                   <div className="text-center py-16 space-y-3">
-                    <Video className="h-10 w-10 text-gray-300 mx-auto" />
-                    <p className="text-gray-500">No muscle data in database.</p>
-                    <p className="text-sm text-gray-400">The database will be seeded automatically on next server start.</p>
+                    <Video className="h-10 w-10 text-muted-foreground/30 mx-auto" />
+                    <p className="text-muted-foreground">No muscle data in database.</p>
+                    <p className="text-sm text-muted-foreground/60">The database will be seeded automatically on next server start.</p>
                   </div>
                 )}
 
                 <div className="space-y-2">
-                  {filteredMuscles.map(muscle => {
+                  {filteredMuscles.map((muscle) => {
                     const isOpen   = expandedMuscles.has(muscle.muscleId);
                     const totalEx  = muscle.exercises?.length || 0;
                     const activeEx = muscle.exercises?.filter((e: any) => e.isActive).length || 0;
                     return (
                       <Collapsible key={muscle.muscleId} open={isOpen} onOpenChange={() => toggleMuscleOpen(muscle.muscleId)}>
-                        {/* ── Muscle group header ── */}
                         <CollapsibleTrigger asChild>
-                          <button className="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-white border border-border hover:bg-gray-50 transition-colors text-left">
+                          <button className="w-full flex items-center justify-between px-4 py-3 rounded-lg bg-card border border-border hover:bg-muted/30 transition-colors text-left">
                             <div className="flex items-center gap-3">
-                              {isOpen ? <ChevronDown className="h-4 w-4 text-gray-400" /> : <ChevronRight className="h-4 w-4 text-gray-400" />}
+                              {isOpen
+                                ? <ChevronDown className="h-4 w-4 text-muted-foreground/60" />
+                                : <ChevronRight className="h-4 w-4 text-muted-foreground/60" />}
                               <span className="font-semibold">{muscle.name?.en}</span>
-                              <span className="text-xs text-gray-400">/ {muscle.name?.fr}</span>
+                              <span className="text-xs text-muted-foreground/50">/ {muscle.name?.fr}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               <Badge variant="outline" className="text-xs">{activeEx}/{totalEx} active</Badge>
@@ -872,12 +851,11 @@ const AdminDashboard = () => {
                           </button>
                         </CollapsibleTrigger>
 
-                        {/* ── Exercises list ── */}
                         <CollapsibleContent>
                           <div className="ml-4 mt-1 space-y-2 pb-3">
 
                             {totalEx === 0 && (
-                              <p className="text-xs text-gray-400 px-4 py-2 italic">No exercises yet.</p>
+                              <p className="text-xs text-muted-foreground/60 px-4 py-2 italic">No exercises yet.</p>
                             )}
 
                             {muscle.exercises?.map((ex: any) => {
@@ -888,50 +866,58 @@ const AdminDashboard = () => {
                               const fF = ex.videos?.female?.front;
                               const fS = ex.videos?.female?.side;
                               return (
-                                <div key={ex.exerciseId} className={`rounded-lg border p-3 transition-opacity ${ex.isActive ? "bg-white border-border" : "bg-gray-50 border-dashed border-gray-200 opacity-60"}`}>
+                                <div
+                                  key={ex.exerciseId}
+                                  className={`rounded-lg border p-3 transition-opacity ${
+                                    ex.isActive
+                                      ? "bg-card border-border"
+                                      : "bg-secondary/30 border-dashed border-border opacity-60"
+                                  }`}
+                                >
                                   <div className="flex items-start justify-between gap-2">
-
                                     {/* Left: exercise info */}
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2 flex-wrap">
                                         <span className="font-medium text-sm">{ex.name?.en}</span>
-                                        <span className="text-xs text-gray-400">/ {ex.name?.fr}</span>
-                                        <Badge className={`text-xs ${diffColor[ex.difficulty] || "bg-gray-100 text-gray-600"}`}>{ex.difficulty}</Badge>
-                                        <span className="text-xs text-gray-400">ID: {ex.exerciseId}</span>
+                                        <span className="text-xs text-muted-foreground/50">/ {ex.name?.fr}</span>
+                                        <Badge className={`text-xs ${diffColor[ex.difficulty] || "bg-secondary text-muted-foreground"}`}>{ex.difficulty}</Badge>
+                                        <span className="text-xs text-muted-foreground/50">ID: {ex.exerciseId}</span>
                                       </div>
 
                                       {/* Video status pills */}
                                       <div className="flex gap-2 mt-1.5 flex-wrap">
                                         {([["male", mF, mS], ["female", fF, fS]] as [string,string,string][]).map(([g, front, side]) => (
-                                          <span key={g} className={`text-xs px-2 py-0.5 rounded-full border capitalize ${front||side ? "border-green-200 bg-green-50 text-green-700" : "border-gray-200 text-gray-400"}`}>
+                                          <span key={g} className={`text-xs px-2 py-0.5 rounded-full border capitalize ${
+                                            front||side
+                                              ? "border-primary/30 bg-primary/10 text-primary"
+                                              : "border-border text-muted-foreground/50"
+                                          }`}>
                                             {g}: {front ? "front✓" : "front✗"} {side ? "side✓" : "side✗"}
                                           </span>
                                         ))}
                                       </div>
 
-                                      {/* Video edit buttons (male / female) */}
+                                      {/* Video edit buttons */}
                                       <VideoEditor muscleId={muscle.muscleId} exercise={ex} onSaved={fetchMuscles} />
                                     </div>
 
                                     {/* Right: actions */}
                                     <div className="flex flex-col gap-1 shrink-0">
-                                      {/* Edit full exercise */}
                                       <button
                                         onClick={() => openEditExercise(muscle, ex)}
-                                        className="flex items-center gap-1 px-2 py-1 rounded text-xs border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                                        className="flex items-center gap-1 px-2 py-1 rounded text-xs border border-border text-muted-foreground hover:bg-muted/30 transition-colors"
                                         title="Edit this exercise"
                                       >
                                         <Pencil className="h-3 w-3" /> Edit
                                       </button>
 
-                                      {/* Toggle visible */}
                                       <button
                                         disabled={isToggling}
                                         onClick={() => handleToggleExercise(muscle.muscleId, ex.exerciseId, !ex.isActive)}
                                         className={`flex items-center gap-1 px-2 py-1 rounded text-xs border transition-colors ${
                                           ex.isActive
-                                            ? "border-green-300 text-green-700 bg-green-50 hover:bg-green-100"
-                                            : "border-gray-200 text-gray-500 bg-white hover:bg-gray-50"
+                                            ? "border-primary/30 text-primary bg-primary/10 hover:bg-primary/20"
+                                            : "border-border text-muted-foreground bg-card hover:bg-muted/30"
                                         }`}
                                       >
                                         {isToggling
@@ -942,10 +928,9 @@ const AdminDashboard = () => {
                                         }
                                       </button>
 
-                                      {/* Delete */}
                                       <button
                                         onClick={() => handleDeleteExercise(muscle.muscleId, ex.exerciseId, ex.name?.en)}
-                                        className="flex items-center gap-1 px-2 py-1 rounded text-xs border border-red-200 text-red-500 hover:bg-red-50 transition-colors"
+                                        className="flex items-center gap-1 px-2 py-1 rounded text-xs border border-destructive/30 text-destructive hover:bg-destructive/10 transition-colors"
                                         title="Delete exercise"
                                       >
                                         <Trash2 className="h-3 w-3" /> Delete
@@ -956,7 +941,6 @@ const AdminDashboard = () => {
                               );
                             })}
 
-                            {/* ── Add Exercise button ── */}
                             <button
                               onClick={() => openAddExercise(muscle)}
                               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 border-dashed border-primary/30 text-primary/70 hover:border-primary/60 hover:text-primary hover:bg-primary/5 transition-colors text-sm font-medium"
@@ -987,16 +971,16 @@ const AdminDashboard = () => {
           <div className="space-y-4 py-2">
             <div className="space-y-1">
               <Label>Plan</Label>
-              <Select value={editSubForm.plan} onValueChange={v => setEditSubForm(p => ({ ...p, plan: v }))}>
+              <Select value={editSubForm.plan} onValueChange={(v) => setEditSubForm((p) => ({ ...p, plan: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{["free","pro","premium"].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+                <SelectContent>{["free","pro","premium"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="space-y-1">
               <Label>Status</Label>
-              <Select value={editSubForm.status} onValueChange={v => setEditSubForm(p => ({ ...p, status: v }))}>
+              <Select value={editSubForm.status} onValueChange={(v) => setEditSubForm((p) => ({ ...p, status: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{["active","cancelled","expired"].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+                <SelectContent>{["active","cancelled","expired"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
               </Select>
             </div>
           </div>
@@ -1018,32 +1002,30 @@ const AdminDashboard = () => {
           </DialogHeader>
           {workoutError && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{workoutError}</AlertDescription></Alert>}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
-            <div className="md:col-span-2 space-y-1"><Label>Title</Label><Input value={workoutForm.title} onChange={e => setWorkoutForm((p: any) => ({ ...p, title: e.target.value }))} placeholder="e.g. Full Body Strength" /></div>
-            <div className="md:col-span-2 space-y-1"><Label>Description</Label><Textarea rows={2} value={workoutForm.description} onChange={e => setWorkoutForm((p: any) => ({ ...p, description: e.target.value }))} /></div>
+            <div className="md:col-span-2 space-y-1"><Label>Title</Label><Input value={workoutForm.title} onChange={(e) => setWorkoutForm((p: any) => ({ ...p, title: e.target.value }))} placeholder="e.g. Full Body Strength" /></div>
+            <div className="md:col-span-2 space-y-1"><Label>Description</Label><Textarea rows={2} value={workoutForm.description} onChange={(e) => setWorkoutForm((p: any) => ({ ...p, description: e.target.value }))} /></div>
             <div className="space-y-1">
               <Label>Level</Label>
-              <Select value={workoutForm.level} onValueChange={v => setWorkoutForm((p: any) => ({ ...p, level: v }))}>
+              <Select value={workoutForm.level} onValueChange={(v) => setWorkoutForm((p: any) => ({ ...p, level: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{["Débutant","Intermédiaire","Expert"].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+                <SelectContent>{["Débutant","Intermédiaire","Expert"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
               </Select>
             </div>
             <div className="space-y-1">
               <Label>Type</Label>
-              <Select value={workoutForm.type} onValueChange={v => setWorkoutForm((p: any) => ({ ...p, type: v }))}>
+              <Select value={workoutForm.type} onValueChange={(v) => setWorkoutForm((p: any) => ({ ...p, type: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{["Prise de masse","Perte de poids","Endurance","Force","Full Body"].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+                <SelectContent>{["Prise de masse","Perte de poids","Endurance","Force","Full Body"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <div className="space-y-1"><Label>Duration (min)</Label><Input type="number" value={workoutForm.duration} onChange={e => setWorkoutForm((p: any) => ({ ...p, duration: Number(e.target.value) }))} /></div>
+            <div className="space-y-1"><Label>Duration (min)</Label><Input type="number" value={workoutForm.duration} onChange={(e) => setWorkoutForm((p: any) => ({ ...p, duration: Number(e.target.value) }))} /></div>
             <div className="flex items-center gap-6 pt-6">
-              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={workoutForm.isPremium} onChange={e => setWorkoutForm((p: any) => ({ ...p, isPremium: e.target.checked }))} className="rounded" />Premium</label>
-              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={workoutForm.isPublic} onChange={e => setWorkoutForm((p: any) => ({ ...p, isPublic: e.target.checked }))} className="rounded" />Public</label>
+              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={workoutForm.isPremium} onChange={(e) => setWorkoutForm((p: any) => ({ ...p, isPremium: e.target.checked }))} className="rounded" />Premium</label>
+              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={workoutForm.isPublic} onChange={(e) => setWorkoutForm((p: any) => ({ ...p, isPublic: e.target.checked }))} className="rounded" />Public</label>
             </div>
 
-            {/* Exercises section */}
             <div className="md:col-span-2 space-y-3">
               <Label>Exercises</Label>
-
               {(workoutForm.exercises || []).map((ex: any, i: number) => {
                 const updateEx = (patch: any) => {
                   const arr = [...workoutForm.exercises];
@@ -1051,38 +1033,19 @@ const AdminDashboard = () => {
                   setWorkoutForm((p: any) => ({ ...p, exercises: arr }));
                 };
                 return (
-                  <div key={i} className="rounded-lg border bg-muted/20 p-3 space-y-2">
-                    {/* Row 1: Sets + Reps + Delete */}
+                  <div key={i} className="rounded-lg border border-border bg-secondary/30 p-3 space-y-2">
                     <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Sets"
-                        value={ex.sets || ""}
-                        onChange={e => updateEx({ sets: Number(e.target.value) })}
-                        className="w-20 text-center"
-                      />
+                      <Input type="number" placeholder="Sets" value={ex.sets || ""} onChange={(e) => updateEx({ sets: Number(e.target.value) })} className="w-20 text-center" />
                       <span className="text-muted-foreground text-xs">×</span>
-                      <Input
-                        placeholder="Reps"
-                        value={ex.reps || ""}
-                        onChange={e => updateEx({ reps: e.target.value })}
-                        className="w-24 text-center"
-                      />
+                      <Input placeholder="Reps" value={ex.reps || ""} onChange={(e) => updateEx({ reps: e.target.value })} className="w-24 text-center" />
                       <span className="text-xs text-muted-foreground flex-1 pl-1">sets × reps</span>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-red-500 shrink-0"
-                        onClick={() => {
-                          const arr = workoutForm.exercises.filter((_: any, j: number) => j !== i);
-                          setWorkoutForm((p: any) => ({ ...p, exercises: arr }));
-                        }}
-                      >
+                      <Button variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => {
+                        const arr = workoutForm.exercises.filter((_: any, j: number) => j !== i);
+                        setWorkoutForm((p: any) => ({ ...p, exercises: arr }));
+                      }}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
-
-                    {/* Row 2: Exercise picker (searchable) */}
                     <div className="space-y-1">
                       <p className="text-xs text-muted-foreground">Link to muscle exercise video (optional):</p>
                       <ExercisePicker
@@ -1091,22 +1054,11 @@ const AdminDashboard = () => {
                         onChange={(picked) => updateEx({ muscleExerciseId: picked.exerciseId, name: ex.name || picked.name })}
                       />
                     </div>
-
-                    {/* Row 3: Custom exercise name (pre-filled from picker, editable) */}
-                    <Input
-                      placeholder="Exercise name (auto-filled from picker, or type manually)"
-                      value={ex.name || ""}
-                      onChange={e => updateEx({ name: e.target.value })}
-                    />
+                    <Input placeholder="Exercise name (auto-filled from picker, or type manually)" value={ex.name || ""} onChange={(e) => updateEx({ name: e.target.value })} />
                   </div>
                 );
               })}
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setWorkoutForm((p: any) => ({ ...p, exercises: [...(p.exercises || []), { name: "", sets: 3, reps: "10", muscleExerciseId: null }] }))}
-              >
+              <Button variant="outline" size="sm" onClick={() => setWorkoutForm((p: any) => ({ ...p, exercises: [...(p.exercises || []), { name: "", sets: 3, reps: "10", muscleExerciseId: null }] }))}>
                 <Plus className="mr-1 h-3 w-3" />Add Exercise
               </Button>
             </div>
@@ -1129,25 +1081,25 @@ const AdminDashboard = () => {
           </DialogHeader>
           {routineError && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{routineError}</AlertDescription></Alert>}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
-            <div className="space-y-1"><Label>Title (English)</Label><Input value={routineForm.title?.en || ""} onChange={e => setRoutineForm((p: any) => ({ ...p, title: { ...p.title, en: e.target.value } }))} placeholder="e.g. Full Body Workout" /></div>
-            <div className="space-y-1"><Label>Title (French)</Label><Input value={routineForm.title?.fr || ""} onChange={e => setRoutineForm((p: any) => ({ ...p, title: { ...p.title, fr: e.target.value } }))} placeholder="e.g. Entraînement corps entier" /></div>
-            <div className="md:col-span-2 space-y-1"><Label>Description (English)</Label><Textarea rows={2} value={routineForm.description?.en || ""} onChange={e => setRoutineForm((p: any) => ({ ...p, description: { ...p.description, en: e.target.value } }))} /></div>
-            <div className="md:col-span-2 space-y-1"><Label>Description (French)</Label><Textarea rows={2} value={routineForm.description?.fr || ""} onChange={e => setRoutineForm((p: any) => ({ ...p, description: { ...p.description, fr: e.target.value } }))} /></div>
+            <div className="space-y-1"><Label>Title (English)</Label><Input value={routineForm.title?.en || ""} onChange={(e) => setRoutineForm((p: any) => ({ ...p, title: { ...p.title, en: e.target.value } }))} placeholder="e.g. Full Body Workout" /></div>
+            <div className="space-y-1"><Label>Title (French)</Label><Input value={routineForm.title?.fr || ""} onChange={(e) => setRoutineForm((p: any) => ({ ...p, title: { ...p.title, fr: e.target.value } }))} placeholder="e.g. Entraînement corps entier" /></div>
+            <div className="md:col-span-2 space-y-1"><Label>Description (English)</Label><Textarea rows={2} value={routineForm.description?.en || ""} onChange={(e) => setRoutineForm((p: any) => ({ ...p, description: { ...p.description, en: e.target.value } }))} /></div>
+            <div className="md:col-span-2 space-y-1"><Label>Description (French)</Label><Textarea rows={2} value={routineForm.description?.fr || ""} onChange={(e) => setRoutineForm((p: any) => ({ ...p, description: { ...p.description, fr: e.target.value } }))} /></div>
             <div className="space-y-1">
               <Label>Level</Label>
-              <Select value={routineForm.level} onValueChange={v => setRoutineForm((p: any) => ({ ...p, level: v }))}>
+              <Select value={routineForm.level} onValueChange={(v) => setRoutineForm((p: any) => ({ ...p, level: v }))}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>{["Beginner","Intermediate","Advanced"].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+                <SelectContent>{["Beginner","Intermediate","Advanced"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
               </Select>
             </div>
-            <div className="space-y-1"><Label>Duration</Label><Input value={routineForm.duration} onChange={e => setRoutineForm((p: any) => ({ ...p, duration: e.target.value }))} placeholder="45 min" /></div>
-            <div className="space-y-1"><Label>Days Per Week</Label><Input type="number" min={1} max={7} value={routineForm.daysPerWeek} onChange={e => setRoutineForm((p: any) => ({ ...p, daysPerWeek: Number(e.target.value) }))} /></div>
-            <div className="space-y-1"><Label>No. of Exercises</Label><Input type="number" min={1} value={routineForm.exercises} onChange={e => setRoutineForm((p: any) => ({ ...p, exercises: Number(e.target.value) }))} /></div>
-            <div className="space-y-1"><Label>Focus Tags <span className="text-xs text-muted-foreground">(comma-separated)</span></Label><Input value={(routineForm.focus || []).join(", ")} onChange={e => setRoutineForm((p: any) => ({ ...p, focus: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} placeholder="Strength, Full Body" /></div>
-            <div className="space-y-1"><Label>Display Order</Label><Input type="number" value={routineForm.order || 0} onChange={e => setRoutineForm((p: any) => ({ ...p, order: Number(e.target.value) }))} /></div>
+            <div className="space-y-1"><Label>Duration</Label><Input value={routineForm.duration} onChange={(e) => setRoutineForm((p: any) => ({ ...p, duration: e.target.value }))} placeholder="45 min" /></div>
+            <div className="space-y-1"><Label>Days Per Week</Label><Input type="number" min={1} max={7} value={routineForm.daysPerWeek} onChange={(e) => setRoutineForm((p: any) => ({ ...p, daysPerWeek: Number(e.target.value) }))} /></div>
+            <div className="space-y-1"><Label>No. of Exercises</Label><Input type="number" min={1} value={routineForm.exercises} onChange={(e) => setRoutineForm((p: any) => ({ ...p, exercises: Number(e.target.value) }))} /></div>
+            <div className="space-y-1"><Label>Focus Tags <span className="text-xs text-muted-foreground">(comma-separated)</span></Label><Input value={(routineForm.focus || []).join(", ")} onChange={(e) => setRoutineForm((p: any) => ({ ...p, focus: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} placeholder="Strength, Full Body" /></div>
+            <div className="space-y-1"><Label>Display Order</Label><Input type="number" value={routineForm.order || 0} onChange={(e) => setRoutineForm((p: any) => ({ ...p, order: Number(e.target.value) }))} /></div>
             <div className="flex items-center gap-6 pt-4">
-              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={routineForm.isPremium} onChange={e => setRoutineForm((p: any) => ({ ...p, isPremium: e.target.checked }))} className="rounded" />Premium</label>
-              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={routineForm.isPublic} onChange={e => setRoutineForm((p: any) => ({ ...p, isPublic: e.target.checked }))} className="rounded" />Public</label>
+              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={routineForm.isPremium} onChange={(e) => setRoutineForm((p: any) => ({ ...p, isPremium: e.target.checked }))} className="rounded" />Premium</label>
+              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={routineForm.isPublic} onChange={(e) => setRoutineForm((p: any) => ({ ...p, isPublic: e.target.checked }))} className="rounded" />Public</label>
             </div>
           </div>
           <DialogFooter>
@@ -1176,53 +1128,39 @@ const AdminDashboard = () => {
           {exError && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{exError}</AlertDescription></Alert>}
 
           <div className="space-y-5 py-2">
-
-            {/* ── Basic info ── */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Exercise ID <span className="text-xs text-muted-foreground">(unique number)</span></Label>
-                <Input
-                  type="number"
-                  value={exForm.exerciseId}
-                  disabled={!!editingExercise}
-                  onChange={e => setExForm((p: any) => ({ ...p, exerciseId: e.target.value }))}
-                  placeholder="e.g. 9999"
-                />
+                <Input type="number" value={exForm.exerciseId} disabled={!!editingExercise} onChange={(e) => setExForm((p: any) => ({ ...p, exerciseId: e.target.value }))} placeholder="e.g. 9999" />
                 {!editingExercise && <p className="text-xs text-muted-foreground">Pick any number not already used in this muscle group.</p>}
               </div>
               <div className="space-y-1">
                 <Label>Difficulty</Label>
-                <Select value={exForm.difficulty} onValueChange={v => setExForm((p: any) => ({ ...p, difficulty: v }))}>
+                <Select value={exForm.difficulty} onValueChange={(v) => setExForm((p: any) => ({ ...p, difficulty: v }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {["Beginner","Intermediate","Advanced","Novice"].map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}
-                  </SelectContent>
+                  <SelectContent>{["Beginner","Intermediate","Advanced","Novice"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1">
                 <Label>Name (English)</Label>
-                <Input value={exForm.name.en} onChange={e => setExForm((p: any) => ({ ...p, name: { ...p.name, en: e.target.value } }))} placeholder="e.g. Dumbbell Curl" />
+                <Input value={exForm.name.en} onChange={(e) => setExForm((p: any) => ({ ...p, name: { ...p.name, en: e.target.value } }))} placeholder="e.g. Dumbbell Curl" />
               </div>
               <div className="space-y-1">
                 <Label>Name (French)</Label>
-                <Input value={exForm.name.fr} onChange={e => setExForm((p: any) => ({ ...p, name: { ...p.name, fr: e.target.value } }))} placeholder="e.g. Curl haltères" />
+                <Input value={exForm.name.fr} onChange={(e) => setExForm((p: any) => ({ ...p, name: { ...p.name, fr: e.target.value } }))} placeholder="e.g. Curl haltères" />
               </div>
             </div>
 
-            {/* ── Male Videos ── */}
-            <div className="rounded-lg border p-4 space-y-3 bg-blue-50/30">
-              <p className="text-sm font-semibold text-blue-700 flex items-center gap-2"><Video className="h-4 w-4" /> Male Videos</p>
+            {/* Male Videos */}
+            <div className="rounded-lg border border-primary/20 p-4 space-y-3 bg-primary/5">
+              <p className="text-sm font-semibold text-primary flex items-center gap-2"><Video className="h-4 w-4" /> Male Videos</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs">Front URL (.gif / .mp4)</Label>
-                  <Input
-                    value={exForm.videos.male.front}
-                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, male: { ...p.videos.male, front: e.target.value } } }))}
-                    placeholder="/Images/male-exercise-front.gif"
-                  />
+                  <Input value={exForm.videos.male.front} onChange={(e) => setExForm((p: any) => ({ ...p, videos: { ...p.videos, male: { ...p.videos.male, front: e.target.value } } }))} placeholder="/Images/male-exercise-front.gif" />
                   {exForm.videos.male.front && (
-                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
-                      {exForm.videos.male.front.endsWith('.mp4')
+                    <div className="mt-1 rounded border border-border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.male.front.endsWith(".mp4")
                         ? <video src={exForm.videos.male.front} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
                         : <img src={exForm.videos.male.front} alt="" className="w-full max-h-24 object-contain" />}
                     </div>
@@ -1230,14 +1168,10 @@ const AdminDashboard = () => {
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Side URL (.gif / .mp4)</Label>
-                  <Input
-                    value={exForm.videos.male.side}
-                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, male: { ...p.videos.male, side: e.target.value } } }))}
-                    placeholder="/Images/male-exercise-side.gif"
-                  />
+                  <Input value={exForm.videos.male.side} onChange={(e) => setExForm((p: any) => ({ ...p, videos: { ...p.videos, male: { ...p.videos.male, side: e.target.value } } }))} placeholder="/Images/male-exercise-side.gif" />
                   {exForm.videos.male.side && (
-                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
-                      {exForm.videos.male.side.endsWith('.mp4')
+                    <div className="mt-1 rounded border border-border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.male.side.endsWith(".mp4")
                         ? <video src={exForm.videos.male.side} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
                         : <img src={exForm.videos.male.side} alt="" className="w-full max-h-24 object-contain" />}
                     </div>
@@ -1246,20 +1180,16 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* ── Female Videos ── */}
-            <div className="rounded-lg border p-4 space-y-3 bg-pink-50/30">
-              <p className="text-sm font-semibold text-pink-700 flex items-center gap-2"><Video className="h-4 w-4" /> Female Videos</p>
+            {/* Female Videos */}
+            <div className="rounded-lg border border-accent/20 p-4 space-y-3 bg-accent/5">
+              <p className="text-sm font-semibold text-accent flex items-center gap-2"><Video className="h-4 w-4" /> Female Videos</p>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs">Front URL (.gif / .mp4)</Label>
-                  <Input
-                    value={exForm.videos.female.front}
-                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, female: { ...p.videos.female, front: e.target.value } } }))}
-                    placeholder="https://media.musclewiki.com/…front.mp4"
-                  />
+                  <Input value={exForm.videos.female.front} onChange={(e) => setExForm((p: any) => ({ ...p, videos: { ...p.videos, female: { ...p.videos.female, front: e.target.value } } }))} placeholder="https://media.musclewiki.com/…front.mp4" />
                   {exForm.videos.female.front && (
-                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
-                      {exForm.videos.female.front.endsWith('.mp4')
+                    <div className="mt-1 rounded border border-border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.female.front.endsWith(".mp4")
                         ? <video src={exForm.videos.female.front} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
                         : <img src={exForm.videos.female.front} alt="" className="w-full max-h-24 object-contain" />}
                     </div>
@@ -1267,14 +1197,10 @@ const AdminDashboard = () => {
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Side URL (.gif / .mp4)</Label>
-                  <Input
-                    value={exForm.videos.female.side}
-                    onChange={e => setExForm((p: any) => ({ ...p, videos: { ...p.videos, female: { ...p.videos.female, side: e.target.value } } }))}
-                    placeholder="https://media.musclewiki.com/…side.mp4"
-                  />
+                  <Input value={exForm.videos.female.side} onChange={(e) => setExForm((p: any) => ({ ...p, videos: { ...p.videos, female: { ...p.videos.female, side: e.target.value } } }))} placeholder="https://media.musclewiki.com/…side.mp4" />
                   {exForm.videos.female.side && (
-                    <div className="mt-1 rounded border overflow-hidden max-h-24 bg-muted/30">
-                      {exForm.videos.female.side.endsWith('.mp4')
+                    <div className="mt-1 rounded border border-border overflow-hidden max-h-24 bg-muted/30">
+                      {exForm.videos.female.side.endsWith(".mp4")
                         ? <video src={exForm.videos.female.side} className="w-full max-h-24 object-contain" autoPlay loop muted playsInline />
                         : <img src={exForm.videos.female.side} alt="" className="w-full max-h-24 object-contain" />}
                     </div>
@@ -1283,25 +1209,15 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {/* ── Steps ── */}
+            {/* Steps */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
                 <Label>Steps (English) <span className="text-xs text-muted-foreground">— one step per line</span></Label>
-                <Textarea
-                  rows={5}
-                  value={exForm.steps.en}
-                  onChange={e => setExForm((p: any) => ({ ...p, steps: { ...p.steps, en: e.target.value } }))}
-                  placeholder={"Lay flat on your back.\nLift legs to 90°.\nLower slowly."}
-                />
+                <Textarea rows={5} value={exForm.steps.en} onChange={(e) => setExForm((p: any) => ({ ...p, steps: { ...p.steps, en: e.target.value } }))} placeholder={"Lay flat on your back.\nLift legs to 90°.\nLower slowly."} />
               </div>
               <div className="space-y-1">
                 <Label>Steps (French) <span className="text-xs text-muted-foreground">— une étape par ligne</span></Label>
-                <Textarea
-                  rows={5}
-                  value={exForm.steps.fr}
-                  onChange={e => setExForm((p: any) => ({ ...p, steps: { ...p.steps, fr: e.target.value } }))}
-                  placeholder={"Allongez-vous sur le dos.\nMontez les jambes à 90°.\nRedescendez lentement."}
-                />
+                <Textarea rows={5} value={exForm.steps.fr} onChange={(e) => setExForm((p: any) => ({ ...p, steps: { ...p.steps, fr: e.target.value } }))} placeholder={"Allongez-vous sur le dos.\nMontez les jambes à 90°.\nRedescendez lentement."} />
               </div>
             </div>
           </div>

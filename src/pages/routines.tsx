@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Search, Clock, Dumbbell, Target, ChevronRight, Loader2 } from "lucide-react";
+import { Clock, Dumbbell, Target, ChevronRight, Loader2, Search } from "lucide-react";
 import { useTranslation } from "@/i18n";
 import api from "@/services/api";
+import { cn } from "@/lib/utils";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 interface Routine {
   _id:         string;
   title:       { en: string; fr: string };
@@ -22,202 +18,161 @@ interface Routine {
   order:       number;
 }
 
+const levelColors: Record<string, string> = {
+  Beginner:     "bg-primary/20 text-primary border-primary/30",
+  Intermediate: "bg-accent/20 text-accent border-accent/30",
+  Advanced:     "bg-destructive/20 text-destructive border-destructive/30",
+};
+
 const Routines = () => {
   const [searchTerm, setSearchTerm]       = useState("");
   const [selectedLevel, setSelectedLevel] = useState("All");
   const { t, lang } = useTranslation();
-
   const [routines, setRoutines]     = useState<Routine[]>([]);
   const [loading, setLoading]       = useState(true);
   const [error, setError]           = useState<string | null>(null);
 
-  // ─── Fetch from backend ───────────────────────────────────────────────────
   useEffect(() => {
     const fetchRoutines = async () => {
-      setLoading(true);
-      setError(null);
+      setLoading(true); setError(null);
       try {
         const res = await api.get("/admin/routines/public");
         setRoutines(res.data.data || []);
-      } catch (e: any) {
-        setError(e?.response?.data?.message || "Failed to load routines");
-      } finally {
-        setLoading(false);
-      }
+      } catch (e: any) { setError(e?.response?.data?.message || "Failed to load routines"); }
+      finally { setLoading(false); }
     };
     fetchRoutines();
   }, []);
 
-  // ─── Helpers ──────────────────────────────────────────────────────────────
   const levels = ["All", "Beginner", "Intermediate", "Advanced"];
-
   const levelKeys: Record<string, string> = {
-    Beginner:     "routines.beginner",
-    Intermediate: "routines.intermediate",
-    Advanced:     "routines.advanced",
+    Beginner: "routines.beginner", Intermediate: "routines.intermediate", Advanced: "routines.advanced",
   };
 
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case "Beginner":     return "bg-green-500/20 text-green-400 border-green-500/50";
-      case "Intermediate": return "bg-orange-500/20 text-orange-400 border-orange-500/50";
-      case "Advanced":     return "bg-red-500/20 text-red-400 border-red-500/50";
-      default:             return "bg-muted text-muted-foreground";
-    }
-  };
-
-  // ─── Filter ───────────────────────────────────────────────────────────────
   const filteredRoutines = routines.filter((r) => {
-    const title       = lang === "fr" ? r.title.fr       : r.title.en;
+    const title       = lang === "fr" ? r.title.fr : r.title.en;
     const description = lang === "fr" ? r.description.fr : r.description.en;
-    const matchesSearch =
-      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesLevel = selectedLevel === "All" || r.level === selectedLevel;
-    return matchesSearch && matchesLevel;
+    return (
+      (title.toLowerCase().includes(searchTerm.toLowerCase()) || description.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      (selectedLevel === "All" || r.level === selectedLevel)
+    );
   });
 
-  // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
-        <div className="container mx-auto px-4 py-16 relative">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-            {t("routines.title")}
-          </h1>
-          <p className="text-muted-foreground text-center text-lg max-w-2xl mx-auto mb-8">
-            {t("routines.subtitle")}
-          </p>
-          <div className="max-w-md mx-auto relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
+      <div className="relative border-b border-border overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/8 to-transparent pointer-events-none" />
+        <div className="relative max-w-screen-xl mx-auto px-4 lg:px-6 py-12">
+          <h1 className="text-3xl lg:text-5xl font-black text-center text-foreground mb-3">{t("routines.title")}</h1>
+          <p className="text-muted-foreground text-center text-base max-w-xl mx-auto mb-8">{t("routines.subtitle")}</p>
+          <div className="relative max-w-md mx-auto">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <input
+              type="text"
               placeholder={t("routines.searchPlaceholder")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-card border-border"
+              className="w-full bg-card border border-border rounded-xl pl-10 pr-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-colors"
             />
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Level filter */}
-      <section className="container mx-auto px-4 py-6">
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-6 py-5">
         <div className="flex flex-wrap gap-2 justify-center">
           {levels.map((level) => (
-            <Button
+            <button
               key={level}
-              variant={selectedLevel === level ? "default" : "outline"}
-              size="sm"
               onClick={() => setSelectedLevel(level)}
+              className={cn(
+                "px-4 py-1.5 rounded-full text-xs font-semibold border transition-all",
+                selectedLevel === level
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-card text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
+              )}
             >
               {level === "All" ? t("routines.all") : t(levelKeys[level])}
-            </Button>
+            </button>
           ))}
         </div>
-      </section>
+      </div>
 
       {/* Content */}
-      <section className="container mx-auto px-4 pb-16">
-
-        {/* Loading */}
+      <div className="max-w-screen-xl mx-auto px-4 lg:px-6 pb-16">
         {loading && (
-          <div className="flex items-center justify-center py-20">
+          <div className="flex items-center justify-center py-24">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
-
-        {/* Error */}
-        {!loading && error && (
-          <div className="text-center py-16">
-            <p className="text-muted-foreground">{error}</p>
-          </div>
-        )}
-
-        {/* Empty */}
+        {!loading && error && <div className="text-center py-16"><p className="text-muted-foreground">{error}</p></div>}
         {!loading && !error && routines.length === 0 && (
-          <div className="text-center py-16">
-            <p className="text-muted-foreground text-lg">{t("routines.noRoutines")}</p>
-          </div>
+          <div className="text-center py-16"><p className="text-muted-foreground text-lg">{t("routines.noRoutines")}</p></div>
         )}
 
-        {/* Grid */}
         {!loading && !error && filteredRoutines.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filteredRoutines.map((routine, index) => {
-              const title       = lang === "fr" ? routine.title.fr       : routine.title.en;
+              const title       = lang === "fr" ? routine.title.fr : routine.title.en;
               const description = lang === "fr" ? routine.description.fr : routine.description.en;
+              const lc = levelColors[routine.level] ?? "bg-secondary text-muted-foreground border-border";
               return (
-                <Card
+                <div
                   key={routine._id}
-                  className="group bg-card border-border shadow-lg hover:shadow-xl transition-all duration-500 overflow-hidden hover:scale-[1.02]"
-                  style={{ animationDelay: `${index * 100}ms` }}
+                  className="group bg-card border border-border rounded-2xl p-5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300"
+                  style={{ animationDelay: `${index * 60}ms` }}
                 >
-                  <CardHeader className="pb-2">
-                    <div className="flex items-start justify-between gap-2">
-                      <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors duration-300">
-                        {title}
-                      </CardTitle>
-                      <Badge
-                        variant="outline"
-                        className={`${getLevelColor(routine.level)} border shrink-0`}
-                      >
-                        {levelKeys[routine.level] ? t(levelKeys[routine.level]) : routine.level}
-                      </Badge>
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
+                      {title}
+                    </h3>
+                    <span className={cn("px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide rounded-full border shrink-0", lc)}>
+                      {levelKeys[routine.level] ? t(levelKeys[routine.level]) : routine.level}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{description}</p>
+
+                  {routine.focus?.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-4">
+                      {routine.focus.map((tag) => (
+                        <span key={tag} className="px-2 py-0.5 text-[10px] font-medium rounded-full bg-secondary text-muted-foreground">
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                    <CardDescription className="line-clamp-2">{description}</CardDescription>
-                  </CardHeader>
+                  )}
 
-                  <CardContent>
-                    {/* Focus tags */}
-                    {routine.focus?.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {routine.focus.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
+                  <div className="grid grid-cols-3 gap-2 mb-4">
+                    {[
+                      { icon: Clock,    label: t("routines.duration"),  value: routine.duration },
+                      { icon: Target,   label: t("routines.daysWeek"),  value: String(routine.daysPerWeek) },
+                      { icon: Dumbbell, label: t("routines.exercises"), value: String(routine.exercises) },
+                    ].map(({ icon: Icon, label, value }) => (
+                      <div key={label} className="bg-secondary rounded-xl p-2.5 text-center">
+                        <Icon className="h-3.5 w-3.5 mx-auto mb-1 text-primary" />
+                        <p className="text-[10px] text-muted-foreground leading-none mb-0.5">{label}</p>
+                        <p className="text-xs font-bold text-foreground">{value}</p>
                       </div>
-                    )}
+                    ))}
+                  </div>
 
-                    {/* Stats */}
-                    <div className="grid grid-cols-3 gap-4 mb-4 text-center">
-                      <div className="p-2 rounded-lg bg-muted/50">
-                        <Clock className="h-4 w-4 mx-auto mb-1 text-primary" />
-                        <p className="text-xs text-muted-foreground">{t("routines.duration")}</p>
-                        <p className="text-sm font-semibold">{routine.duration}</p>
-                      </div>
-                      <div className="p-2 rounded-lg bg-muted/50">
-                        <Target className="h-4 w-4 mx-auto mb-1 text-primary" />
-                        <p className="text-xs text-muted-foreground">{t("routines.daysWeek")}</p>
-                        <p className="text-sm font-semibold">{routine.daysPerWeek}</p>
-                      </div>
-                      <div className="p-2 rounded-lg bg-muted/50">
-                        <Dumbbell className="h-4 w-4 mx-auto mb-1 text-primary" />
-                        <p className="text-xs text-muted-foreground">{t("routines.exercises")}</p>
-                        <p className="text-sm font-semibold">{routine.exercises}</p>
-                      </div>
-                    </div>
-
-                    <Button className="w-full group/btn">
-                      {t("routines.viewRoutine")}
-                      <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
-                    </Button>
-                  </CardContent>
-                </Card>
+                  <button className="w-full flex items-center justify-center gap-1.5 bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground border border-primary/30 hover:border-primary px-4 py-2.5 rounded-xl text-sm font-bold transition-all duration-200">
+                    {t("routines.viewRoutine")}
+                    <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                  </button>
+                </div>
               );
             })}
           </div>
         )}
 
-        {/* Filtered empty (has routines but search/filter matches nothing) */}
         {!loading && !error && routines.length > 0 && filteredRoutines.length === 0 && (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg">{t("routines.noRoutines")}</p>
           </div>
         )}
-      </section>
+      </div>
     </div>
   );
 };

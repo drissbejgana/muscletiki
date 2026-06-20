@@ -83,10 +83,10 @@ const ExerciseCard = ({
     : exercise.name;
 
   const diffColors: Record<string, string> = {
-    Beginner:     "bg-green-500/20 text-green-400",
-    Intermediate: "bg-orange-500/20 text-orange-400",
-    Advanced:     "bg-red-500/20 text-red-400",
-    Novice:       "bg-green-500/20 text-green-400",
+    Beginner:     "bg-primary/20 text-primary",
+    Intermediate: "bg-accent/20 text-accent",
+    Advanced:     "bg-destructive/20 text-destructive",
+    Novice:       "bg-primary/20 text-primary",
   };
 
   return (
@@ -356,7 +356,7 @@ const WorkoutDetail = () => {
             <Badge variant="secondary">{workout.level}</Badge>
             <Badge variant="outline">{workout.type}</Badge>
             {workout.isPremium && (
-              <Badge className="bg-amber-500/20 text-amber-600 border-amber-500/30 border">Premium</Badge>
+              <Badge className="bg-accent/20 text-accent border-accent/30 border">Premium</Badge>
             )}
           </div>
           <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{workout.title}</h1>
@@ -373,7 +373,7 @@ const WorkoutDetail = () => {
             { icon: <Dumbbell className="w-4 h-4" />,     label: l.equipment, value: `${(workout.equipment || []).length}` },
             { icon: <CheckCircle2 className="w-4 h-4" />, label: l.level,     value: workout.level },
           ].map((stat) => (
-            <div key={stat.label} className="bg-muted/40 rounded-xl p-3 flex flex-col gap-1">
+            <div key={stat.label} className="bg-secondary rounded-xl p-3 flex flex-col gap-1">
               <div className="flex items-center gap-1.5 text-muted-foreground">
                 {stat.icon}
                 <span className="text-xs">{stat.label}</span>

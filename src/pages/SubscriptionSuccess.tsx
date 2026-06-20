@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { subscriptionService } from '../services/subscriptionService';
 import { useTranslation } from '@/i18n';
+import { CheckCircle2, XCircle, Clock, Loader2 } from 'lucide-react';
 
 export default function SubscriptionSuccess() {
   const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState('verifying');
+  const [status, setStatus] = useState<'verifying' | 'success' | 'pending' | 'error'>('verifying');
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -16,18 +17,75 @@ export default function SubscriptionSuccess() {
     if (!sessionId) { setStatus('error'); return; }
     try {
       const result = await subscriptionService.verifySession(sessionId);
-      if (result.status === 'paid') { setStatus('success'); setTimeout(() => navigate('/'), 2000); }
+      if (result.status === 'paid') { setStatus('success'); setTimeout(() => navigate('/'), 2500); }
       else { setStatus('pending'); }
     } catch (error) { console.error('Verification error:', error); setStatus('error'); }
   };
 
+  const states = {
+    verifying: {
+      icon: <Loader2 className="h-10 w-10 text-primary animate-spin" />,
+      iconBg: "bg-primary/15",
+      title: t('subscriptionSuccess.verifying'),
+      desc: t('subscriptionSuccess.pleaseWait'),
+      cta: null,
+    },
+    success: {
+      icon: <CheckCircle2 className="h-10 w-10 text-primary" />,
+      iconBg: "bg-primary/15",
+      title: t('subscriptionSuccess.success'),
+      desc: t('subscriptionSuccess.activated'),
+      cta: null,
+    },
+    pending: {
+      icon: <Clock className="h-10 w-10 text-accent" />,
+      iconBg: "bg-accent/15",
+      title: t('subscriptionSuccess.pending'),
+      desc: t('subscriptionSuccess.processing'),
+      cta: (
+        <button
+          onClick={verifyPayment}
+          className="mt-5 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors"
+        >
+          {t('subscriptionSuccess.checkAgain')}
+        </button>
+      ),
+    },
+    error: {
+      icon: <XCircle className="h-10 w-10 text-destructive" />,
+      iconBg: "bg-destructive/15",
+      title: t('subscriptionSuccess.failed'),
+      desc: t('subscriptionSuccess.cantVerify'),
+      cta: (
+        <button
+          onClick={() => navigate('/subscription')}
+          className="mt-5 bg-primary text-primary-foreground px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-primary/90 transition-colors"
+        >
+          {t('subscriptionSuccess.backToPlans')}
+        </button>
+      ),
+    },
+  };
+
+  const s = states[status];
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-        {status === 'verifying' && (<div><div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#294B8E] mx-auto mb-4"></div><h2 className="text-2xl font-bold text-gray-800 mb-2">{t('subscriptionSuccess.verifying')}</h2><p className="text-gray-600">{t('subscriptionSuccess.pleaseWait')}</p></div>)}
-        {status === 'success' && (<div><div className="text-6xl mb-4">🎉</div><h2 className="text-3xl font-bold text-green-600 mb-2">{t('subscriptionSuccess.success')}</h2><p className="text-gray-600 mb-4">{t('subscriptionSuccess.activated')}</p><div className="bg-green-50 border border-green-200 rounded-lg p-4"><p className="text-green-800 font-semibold">{t('subscriptionSuccess.premiumAccess')}</p></div><p className="text-sm text-gray-500 mt-4">{t('subscriptionSuccess.redirecting')}</p></div>)}
-        {status === 'pending' && (<div><div className="text-6xl mb-4">⏳</div><h2 className="text-2xl font-bold text-yellow-600 mb-2">{t('subscriptionSuccess.pending')}</h2><p className="text-gray-600 mb-4">{t('subscriptionSuccess.processing')}</p><button onClick={() => verifyPayment()} className="bg-[#294B8E] text-white px-6 py-2 rounded-lg hover:bg-[#1f3a6e] transition">{t('subscriptionSuccess.checkAgain')}</button></div>)}
-        {status === 'error' && (<div><div className="text-6xl mb-4">❌</div><h2 className="text-2xl font-bold text-red-600 mb-2">{t('subscriptionSuccess.failed')}</h2><p className="text-gray-600 mb-4">{t('subscriptionSuccess.cantVerify')}</p><button onClick={() => navigate('/subscription/plans')} className="bg-[#294B8E] text-white px-6 py-2 rounded-lg hover:bg-[#1f3a6e] transition">{t('subscriptionSuccess.backToPlans')}</button></div>)}
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <div className="max-w-sm w-full bg-card border border-border rounded-2xl p-8 text-center shadow-2xl shadow-black/40">
+        <div className={`w-20 h-20 ${s.iconBg} rounded-2xl flex items-center justify-center mx-auto mb-5`}>
+          {s.icon}
+        </div>
+        <h2 className="text-xl font-black text-foreground mb-2">{s.title}</h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">{s.desc}</p>
+
+        {status === 'success' && (
+          <div className="mt-5 bg-primary/10 border border-primary/20 rounded-xl p-3">
+            <p className="text-primary font-semibold text-sm">{t('subscriptionSuccess.premiumAccess')}</p>
+            <p className="text-xs text-muted-foreground mt-1">{t('subscriptionSuccess.redirecting')}</p>
+          </div>
+        )}
+
+        {s.cta}
       </div>
     </div>
   );
