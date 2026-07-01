@@ -14,8 +14,9 @@
     --popover:              0   0% 100%;
     --popover-foreground:   222 47% 11%;
 
-    /* ── Brand: emerald green ──────────────────────────────────── */
-    --primary:              160 84% 39%;   /* #10B981 */
+    /* ── Brand: blue (men) ────────────────────────────────────── */
+    --primary:              217 91% 60%;   /* #3B82F6 blue */
+    --primary-light:        217 91% 75%;   /* lighter blue for gradients */
     --primary-foreground:   0   0% 100%;
 
     /* ── Secondary surface ─────────────────────────────────────── */
@@ -35,9 +36,16 @@
     /* ── Borders & inputs ──────────────────────────────────────── */
     --border:               220 13% 88%;   /* #DDE3EC */
     --input:                220 13% 91%;
-    --ring:                 160 84% 39%;
+    --ring:                 217 91% 60%;
 
     --radius: 0.75rem;
+  }
+
+  /* ── Women theme (purple) ──────────────────────────────────── */
+  html[data-gender="female"] {
+    --primary:              270 95% 64%;   /* #A855F7 purple */
+    --primary-light:        270 95% 78%;   /* lighter purple for gradients */
+    --ring:                 270 95% 64%;
   }
 }
 
@@ -83,8 +91,8 @@
 }
 
 .body-map__muscle path:hover {
-  fill: hsl(160 84% 39% / 0.25);
-  stroke: hsl(160 84% 39%);
+  fill: hsl(var(--primary) / 0.25);
+  stroke: hsl(var(--primary));
   stroke-width: 1.5px;
 }
 
@@ -95,14 +103,14 @@
   border: 1px solid hsl(var(--border));
 }
 
-/* ── Utility: green glow ──────────────────────────────────────── */
+/* ── Utility: primary glow ────────────────────────────────────── */
 .glow-green {
-  box-shadow: 0 0 20px hsl(160 84% 39% / 0.25);
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.25);
 }
 
 /* ── Gradient text ────────────────────────────────────────────── */
 .gradient-text {
-  background: linear-gradient(135deg, hsl(160 84% 55%), hsl(160 84% 39%));
+  background: linear-gradient(135deg, hsl(var(--primary-light)), hsl(var(--primary)));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

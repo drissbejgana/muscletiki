@@ -1,10 +1,14 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import MyContext from './MyContext';
 
 const MyContextProvider = ({ children }) => {
 const [advanced, setAdvanced] = useState(false);
   const [homme, setHomme] = useState(false);
   const [articulations, setArticulations] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.dataset.gender = homme ? 'female' : 'male';
+  }, [homme]);
 
 
   return (
