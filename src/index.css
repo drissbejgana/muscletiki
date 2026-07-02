@@ -5,26 +5,26 @@
 @layer base {
   :root {
     /* ── Core surfaces ─────────────────────────────────────────── */
-    --background:           210 20% 98%;   /* #F8FAFC */
+    --background:           220 22% 93%;   /* cool blue-gray, off-white */
     --foreground:           222 47% 11%;   /* #0F172A slate */
 
-    --card:                 0   0% 100%;   /* #FFFFFF */
+    --card:                 220 18% 97%;   /* near-white with subtle tint */
     --card-foreground:      222 47% 11%;
 
-    --popover:              0   0% 100%;
+    --popover:              220 18% 97%;
     --popover-foreground:   222 47% 11%;
 
-    /* ── Brand: blue (men) ────────────────────────────────────── */
-    --primary:              217 91% 60%;   /* #3B82F6 blue */
-    --primary-light:        217 91% 75%;   /* lighter blue for gradients */
+    /* ── Brand: electric blue (men) ───────────────────────────── */
+    --primary:              214 100% 52%;  /* #0573FF electric blue */
+    --primary-light:        214 100% 68%;  /* lighter blue for gradients */
     --primary-foreground:   0   0% 100%;
 
     /* ── Secondary surface ─────────────────────────────────────── */
-    --secondary:            220 14% 95%;   /* #EFF2F7 */
+    --secondary:            220 18% 88%;   /* visible gray, not washed out */
     --secondary-foreground: 222 30% 30%;
 
-    --muted:                220 14% 95%;
-    --muted-foreground:     220  9% 46%;   /* #64748B */
+    --muted:                220 18% 88%;
+    --muted-foreground:     220  9% 44%;
 
     /* ── Accent: warm orange ───────────────────────────────────── */
     --accent:               27  96% 55%;   /* #F97316 */
@@ -34,18 +34,18 @@
     --destructive-foreground: 0 0% 100%;
 
     /* ── Borders & inputs ──────────────────────────────────────── */
-    --border:               220 13% 88%;   /* #DDE3EC */
-    --input:                220 13% 91%;
-    --ring:                 217 91% 60%;
+    --border:               220 16% 82%;   /* clearly visible border */
+    --input:                220 16% 85%;
+    --ring:                 214 100% 52%;
 
     --radius: 0.75rem;
   }
 
   /* ── Women theme (purple) ──────────────────────────────────── */
   html[data-gender="female"] {
-    --primary:              270 95% 64%;   /* #A855F7 purple */
-    --primary-light:        270 95% 78%;   /* lighter purple for gradients */
-    --ring:                 270 95% 64%;
+    --primary:              270 97% 60%;   /* vivid electric purple */
+    --primary-light:        270 97% 74%;   /* lighter purple for gradients */
+    --ring:                 270 97% 60%;
   }
 }
 
