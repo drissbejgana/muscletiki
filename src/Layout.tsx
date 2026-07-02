@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import MobileNavBar from "@/components/MobileNavBar";
 import FitnessPopup from "./components/FitnessPopup";
+import TrainerChat from "./components/TrainerChat";
 import { authService } from '@/services/authService';
 import { useTimeRestriction } from '@/hooks/useTimeRestriction';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -99,6 +100,7 @@ const Layout = ({ children }) => {
         {children}
       </main>
 
+      <TrainerChat />
       <MobileNavBar />
     </div>
   );
