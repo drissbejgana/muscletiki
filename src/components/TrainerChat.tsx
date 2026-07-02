@@ -39,7 +39,7 @@ const TrainerChat = () => {
 
   const user = authService.getCurrentUser();
   const isPaid = user && PAID_PLANS.includes(user.subscription?.plan);
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  const apiKey = import.meta.env.VITE_GROQ_API_KEY;
 
   useEffect(() => {
     if (open && isPaid) {
@@ -61,35 +61,51 @@ const TrainerChat = () => {
     setLoading(true);
 
     try {
-      // Build alternating user/model turns (skip the static welcome message)
-      const contents = next.slice(1).map((m) => ({
-        role: m.role === "user" ? "user" : "model",
-        parts: [{ text: m.text }],
-      }));
+      // Build full conversation for Groq (system + all messages)
+      const groqMessages = [
+        { role: "system", content: SYSTEM_PROMPT },
+        ...next.map((m) => ({
+          role: m.role === "user" ? "user" : "assistant",
+          content: m.text,
+        })),
+      ];
 
-      const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-            contents,
-          }),
-        }
-      );
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: groqMessages,
+          max_tokens: 512,
+          temperature: 0.7,
+        }),
+      });
 
-      if (!res.ok) throw new Error(`API ${res.status}`);
       const data = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 429) throw new Error("quota");
+        throw new Error(`API ${res.status}`);
+      }
+
       const reply =
-        data.candidates?.[0]?.content?.parts?.[0]?.text ??
+        data.choices?.[0]?.message?.content ??
         "Sorry, I couldn't get a response. Please try again.";
 
       setMessages([...next, { role: "assistant", text: reply }]);
-    } catch {
+    } catch (err: unknown) {
+      const isQuota = err instanceof Error && err.message === "quota";
       setMessages([
         ...next,
-        { role: "assistant", text: "Connection issue — please try again in a moment." },
+        {
+          role: "assistant",
+          text: isQuota
+            ? "I've hit the rate limit. Please wait a moment and try again."
+            : "Connection issue — please try again in a moment.",
+        },
       ]);
     } finally {
       setLoading(false);
