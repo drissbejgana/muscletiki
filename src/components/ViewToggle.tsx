@@ -11,9 +11,9 @@ const ViewToggle = () => {
   const { t } = useTranslation();
 
   const toggles: { key: ToggleKeys; labelKey: string; icon: React.ElementType; activeColor: string }[] = [
-    { key: "homme",        labelKey: !homme ? "bodyMap.male" : "bodyMap.female",   icon: User2,    activeColor: "bg-primary/20 text-primary border-primary/40" },
-    { key: "avance",       labelKey: "bodyMap.advanced",                            icon: Dumbbell, activeColor: "bg-accent/20 text-accent border-accent/40" },
-    { key: "articulations",labelKey: "bodyMap.joints",                              icon: Bone,     activeColor: "bg-violet-500/20 text-violet-400 border-violet-500/40" },
+    { key: "homme",        labelKey: !homme ? "bodyMap.male" : "bodyMap.female",   icon: User2,    activeColor: "bg-primary/15 text-primary border-primary/40 shadow-sm shadow-primary/20" },
+    { key: "avance",       labelKey: "bodyMap.advanced",                            icon: Dumbbell, activeColor: "bg-accent/15 text-accent border-accent/40 shadow-sm shadow-accent/20" },
+    { key: "articulations",labelKey: "bodyMap.joints",                              icon: Bone,     activeColor: "bg-violet-500/15 text-violet-600 border-violet-500/40 shadow-sm shadow-violet-500/20" },
   ];
 
   const handleToggle = (key: ToggleKeys) => {
@@ -30,8 +30,8 @@ const ViewToggle = () => {
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-3">
+    <div className="bg-card border border-primary/15 rounded-2xl p-4 card-elevated surface-tint">
+      <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70 mb-3">
         {t('bodyMap.view') || 'View Options'}
       </p>
       <div className="flex flex-col gap-2">
@@ -43,10 +43,10 @@ const ViewToggle = () => {
               key={toggle.key}
               onClick={() => handleToggle(toggle.key)}
               className={cn(
-                "flex items-center justify-between w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-all",
+                "flex items-center justify-between w-full px-3 py-2.5 rounded-xl border text-sm font-semibold transition-all duration-200",
                 isActive
                   ? toggle.activeColor
-                  : "bg-secondary/40 text-muted-foreground border-transparent hover:border-border hover:text-foreground"
+                  : "bg-secondary/50 text-muted-foreground border-transparent hover:border-primary/30 hover:bg-primary/8 hover:text-primary"
               )}
             >
               <div className="flex items-center gap-2.5">
@@ -55,11 +55,11 @@ const ViewToggle = () => {
               </div>
               {/* Toggle pill */}
               <div className={cn(
-                "relative w-9 h-5 rounded-full transition-colors shrink-0",
-                isActive ? "bg-primary" : "bg-border"
+                "relative w-9 h-5 rounded-full transition-all duration-300 shrink-0",
+                isActive ? "gradient-brand shadow-sm shadow-primary/40" : "bg-border"
               )}>
                 <span className={cn(
-                  "absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all",
+                  "absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-md transition-all duration-300",
                   isActive ? "left-4" : "left-0.5"
                 )} />
               </div>

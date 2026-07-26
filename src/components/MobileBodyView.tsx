@@ -29,10 +29,10 @@ const MobileBodyView = () => {
               key={String(value)}
               onClick={() => updateHomme(value)}
               className={cn(
-                "px-3 py-1.5 text-xs font-semibold transition-colors",
+                "px-3 py-1.5 text-xs font-semibold transition-all duration-200",
                 homme === value
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-transparent text-muted-foreground hover:text-foreground"
+                  ? "gradient-brand text-primary-foreground shadow-sm shadow-primary/30"
+                  : "bg-transparent text-muted-foreground hover:text-primary hover:bg-primary/8"
               )}
             >
               {label}
@@ -50,10 +50,10 @@ const MobileBodyView = () => {
               key={String(value)}
               onClick={() => updateAdvanced(value)}
               className={cn(
-                "px-3 py-1.5 text-xs font-semibold transition-colors",
+                "px-3 py-1.5 text-xs font-semibold transition-all duration-200",
                 advanced === value
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-transparent text-muted-foreground hover:text-foreground"
+                  ? "gradient-brand text-primary-foreground shadow-sm shadow-primary/30"
+                  : "bg-transparent text-muted-foreground hover:text-primary hover:bg-primary/8"
               )}
             >
               {label}
@@ -78,10 +78,10 @@ const MobileBodyView = () => {
               key={side}
               onClick={() => setView(side)}
               className={cn(
-                "w-10 h-10 rounded-lg border text-xs font-semibold transition-colors",
+                "w-10 h-10 rounded-xl border text-xs font-bold transition-all duration-200",
                 view === side
-                  ? "bg-primary/20 border-primary/50 text-primary"
-                  : "bg-secondary border-border text-muted-foreground hover:text-foreground"
+                  ? "gradient-brand border-transparent text-primary-foreground shadow-md shadow-primary/30"
+                  : "bg-secondary border-border text-muted-foreground hover:text-primary hover:border-primary/40"
               )}
             >
               {side === "front" ? "F" : "B"}
@@ -94,7 +94,7 @@ const MobileBodyView = () => {
       <div className="px-4 pb-4">
         <button
           onClick={() => navigate('/workout')}
-          className="w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl py-3 text-sm font-bold hover:bg-primary/90 transition-colors"
+          className="w-full flex items-center justify-center gap-2 gradient-brand text-primary-foreground rounded-xl py-3 text-sm font-bold shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-200"
         >
           <Dumbbell className="h-4 w-4" />
           {t('bodyMap.workoutsBtn')}

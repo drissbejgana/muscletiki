@@ -16,7 +16,7 @@ const MobileNavBar = () => {
   const { t } = useTranslation();
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t border-border safe-area-pb">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-xl border-t border-primary/15 shadow-[0_-4px_20px_-8px_hsl(var(--shadow-color)/0.25)] safe-area-pb">
       <div className="flex items-stretch h-16">
         {tabs.map(({ to, icon: Icon, labelKey }) => {
           const active =
@@ -27,12 +27,12 @@ const MobileNavBar = () => {
               to={to}
               className={cn(
                 "flex-1 flex flex-col items-center justify-center gap-1 transition-colors",
-                active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                active ? "text-primary" : "text-muted-foreground hover:text-primary"
               )}
             >
               <div className={cn(
-                "w-10 h-6 rounded-full flex items-center justify-center transition-all",
-                active && "bg-primary/15"
+                "w-11 h-6 rounded-full flex items-center justify-center transition-all duration-200",
+                active && "gradient-brand text-primary-foreground shadow-sm shadow-primary/40"
               )}>
                 <Icon className="h-4.5 w-4.5" style={{ width: 18, height: 18 }} />
               </div>

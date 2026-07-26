@@ -5,26 +5,27 @@
 @layer base {
   :root {
     /* ── Core surfaces ─────────────────────────────────────────── */
-    --background:           220 22% 93%;   /* cool blue-gray, off-white */
+    --background:           214 40% 96%;   /* soft blue-tinted off-white */
     --foreground:           222 47% 11%;   /* #0F172A slate */
 
-    --card:                 220 18% 97%;   /* near-white with subtle tint */
+    --card:                 210 40% 99%;   /* near-white with cool tint */
     --card-foreground:      222 47% 11%;
 
-    --popover:              220 18% 97%;
+    --popover:              210 40% 99%;
     --popover-foreground:   222 47% 11%;
 
     /* ── Brand: electric blue (men) ───────────────────────────── */
     --primary:              214 100% 52%;  /* #0573FF electric blue */
-    --primary-light:        214 100% 68%;  /* lighter blue for gradients */
+    --primary-light:        210 100% 66%;  /* lighter blue for gradients */
+    --primary-dark:         220 90% 44%;   /* deeper blue for gradients */
     --primary-foreground:   0   0% 100%;
 
-    /* ── Secondary surface ─────────────────────────────────────── */
-    --secondary:            220 18% 88%;   /* visible gray, not washed out */
-    --secondary-foreground: 222 30% 30%;
+    /* ── Secondary surface (blue-tinted) ──────────────────────── */
+    --secondary:            214 45% 91%;   /* soft blue chip surface */
+    --secondary-foreground: 220 45% 28%;
 
-    --muted:                220 18% 88%;
-    --muted-foreground:     220  9% 44%;
+    --muted:                214 40% 92%;
+    --muted-foreground:     220 14% 42%;
 
     /* ── Accent: warm orange ───────────────────────────────────── */
     --accent:               27  96% 55%;   /* #F97316 */
@@ -34,18 +35,23 @@
     --destructive-foreground: 0 0% 100%;
 
     /* ── Borders & inputs ──────────────────────────────────────── */
-    --border:               220 16% 82%;   /* clearly visible border */
-    --input:                220 16% 85%;
+    --border:               214 32% 84%;   /* subtle blue-gray border */
+    --input:                214 30% 86%;
     --ring:                 214 100% 52%;
 
-    --radius: 0.75rem;
+    /* ── Shared blue shadow tint ──────────────────────────────── */
+    --shadow-color:         214 60% 40%;
+
+    --radius: 0.85rem;
   }
 
   /* ── Women theme (purple) ──────────────────────────────────── */
   html[data-gender="female"] {
     --primary:              270 97% 60%;   /* vivid electric purple */
-    --primary-light:        270 97% 74%;   /* lighter purple for gradients */
+    --primary-light:        275 95% 72%;   /* lighter purple for gradients */
+    --primary-dark:         268 85% 50%;
     --ring:                 270 97% 60%;
+    --shadow-color:         270 60% 45%;
   }
 }
 
@@ -60,40 +66,55 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    /* Soft blue radial-gradient tint instead of a flat surface */
+    background-color: hsl(var(--background));
+    background-image:
+      radial-gradient(1100px 620px at 100% -8%, hsl(var(--primary) / 0.12), transparent 60%),
+      radial-gradient(950px 520px at -8% 6%, hsl(var(--primary-light) / 0.10), transparent 55%),
+      radial-gradient(800px 800px at 50% 120%, hsl(var(--primary) / 0.06), transparent 60%);
+    background-attachment: fixed;
   }
 
   /* Custom scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
   ::-webkit-scrollbar-track {
-    background: hsl(var(--secondary));
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--border));
-    border-radius: 3px;
+    background: linear-gradient(hsl(var(--primary) / 0.35), hsl(var(--primary) / 0.55));
+    border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--primary));
+    background: linear-gradient(hsl(var(--primary) / 0.6), hsl(var(--primary)));
   }
 }
 
-/* ── Body diagram muscle hover ─────────────────────────────────── */
+/* ── Body diagram muscle hover / selection ─────────────────────── */
 .body-map__muscle path {
-  fill: rgba(0, 0, 0, 0.05);
-  stroke: rgba(0, 0, 0, 0.15);
+  fill: hsl(var(--primary) / 0.06);
+  stroke: hsl(var(--primary) / 0.22);
   stroke-width: 1px;
-  transition: fill 0.15s ease, stroke 0.15s ease;
+  transition: fill 0.2s ease, stroke 0.2s ease, filter 0.2s ease;
   cursor: pointer;
 }
 
+.body-map__muscle:hover path,
 .body-map__muscle path:hover {
-  fill: hsl(var(--primary) / 0.25);
+  fill: hsl(var(--primary) / 0.45);
   stroke: hsl(var(--primary));
-  stroke-width: 1.5px;
+  stroke-width: 1.75px;
+  filter: drop-shadow(0 0 5px hsl(var(--primary) / 0.55));
+  animation: muscle-glow 1.6s ease-in-out infinite;
+}
+
+@keyframes muscle-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px hsl(var(--primary) / 0.45)); }
+  50%      { filter: drop-shadow(0 0 12px hsl(var(--primary) / 0.8)); }
 }
 
 /* ── Utility: glass card ──────────────────────────────────────── */
@@ -103,9 +124,35 @@
   border: 1px solid hsl(var(--border));
 }
 
-/* ── Utility: primary glow ────────────────────────────────────── */
-.glow-green {
-  box-shadow: 0 0 20px hsl(var(--primary) / 0.25);
+/* ── Utility: blue glow shadow ────────────────────────────────── */
+.glow-green,
+.glow-blue {
+  box-shadow: 0 0 24px hsl(var(--primary) / 0.3);
+}
+
+/* Elevated card with a soft blue-tinted depth */
+.card-elevated {
+  box-shadow:
+    0 1px 2px hsl(var(--shadow-color) / 0.08),
+    0 8px 24px -12px hsl(var(--shadow-color) / 0.22);
+}
+.card-elevated:hover {
+  box-shadow:
+    0 1px 2px hsl(var(--shadow-color) / 0.10),
+    0 14px 34px -12px hsl(var(--shadow-color) / 0.32);
+}
+
+/* Subtle gradient surface tint for panels */
+.surface-tint {
+  background-image: linear-gradient(160deg, hsl(var(--primary) / 0.05), transparent 55%);
+}
+
+/* Hover lift micro-interaction */
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
 }
 
 /* ── Gradient text ────────────────────────────────────────────── */
@@ -116,6 +163,11 @@
   background-clip: text;
 }
 
+/* Reusable brand gradient background */
+.gradient-brand {
+  background: linear-gradient(135deg, hsl(var(--primary-light)), hsl(var(--primary)) 55%, hsl(var(--primary-dark)));
+}
+
 /* ── Animated pulse dot ──────────────────────────────────────── */
 @keyframes pulse-dot {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -123,4 +175,22 @@
 }
 .pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ── Micro-interaction keyframes ─────────────────────────────── */
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+  animation: fade-in-up 0.35s ease-out both;
+}
+
+@keyframes pop-in {
+  0%   { transform: scale(0.9); opacity: 0; }
+  60%  { transform: scale(1.03); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop-in {
+  animation: pop-in 0.25s ease-out both;
 }

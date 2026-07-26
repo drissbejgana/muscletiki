@@ -40,11 +40,11 @@ const EquipmentPanel = () => {
   const clearAll = () => setSelected(new Set());
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4 mt-3">
+    <div className="bg-card border border-primary/15 rounded-2xl p-4 mt-3 card-elevated surface-tint">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="h-3.5 w-3.5 text-muted-foreground" />
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+          <SlidersHorizontal className="h-3.5 w-3.5 text-primary" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">
             {t('equipment.title')}
           </p>
         </div>
@@ -66,10 +66,10 @@ const EquipmentPanel = () => {
               key={item.id}
               onClick={() => toggle(item.id)}
               className={cn(
-                "px-2.5 py-1 rounded-full text-xs font-medium border transition-all",
+                "px-3 py-1 rounded-full text-xs font-semibold border transition-all duration-200 hover:-translate-y-0.5",
                 active
-                  ? "bg-primary/20 text-primary border-primary/40"
-                  : "bg-secondary/40 text-muted-foreground border-transparent hover:border-border hover:text-foreground"
+                  ? "gradient-brand text-primary-foreground border-transparent shadow-sm shadow-primary/30"
+                  : "bg-secondary/50 text-muted-foreground border-transparent hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
               )}
             >
               {t(item.labelKey)}

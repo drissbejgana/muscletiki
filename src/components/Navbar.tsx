@@ -28,10 +28,10 @@ const NavDropdown = ({
     >
       <button
         className={cn(
-          "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+          "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
           isActive
-            ? "text-primary bg-primary/10"
-            : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+            ? "gradient-brand text-primary-foreground shadow-md shadow-primary/30"
+            : "text-muted-foreground hover:text-primary hover:bg-primary/10"
         )}
       >
         <Icon className="h-4 w-4" />
@@ -40,7 +40,7 @@ const NavDropdown = ({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1 w-52 bg-card border border-border rounded-xl shadow-2xl shadow-black/10 py-1 z-50">
+        <div className="absolute top-full left-0 mt-2 w-52 bg-card border border-primary/15 rounded-xl shadow-2xl shadow-primary/15 py-1.5 z-50 animate-fade-in-up">
           {items.map((item) => {
             const ItemIcon = item.icon;
             const active = location.pathname === item.to;
@@ -49,10 +49,10 @@ const NavDropdown = ({
                 key={item.to}
                 onClick={() => { navigate(item.to); setOpen(false); }}
                 className={cn(
-                  "w-full flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors",
+                  "w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-all duration-200",
                   active
-                    ? "text-primary bg-primary/10"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    ? "text-primary bg-primary/10 border-l-2 border-primary"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/8 hover:pl-5"
                 )}
               >
                 <ItemIcon className="h-4 w-4" />
@@ -73,10 +73,10 @@ const NavItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: R
     <Link
       to={to}
       className={cn(
-        "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+        "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
         active
-          ? "text-primary bg-primary/10"
-          : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+          ? "gradient-brand text-primary-foreground shadow-md shadow-primary/30"
+          : "text-muted-foreground hover:text-primary hover:bg-primary/10"
       )}
     >
       <Icon className="h-4 w-4" />
@@ -110,12 +110,12 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-card/90 backdrop-blur-md border-b border-border">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-card/80 backdrop-blur-xl border-b border-primary/15 shadow-sm shadow-primary/5">
         <div className="max-w-screen-xl mx-auto h-full flex items-center justify-between px-4 lg:px-6">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Dumbbell className="h-4.5 w-4.5 text-primary" style={{ width: 18, height: 18 }} />
+          <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
+            <div className="w-9 h-9 rounded-xl gradient-brand flex items-center justify-center shadow-md shadow-primary/30 transition-transform duration-200 group-hover:scale-105 group-hover:rotate-3">
+              <Dumbbell className="text-primary-foreground" style={{ width: 18, height: 18 }} />
             </div>
             <span className="font-bold text-lg tracking-tight">
               <span className="text-primary">Muscle</span>
@@ -138,14 +138,14 @@ export const Navbar = () => {
             {user ? (
               <div className="flex items-center gap-2">
                 {isPremium && (
-                  <div className="hidden md:flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-3 py-1">
-                    <Crown className="h-3.5 w-3.5 text-primary" />
-                    <span className="text-xs font-semibold text-primary capitalize">{planLabel}</span>
+                  <div className="hidden md:flex items-center gap-1.5 gradient-brand rounded-full px-3 py-1 shadow-sm shadow-primary/30">
+                    <Crown className="h-3.5 w-3.5 text-primary-foreground" />
+                    <span className="text-xs font-semibold text-primary-foreground capitalize">{planLabel}</span>
                   </div>
                 )}
                 <button
                   onClick={() => navigate("/profile")}
-                  className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-colors"
+                  className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center ring-1 ring-primary/10 hover:bg-primary/15 hover:text-primary hover:ring-primary/40 transition-all duration-200"
                 >
                   {user.avatar ? (
                     <img src={user.avatar} alt="" className="w-9 h-9 rounded-full object-cover" />
@@ -164,7 +164,7 @@ export const Navbar = () => {
             ) : (
               <Link
                 to="/auth"
-                className="hidden lg:flex items-center gap-1.5 bg-primary text-primary-foreground px-4 py-2 rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors"
+                className="hidden lg:flex items-center gap-1.5 gradient-brand text-primary-foreground px-5 py-2 rounded-lg text-sm font-semibold shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-200"
               >
                 {t("nav.login")}
               </Link>
@@ -173,7 +173,7 @@ export const Navbar = () => {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden w-9 h-9 rounded-lg bg-secondary flex items-center justify-center"
+              className="lg:hidden w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-colors"
             >
               {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
@@ -202,10 +202,10 @@ export const Navbar = () => {
                   to={to}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200",
                     active
-                      ? "bg-primary/15 text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      ? "gradient-brand text-primary-foreground shadow-md shadow-primary/30"
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/10"
                   )}
                 >
                   <Icon className="h-4 w-4" />
