@@ -30,8 +30,8 @@ const NavDropdown = ({
         className={cn(
           "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
           isActive
-            ? "gradient-brand text-primary-foreground shadow-md shadow-primary/30"
-            : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+            ? "bg-white text-primary shadow-md shadow-black/10"
+            : "text-white/80 hover:text-white hover:bg-white/10"
         )}
       >
         <Icon className="h-4 w-4" />
@@ -40,26 +40,30 @@ const NavDropdown = ({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-2 w-52 bg-card border border-primary/15 rounded-xl shadow-2xl shadow-primary/15 py-1.5 z-50 animate-fade-in-up">
-          {items.map((item) => {
-            const ItemIcon = item.icon;
-            const active = location.pathname === item.to;
-            return (
-              <button
-                key={item.to}
-                onClick={() => { navigate(item.to); setOpen(false); }}
-                className={cn(
-                  "w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-all duration-200",
-                  active
-                    ? "text-primary bg-primary/10 border-l-2 border-primary"
-                    : "text-muted-foreground hover:text-primary hover:bg-primary/8 hover:pl-5"
-                )}
-              >
-                <ItemIcon className="h-4 w-4" />
-                {item.label}
-              </button>
-            );
-          })}
+        // pt-2 gives the visual gap while keeping the hover area continuous,
+        // so moving the cursor from the button into the menu never closes it.
+        <div className="absolute top-full left-0 pt-2 z-50 animate-fade-in-up">
+          <div className="w-52 bg-card border border-primary/15 rounded-xl shadow-2xl shadow-primary/15 py-1.5">
+            {items.map((item) => {
+              const ItemIcon = item.icon;
+              const active = location.pathname === item.to;
+              return (
+                <button
+                  key={item.to}
+                  onClick={() => { navigate(item.to); setOpen(false); }}
+                  className={cn(
+                    "w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium transition-all duration-200",
+                    active
+                      ? "text-primary bg-primary/10 border-l-2 border-primary"
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/8 hover:pl-5"
+                  )}
+                >
+                  <ItemIcon className="h-4 w-4" />
+                  {item.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
@@ -75,8 +79,8 @@ const NavItem = ({ to, label, icon: Icon }: { to: string; label: string; icon: R
       className={cn(
         "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
         active
-          ? "gradient-brand text-primary-foreground shadow-md shadow-primary/30"
-          : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+          ? "bg-white text-primary shadow-md shadow-black/10"
+          : "text-white/80 hover:text-white hover:bg-white/10"
       )}
     >
       <Icon className="h-4 w-4" />
@@ -110,16 +114,16 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 h-16 bg-card/80 backdrop-blur-xl border-b border-primary/15 shadow-sm shadow-primary/5">
+      <nav className="fixed top-0 left-0 right-0 z-50 h-16 gradient-brand border-b border-white/10 shadow-md shadow-primary/20">
         <div className="max-w-screen-xl mx-auto h-full flex items-center justify-between px-4 lg:px-6">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5 shrink-0 group">
-            <div className="w-9 h-9 rounded-xl gradient-brand flex items-center justify-center shadow-md shadow-primary/30 transition-transform duration-200 group-hover:scale-105 group-hover:rotate-3">
-              <Dumbbell className="text-primary-foreground" style={{ width: 18, height: 18 }} />
+            <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shadow-md shadow-black/20 transition-transform duration-200 group-hover:scale-105 group-hover:rotate-3">
+              <Dumbbell className="text-primary" style={{ width: 18, height: 18 }} />
             </div>
             <span className="font-bold text-lg tracking-tight">
-              <span className="text-primary">Muscle</span>
-              <span className="text-foreground">Tiki</span>
+              <span className="text-white">Muscle</span>
+              <span className="text-white/70">Tiki</span>
             </span>
           </Link>
 
@@ -138,33 +142,33 @@ export const Navbar = () => {
             {user ? (
               <div className="flex items-center gap-2">
                 {isPremium && (
-                  <div className="hidden md:flex items-center gap-1.5 gradient-brand rounded-full px-3 py-1 shadow-sm shadow-primary/30">
-                    <Crown className="h-3.5 w-3.5 text-primary-foreground" />
-                    <span className="text-xs font-semibold text-primary-foreground capitalize">{planLabel}</span>
+                  <div className="hidden md:flex items-center gap-1.5 bg-white/15 rounded-full px-3 py-1 shadow-sm shadow-black/10">
+                    <Crown className="h-3.5 w-3.5 text-white" />
+                    <span className="text-xs font-semibold text-white capitalize">{planLabel}</span>
                   </div>
                 )}
                 <button
                   onClick={() => navigate("/profile")}
-                  className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center ring-1 ring-primary/10 hover:bg-primary/15 hover:text-primary hover:ring-primary/40 transition-all duration-200"
+                  className="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center ring-1 ring-white/20 hover:bg-white/25 hover:ring-white/40 transition-all duration-200"
                 >
                   {user.avatar ? (
                     <img src={user.avatar} alt="" className="w-9 h-9 rounded-full object-cover" />
                   ) : (
-                    <User className="h-4 w-4 text-muted-foreground" />
+                    <User className="h-4 w-4 text-white" />
                   )}
                 </button>
                 <button
                   onClick={logout}
-                  className="hidden lg:flex w-9 h-9 rounded-full bg-secondary items-center justify-center hover:bg-destructive/20 hover:text-destructive transition-colors"
+                  className="hidden lg:flex w-9 h-9 rounded-full bg-white/15 items-center justify-center hover:bg-destructive/30 transition-colors"
                   title={t("nav.logout")}
                 >
-                  <LogOut className="h-4 w-4 text-muted-foreground" />
+                  <LogOut className="h-4 w-4 text-white" />
                 </button>
               </div>
             ) : (
               <Link
                 to="/auth"
-                className="hidden lg:flex items-center gap-1.5 gradient-brand text-primary-foreground px-5 py-2 rounded-lg text-sm font-semibold shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/40 hover:-translate-y-0.5 transition-all duration-200"
+                className="hidden lg:flex items-center gap-1.5 bg-white text-primary px-5 py-2 rounded-lg text-sm font-semibold shadow-md shadow-black/10 hover:bg-white/90 hover:-translate-y-0.5 transition-all duration-200"
               >
                 {t("nav.login")}
               </Link>
@@ -173,7 +177,7 @@ export const Navbar = () => {
             {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-colors"
+              className="lg:hidden w-9 h-9 rounded-lg bg-white/15 text-white flex items-center justify-center hover:bg-white/25 transition-colors"
             >
               {mobileOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
