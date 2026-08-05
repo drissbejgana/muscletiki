@@ -99,7 +99,7 @@ export const Navbar = () => {
   const workoutItems: DropdownItem[] = [
     { label: t("nav.workouts"), to: "/workout", icon: Dumbbell },
     { label: t("nav.trainingLog"), to: "/training", icon: Activity },
-    { label: t("nav.routines"), to: "/routines", icon: Calendar },
+    { label: t("nav.programs"), to: "/programs", icon: Calendar },
   ];
 
   const toolItems: DropdownItem[] = [
@@ -191,7 +191,7 @@ export const Navbar = () => {
               { to: "/", label: t("nav.home"), icon: Home },
               { to: "/workout", label: t("nav.workouts"), icon: Dumbbell },
               { to: "/training", label: t("nav.trainingLog"), icon: Activity },
-              { to: "/routines", label: t("nav.routines"), icon: Calendar },
+              { to: "/programs", label: t("nav.programs"), icon: Calendar },
               { to: "/calorie_calculator", label: t("nav.calorieCalculator"), icon: Calculator },
               { to: "/tdee_calculator", label: t("nav.tdeeCalculator"), icon: BarChart2 },
               { to: "/macro_calculator", label: t("nav.macroCalculator"), icon: Weight },

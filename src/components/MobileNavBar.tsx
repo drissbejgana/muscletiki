@@ -6,7 +6,7 @@ import { useTranslation } from "@/i18n";
 const tabs = [
   { to: "/",         icon: Home,     labelKey: "nav.home" },
   { to: "/workout",  icon: Dumbbell, labelKey: "nav.workouts" },
-  { to: "/routines", icon: Calendar, labelKey: "nav.routines" },
+  { to: "/programs", icon: Calendar, labelKey: "nav.programs" },
   { to: "/calorie_calculator", icon: Wrench, labelKey: "nav.tools" },
   { to: "/profile",  icon: User,     labelKey: "nav.profile" },
 ];

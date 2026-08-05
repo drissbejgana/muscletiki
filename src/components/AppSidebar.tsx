@@ -87,10 +87,10 @@ export function AppSidebar() {
             </Collapsible>
 
             <SidebarMenuItem>
-              <NavLink to={'/routines'}>
+              <NavLink to={'/programs'}>
                 <SidebarMenuButton className="text-white hover:bg-white/10">
                   <Calendar className="h-4 w-4" />
-                  {!collapsed && <span>{t('nav.routines')}</span>}
+                  {!collapsed && <span>{t('nav.programs')}</span>}
                 </SidebarMenuButton>
               </NavLink>
             </SidebarMenuItem>

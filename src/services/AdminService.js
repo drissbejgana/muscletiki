@@ -95,6 +95,32 @@ export const adminService = {
     } catch (e) { throw e.response?.data?.message || 'Failed to delete routine'; }
   },
 
+  // ─── Programs (multi-week plans — supersede Routines) ──────────────────────
+  async getPrograms(params = {}) {
+    try {
+      const r = await api.get('/admin/programs', { params });
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to fetch programs'; }
+  },
+  async createProgram(data) {
+    try {
+      const r = await api.post('/admin/programs', data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to create program'; }
+  },
+  async updateProgram(id, data) {
+    try {
+      const r = await api.put(`/admin/programs/${id}`, data);
+      return r.data.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to update program'; }
+  },
+  async deleteProgram(id) {
+    try {
+      const r = await api.delete(`/admin/programs/${id}`);
+      return r.data;
+    } catch (e) { throw e.response?.data?.message || 'Failed to delete program'; }
+  },
+
   // ─── Muscle Exercises ──────────────────────────────────────────────────────
   /** Get all muscle groups with their exercises (admin) */
   async getMuscleExercises() {

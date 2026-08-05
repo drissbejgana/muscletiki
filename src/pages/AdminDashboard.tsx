@@ -13,7 +13,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import {
   Users, CreditCard, TrendingUp, Search, MoreHorizontal, Loader2, AlertCircle,
   Dumbbell, Video, Plus, Pencil, Trash2, ListChecks, Activity,
-  ChevronDown, ChevronRight, Eye, EyeOff, Check, X,
+  ChevronDown, ChevronRight, Eye, EyeOff, Check, X, CalendarDays, Lock,
 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { adminService } from "@/services/AdminService";
@@ -38,6 +38,12 @@ const emptyRoutine = {
   title: { en: "", fr: "" }, description: { en: "", fr: "" },
   level: "Beginner", duration: "45 min", daysPerWeek: 3,
   focus: [], exercises: 8, isPremium: false, isPublic: true, order: 0,
+};
+const emptyProgram = {
+  slug: "", title: { en: "", fr: "" }, description: { en: "", fr: "" },
+  level: "Beginner", goal: "General Fitness", weeks: 4, daysPerWeek: 3,
+  sessionDuration: "45 min", focus: [], equipment: [],
+  isPremium: false, isPublic: true, order: 0, schedule: [],
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -324,6 +330,21 @@ const AdminDashboard = () => {
   const [routineSaving, setRoutineSaving]       = useState(false);
   const [routineError, setRoutineError]         = useState<any>(null);
 
+  // Programs
+  const [programs, setPrograms]                 = useState<any[]>([]);
+  const [programsLoading, setProgramsLoading]   = useState(false);
+  const [programsError, setProgramsError]       = useState<any>(null);
+  const [programSearch, setProgramSearch]       = useState("");
+  const [programModal, setProgramModal]         = useState(false);
+  const [editingProgram, setEditingProgram]     = useState<any>(null);
+  const [programForm, setProgramForm]           = useState<any>(emptyProgram);
+  const [programSaving, setProgramSaving]       = useState(false);
+  const [programError, setProgramError]         = useState<any>(null);
+  // Raw JSON text for the schedule editor, kept separate so invalid JSON
+  // doesn't destroy what the admin is mid-way through typing.
+  const [scheduleText, setScheduleText]         = useState("[]");
+  const [scheduleJsonError, setScheduleJsonError] = useState<string | null>(null);
+
   // Muscle exercises
   const [muscles, setMuscles]                   = useState<any[]>([]);
   const [musclesLoading, setMusclesLoading]     = useState(false);
@@ -375,6 +396,13 @@ const AdminDashboard = () => {
     finally { setRoutinesLoading(false); }
   }, [routineSearch]);
 
+  const fetchPrograms = useCallback(async () => {
+    setProgramsLoading(true); setProgramsError(null);
+    try { const r = await adminService.getPrograms({ search: programSearch, limit: 50 }); setPrograms(r.data || []); }
+    catch (e) { setProgramsError(e); }
+    finally { setProgramsLoading(false); }
+  }, [programSearch]);
+
   const fetchMuscles = useCallback(async () => {
     setMusclesLoading(true); setMusclesError(null);
     try {
@@ -398,6 +426,7 @@ const AdminDashboard = () => {
   useEffect(() => { if (activeTab === "subscriptions") fetchSubs(); }, [activeTab, fetchSubs]);
   useEffect(() => { if (activeTab === "workouts")      fetchWorkouts(); }, [activeTab, fetchWorkouts]);
   useEffect(() => { if (activeTab === "routines")      fetchRoutines(); }, [activeTab, fetchRoutines]);
+  useEffect(() => { if (activeTab === "programs")      fetchPrograms(); }, [activeTab, fetchPrograms]);
 
   // ─── Subscription handlers ──────────────────────────────────────────────────
   const openEditSub = (sub: any) => {
@@ -465,6 +494,61 @@ const AdminDashboard = () => {
     try { await adminService.deleteRoutine(id); fetchRoutines(); fetchStats(); }
     catch (e) { alert(e); }
   };
+
+  // ─── Program handlers ───────────────────────────────────────────────────────
+  const openProgramModal = (p: any = null) => {
+    setEditingProgram(p);
+    setProgramForm(p ? { ...p } : { ...emptyProgram });
+    setScheduleText(JSON.stringify(p?.schedule ?? [], null, 2));
+    setScheduleJsonError(null);
+    setProgramError(null); setProgramModal(true);
+  };
+
+  const onScheduleTextChange = (text: string) => {
+    setScheduleText(text);
+    if (!text.trim()) { setScheduleJsonError(null); return; }
+    try {
+      const parsed = JSON.parse(text);
+      if (!Array.isArray(parsed)) { setScheduleJsonError("Schedule must be an array of weeks."); return; }
+      setScheduleJsonError(null);
+    } catch (err: any) {
+      setScheduleJsonError(err.message);
+    }
+  };
+
+  const saveProgram = async () => {
+    // Parse the schedule fresh at save time — the textarea is the source of truth.
+    let schedule: any[] = [];
+    if (scheduleText.trim()) {
+      try {
+        schedule = JSON.parse(scheduleText);
+        if (!Array.isArray(schedule)) throw new Error("Schedule must be an array of weeks.");
+      } catch (err: any) {
+        setScheduleJsonError(err.message);
+        setProgramError("Fix the schedule JSON before saving.");
+        return;
+      }
+    }
+
+    setProgramSaving(true); setProgramError(null);
+    const payload = { ...programForm, schedule };
+    try {
+      if (editingProgram) await adminService.updateProgram(editingProgram._id, payload);
+      else await adminService.createProgram(payload);
+      setProgramModal(false); fetchPrograms(); fetchStats();
+    } catch (e) { setProgramError(e); }
+    finally { setProgramSaving(false); }
+  };
+
+  const handleDeleteProgram = async (id: string, title: string) => {
+    if (!window.confirm(`Delete "${title}"? Every user's progress on this program will be deleted too.`)) return;
+    try { await adminService.deleteProgram(id); fetchPrograms(); fetchStats(); }
+    catch (e) { alert(e); }
+  };
+
+  const filteredPrograms = programs.filter((p) =>
+    [p.title?.en, p.title?.fr, p.slug].filter(Boolean).join(" ").toLowerCase().includes(programSearch.toLowerCase())
+  );
   const filteredRoutines = routines.filter((r) =>
     (r.title?.en || "").toLowerCase().includes(routineSearch.toLowerCase()) ||
     (r.title?.fr || "").toLowerCase().includes(routineSearch.toLowerCase())
@@ -589,6 +673,7 @@ const AdminDashboard = () => {
             <TabsTrigger value="overview">     <Activity   className="mr-1 h-4 w-4" />Overview</TabsTrigger>
             <TabsTrigger value="subscriptions"><CreditCard className="mr-1 h-4 w-4" />Subscriptions</TabsTrigger>
             <TabsTrigger value="workouts">     <Dumbbell   className="mr-1 h-4 w-4" />Workouts</TabsTrigger>
+            <TabsTrigger value="programs">     <CalendarDays className="mr-1 h-4 w-4" />Programs</TabsTrigger>
             <TabsTrigger value="routines">     <ListChecks className="mr-1 h-4 w-4" />Routines</TabsTrigger>
             <TabsTrigger value="videos">       <Video      className="mr-1 h-4 w-4" />Muscle Videos</TabsTrigger>
           </TabsList>
@@ -606,6 +691,8 @@ const AdminDashboard = () => {
                     ["New Users (30d)",       stats?.recentSignups],
                     ["Total Workouts",        stats?.totalWorkouts],
                     ["Total Routines",        stats?.totalRoutines],
+                    ["Total Programs",        stats?.totalPrograms],
+                    ["Active Enrollments",    stats?.activeEnrollments],
                     ["Muscle Groups",         stats?.totalMuscleGroups],
                     ["Total Exercises",       stats?.totalExercises],
                   ].map(([label, val]) => (
@@ -752,10 +839,77 @@ const AdminDashboard = () => {
           </TabsContent>
 
           {/* ── ROUTINES ─────────────────────────────────────────────────── */}
+          {/* ── PROGRAMS ──────────────────────────────────────────────────── */}
+          <TabsContent value="programs">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Workout Programs</CardTitle>
+                  <CardDescription>Multi-week plans users enroll in and track. Premium programs show week 1 as a preview to free users.</CardDescription>
+                </div>
+                <Button onClick={() => openProgramModal()}><Plus className="mr-1 h-4 w-4" />Add Program</Button>
+              </CardHeader>
+              <CardContent>
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                  <Input placeholder="Search programs…" value={programSearch} onChange={(e) => setProgramSearch(e.target.value)} className="pl-9" />
+                </div>
+                {programsError && <Alert variant="destructive" className="mb-4"><AlertCircle className="h-4 w-4" /><AlertDescription>{String(programsError)}</AlertDescription></Alert>}
+                <div className="rounded-md border border-border overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-secondary border-b border-border">
+                      <tr>{["Title (EN / FR)","Slug","Level","Weeks","Days/wk","Sessions","Access","Enrolled",""].map((h,i) => <th key={i} className="px-4 py-3 text-left font-medium text-muted-foreground whitespace-nowrap">{h}</th>)}</tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {programsLoading ? (
+                        <tr><td colSpan={9} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground/60" /></td></tr>
+                      ) : filteredPrograms.length === 0 ? (
+                        <tr><td colSpan={9} className="text-center py-8 text-muted-foreground/60">No programs. Click "Add Program".</td></tr>
+                      ) : filteredPrograms.map((p) => {
+                        const incomplete = p.scheduledWeeks < p.weeks;
+                        return (
+                          <tr key={p._id} className="hover:bg-muted/30">
+                            <td className="px-4 py-3">
+                              <div className="font-medium">{p.title?.en}</div>
+                              <div className="text-xs text-muted-foreground/50">{p.title?.fr}</div>
+                            </td>
+                            <td className="px-4 py-3"><code className="text-xs text-muted-foreground">{p.slug}</code></td>
+                            <td className="px-4 py-3"><Badge variant="outline">{p.level}</Badge></td>
+                            <td className="px-4 py-3 text-muted-foreground">
+                              {p.scheduledWeeks}/{p.weeks}
+                              {incomplete && <span className="ml-1 text-xs text-destructive" title="Schedule covers fewer weeks than advertised">!</span>}
+                            </td>
+                            <td className="px-4 py-3 text-muted-foreground">{p.daysPerWeek}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{p.totalTrainingDays}</td>
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-1">
+                                {p.isPremium
+                                  ? <Badge className="bg-accent/20 text-accent"><Lock className="mr-1 h-3 w-3" />Pro</Badge>
+                                  : <Badge variant="secondary">Free</Badge>}
+                                {!p.isPublic && <Badge variant="outline" className="text-muted-foreground">Hidden</Badge>}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3 text-muted-foreground">{p.enrollments ?? 0}</td>
+                            <td className="px-4 py-3">
+                              <div className="flex gap-1">
+                                <Button variant="ghost" size="icon" onClick={() => openProgramModal(p)}><Pencil className="h-4 w-4" /></Button>
+                                <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteProgram(p._id, p.title?.en || p.slug)}><Trash2 className="h-4 w-4" /></Button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="routines">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
-                <div><CardTitle>Workout Routines</CardTitle><CardDescription>Bilingual routine cards shown to all users</CardDescription></div>
+                <div><CardTitle>Workout Routines</CardTitle><CardDescription>Legacy cards, superseded by Programs. Kept so existing data stays reachable.</CardDescription></div>
                 <Button onClick={() => openRoutineModal()}><Plus className="mr-1 h-4 w-4" />Add Routine</Button>
               </CardHeader>
               <CardContent>
@@ -1106,6 +1260,94 @@ const AdminDashboard = () => {
             <Button variant="outline" onClick={() => setRoutineModal(false)} disabled={routineSaving}>Cancel</Button>
             <Button onClick={saveRoutine} disabled={routineSaving}>
               {routineSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving…</> : editingRoutine ? "Update Routine" : "Create Routine"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── ADD / EDIT PROGRAM MODAL ──────────────────────────────────────── */}
+      <Dialog open={programModal} onOpenChange={setProgramModal}>
+        <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingProgram ? "Edit Program" : "Create Program"}</DialogTitle>
+            <DialogDescription>
+              Multi-week plans users enroll in. The schedule drives progress tracking — sessions are counted from non-rest days.
+            </DialogDescription>
+          </DialogHeader>
+
+          {programError && <Alert variant="destructive"><AlertCircle className="h-4 w-4" /><AlertDescription>{String(programError)}</AlertDescription></Alert>}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+            <div className="space-y-1">
+              <Label>Slug <span className="text-xs text-muted-foreground">(URL, lowercase + hyphens)</span></Label>
+              <Input
+                value={programForm.slug || ""}
+                onChange={(e) => setProgramForm((p: any) => ({ ...p, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") }))}
+                placeholder="push-pull-legs"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label>Goal</Label>
+              <Select value={programForm.goal} onValueChange={(v) => setProgramForm((p: any) => ({ ...p, goal: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{["Build Muscle","Lose Fat","Strength","Endurance","General Fitness"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-1"><Label>Title (English)</Label><Input value={programForm.title?.en || ""} onChange={(e) => setProgramForm((p: any) => ({ ...p, title: { ...p.title, en: e.target.value } }))} placeholder="Push Pull Legs" /></div>
+            <div className="space-y-1"><Label>Title (French)</Label><Input value={programForm.title?.fr || ""} onChange={(e) => setProgramForm((p: any) => ({ ...p, title: { ...p.title, fr: e.target.value } }))} placeholder="Push Pull Legs" /></div>
+            <div className="md:col-span-2 space-y-1"><Label>Description (English)</Label><Textarea rows={2} value={programForm.description?.en || ""} onChange={(e) => setProgramForm((p: any) => ({ ...p, description: { ...p.description, en: e.target.value } }))} /></div>
+            <div className="md:col-span-2 space-y-1"><Label>Description (French)</Label><Textarea rows={2} value={programForm.description?.fr || ""} onChange={(e) => setProgramForm((p: any) => ({ ...p, description: { ...p.description, fr: e.target.value } }))} /></div>
+
+            <div className="space-y-1">
+              <Label>Level</Label>
+              <Select value={programForm.level} onValueChange={(v) => setProgramForm((p: any) => ({ ...p, level: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{["Beginner","Intermediate","Advanced"].map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1"><Label>Session Duration</Label><Input value={programForm.sessionDuration || ""} onChange={(e) => setProgramForm((p: any) => ({ ...p, sessionDuration: e.target.value }))} placeholder="45 min" /></div>
+            <div className="space-y-1"><Label>Weeks</Label><Input type="number" min={1} max={52} value={programForm.weeks} onChange={(e) => setProgramForm((p: any) => ({ ...p, weeks: Number(e.target.value) }))} /></div>
+            <div className="space-y-1"><Label>Days Per Week</Label><Input type="number" min={1} max={7} value={programForm.daysPerWeek} onChange={(e) => setProgramForm((p: any) => ({ ...p, daysPerWeek: Number(e.target.value) }))} /></div>
+            <div className="space-y-1"><Label>Focus Tags <span className="text-xs text-muted-foreground">(comma-separated)</span></Label><Input value={(programForm.focus || []).join(", ")} onChange={(e) => setProgramForm((p: any) => ({ ...p, focus: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} placeholder="Hypertrophy, Split" /></div>
+            <div className="space-y-1"><Label>Equipment <span className="text-xs text-muted-foreground">(comma-separated)</span></Label><Input value={(programForm.equipment || []).join(", ")} onChange={(e) => setProgramForm((p: any) => ({ ...p, equipment: e.target.value.split(",").map((s: string) => s.trim()).filter(Boolean) }))} placeholder="barbell, dumbbells" /></div>
+            <div className="space-y-1"><Label>Display Order</Label><Input type="number" value={programForm.order || 0} onChange={(e) => setProgramForm((p: any) => ({ ...p, order: Number(e.target.value) }))} /></div>
+
+            <div className="flex items-center gap-6 pt-6">
+              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={programForm.isPremium} onChange={(e) => setProgramForm((p: any) => ({ ...p, isPremium: e.target.checked }))} className="rounded" />Premium (Pro only)</label>
+              <label className="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" checked={programForm.isPublic} onChange={(e) => setProgramForm((p: any) => ({ ...p, isPublic: e.target.checked }))} className="rounded" />Public</label>
+            </div>
+
+            {/* Schedule editor */}
+            <div className="md:col-span-2 space-y-1 pt-2">
+              <Label>Schedule <span className="text-xs text-muted-foreground">(JSON — array of weeks)</span></Label>
+              <Textarea
+                rows={14}
+                spellCheck={false}
+                value={scheduleText}
+                onChange={(e) => onScheduleTextChange(e.target.value)}
+                className="font-mono text-xs"
+                placeholder={`[\n  {\n    "week": 1,\n    "label": { "en": "Week 1", "fr": "Semaine 1" },\n    "days": [\n      {\n        "day": 1,\n        "isRest": false,\n        "title": { "en": "Push", "fr": "Poussée" },\n        "exercises": [\n          { "name": "Barbell Bench Press", "sets": 4, "reps": "6-8", "rest": 120, "muscleExerciseId": 405 }\n        ]\n      },\n      { "day": 2, "isRest": true, "title": { "en": "Rest", "fr": "Repos" }, "exercises": [] }\n    ]\n  }\n]`}
+              />
+              {scheduleJsonError
+                ? <p className="text-xs text-destructive">Invalid JSON: {scheduleJsonError}</p>
+                : <p className="text-xs text-muted-foreground">
+                    {(() => {
+                      try {
+                        const s = JSON.parse(scheduleText || "[]");
+                        if (!Array.isArray(s)) return "Schedule must be an array.";
+                        const days = s.reduce((sum: number, w: any) => sum + (w.days || []).filter((d: any) => !d.isRest).length, 0);
+                        return `${s.length} week(s), ${days} training session(s).`;
+                      } catch { return ""; }
+                    })()}
+                  </p>}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setProgramModal(false)} disabled={programSaving}>Cancel</Button>
+            <Button onClick={saveProgram} disabled={programSaving || Boolean(scheduleJsonError)}>
+              {programSaving ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Saving…</> : editingProgram ? "Update Program" : "Create Program"}
             </Button>
           </DialogFooter>
         </DialogContent>

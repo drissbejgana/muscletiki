@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,7 +21,8 @@ import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import Profile from "./pages/Profile";
 import TrainingLog from "./pages/TrainingLog";
 import Articles from "./pages/Articles";
-import Routines from "./pages/routines";
+import Programs from "./pages/programs";
+import ProgramDetail from "./pages/ProgramDetail";
 import { InteractiveBodyMap } from "./components/FemalBodyFront";
 import { FemalBodyBack } from "./components/FemalBodyBack";
 import WorkoutDetail from "./pages/WorkoutDetail";
@@ -44,7 +45,11 @@ const App = () => (
 
           <Route path="/test" element={<Layout><FemalBodyBack /></Layout>} />
 
-          <Route path="/routines" element={<Layout><Routines /></Layout>} />
+          <Route path="/programs" element={<Layout><Programs /></Layout>} />
+          <Route path="/programs/:slug" element={<Layout><ProgramDetail /></Layout>} />
+
+          {/* Routines were superseded by Programs — keep old links working */}
+          <Route path="/routines" element={<Navigate to="/programs" replace />} />
 
           <Route path="/calorie_calculator" element={<Layout><CalorieCalculator /></Layout>} />
 
