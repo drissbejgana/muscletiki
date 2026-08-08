@@ -50,7 +50,8 @@
     "newsletter": "Newsletter",
     "about": "About",
     "rights": "© 2025 MuscleTiki SEZC",
-    "simplify": "Simplify Your Workout"
+    "simplify": "Simplify Your Workout",
+    "cookieSettings": "Cookie Settings"
   },
   "bodyMap": {
     "male": "Male",
@@ -563,5 +564,29 @@
     "upgradeToPro": "Upgrade to Pro",
     "previewNotice": "Week 1 shown as a preview. Upgrade to Pro to unlock the remaining {{weeks}} weeks.",
     "confirmRestart": "Restart this program? Your current progress will be cleared and you will begin again from week 1."
+  },
+  "cookies": {
+    "title": "Your privacy",
+    "description": "We use browser storage to keep you signed in and remember your settings. Optional categories are off until you turn them on — you can change this at any time from the footer.",
+    "customize": "Customise choices",
+    "hideDetails": "Hide details",
+    "alwaysOn": "Always on",
+    "acceptAll": "Accept all",
+    "rejectAll": "Necessary only",
+    "savePreferences": "Save choices",
+    "categories": {
+      "necessary": {
+        "name": "Strictly necessary",
+        "description": "Keeps you signed in, tracks your free-trial time, and remembers this choice. The site cannot work without these."
+      },
+      "preferences": {
+        "name": "Preferences",
+        "description": "Remembers your language so you do not have to reselect it on every visit."
+      },
+      "analytics": {
+        "name": "Analytics",
+        "description": "Usage measurement to help us improve the site. None is in use today — turning this on only applies if we add it later."
+      }
+    }
   }
 }

@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/Navbar";
 import MobileNavBar from "@/components/MobileNavBar";
 import FitnessPopup from "./components/FitnessPopup";
+import CookieConsent from "./components/CookieConsent";
 import TrainerChat from "./components/TrainerChat";
 import { authService } from '@/services/authService';
 import { useTimeRestriction } from '@/hooks/useTimeRestriction';
@@ -102,6 +103,7 @@ const Layout = ({ children }) => {
 
       <TrainerChat />
       <MobileNavBar />
+      <CookieConsent />
     </div>
   );
 };

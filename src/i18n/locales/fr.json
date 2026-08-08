@@ -50,7 +50,8 @@
     "newsletter": "Newsletter",
     "about": "À propos",
     "rights": "© 2025 MuscleTiki SEZC",
-    "simplify": "Simplifiez Votre Entraînement"
+    "simplify": "Simplifiez Votre Entraînement",
+    "cookieSettings": "Paramètres des cookies"
   },
   "bodyMap": {
     "male": "Homme",
@@ -563,5 +564,29 @@
     "upgradeToPro": "Passer à Pro",
     "previewNotice": "Semaine 1 affichée en aperçu. Passez à Pro pour débloquer les {{weeks}} semaines restantes.",
     "confirmRestart": "Recommencer ce programme ? Votre progression actuelle sera effacée et vous repartirez de la semaine 1."
+  },
+  "cookies": {
+    "title": "Votre vie privée",
+    "description": "Nous utilisons le stockage du navigateur pour vous garder connecté et mémoriser vos réglages. Les catégories optionnelles restent désactivées tant que vous ne les activez pas — vous pouvez modifier ce choix à tout moment depuis le pied de page.",
+    "customize": "Personnaliser",
+    "hideDetails": "Masquer les détails",
+    "alwaysOn": "Toujours actif",
+    "acceptAll": "Tout accepter",
+    "rejectAll": "Nécessaires uniquement",
+    "savePreferences": "Enregistrer",
+    "categories": {
+      "necessary": {
+        "name": "Strictement nécessaires",
+        "description": "Vous maintiennent connecté, suivent la durée de votre essai gratuit et mémorisent ce choix. Le site ne peut pas fonctionner sans eux."
+      },
+      "preferences": {
+        "name": "Préférences",
+        "description": "Mémorise votre langue pour ne pas avoir à la resélectionner à chaque visite."
+      },
+      "analytics": {
+        "name": "Mesure d’audience",
+        "description": "Mesure d'utilisation pour nous aider à améliorer le site. Aucune n'est utilisée aujourd'hui — activer cette option ne s'appliquera que si nous en ajoutons plus tard."
+      }
+    }
   }
 }

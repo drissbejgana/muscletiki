@@ -1,5 +1,6 @@
 import { Youtube, Instagram, Twitter, Facebook, Dumbbell } from "lucide-react";
 import { useTranslation } from "@/i18n";
+import { openConsentSettings } from "@/lib/consent";
 
 const Footer = () => {
   const { t } = useTranslation();
@@ -35,6 +36,13 @@ const Footer = () => {
                 {t(key)}
               </a>
             ))}
+            {/* Visitors must be able to change their mind after deciding. */}
+            <button
+              onClick={openConsentSettings}
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t('footer.cookieSettings')}
+            </button>
           </nav>
 
           {/* Socials */}
