@@ -14,10 +14,10 @@
     --popover:              210 40% 99%;
     --popover-foreground:   222 47% 11%;
 
-    /* ── Brand: electric blue (men) ───────────────────────────── */
-    --primary:              214 100% 52%;  /* #0573FF electric blue */
-    --primary-light:        210 100% 66%;  /* lighter blue for gradients */
-    --primary-dark:         220 90% 44%;   /* deeper blue for gradients */
+    /* ── Brand: deep blue (men) ───────────────────────────────── */
+    --primary:              214 92% 42%;   /* #095ECE deep blue — 5.99:1 on white */
+    --primary-light:        210 90% 56%;   /* lighter blue for gradients */
+    --primary-dark:         220 88% 32%;   /* deepest blue for gradients */
     --primary-foreground:   0   0% 100%;
 
     /* ── Secondary surface (blue-tinted) ──────────────────────── */
@@ -37,21 +37,21 @@
     /* ── Borders & inputs ──────────────────────────────────────── */
     --border:               214 32% 84%;   /* subtle blue-gray border */
     --input:                214 30% 86%;
-    --ring:                 214 100% 52%;
+    --ring:                 214 92% 42%;
 
     /* ── Shared blue shadow tint ──────────────────────────────── */
-    --shadow-color:         214 60% 40%;
+    --shadow-color:         214 60% 30%;
 
     --radius: 0.85rem;
   }
 
   /* ── Women theme (purple) ──────────────────────────────────── */
   html[data-gender="female"] {
-    --primary:              270 97% 60%;   /* vivid electric purple */
-    --primary-light:        275 95% 72%;   /* lighter purple for gradients */
-    --primary-dark:         268 85% 50%;
-    --ring:                 270 97% 60%;
-    --shadow-color:         270 60% 45%;
+    --primary:              270 85% 50%;   /* #8013EC deep violet — 6.52:1 on white */
+    --primary-light:        275 85% 62%;   /* lighter purple for gradients */
+    --primary-dark:         268 80% 40%;
+    --ring:                 270 85% 50%;
+    --shadow-color:         270 60% 35%;
   }
 }
 
