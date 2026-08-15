@@ -13,7 +13,7 @@ const ViewToggle = () => {
   const toggles: { key: ToggleKeys; labelKey: string; icon: React.ElementType; activeColor: string }[] = [
     { key: "homme",        labelKey: !homme ? "bodyMap.male" : "bodyMap.female",   icon: User2,    activeColor: "bg-primary/15 text-primary border-primary/40 shadow-sm shadow-primary/20" },
     { key: "avance",       labelKey: "bodyMap.advanced",                            icon: Dumbbell, activeColor: "bg-accent/15 text-accent border-accent/40 shadow-sm shadow-accent/20" },
-    { key: "articulations",labelKey: "bodyMap.joints",                              icon: Bone,     activeColor: "bg-violet-500/15 text-violet-600 border-violet-500/40 shadow-sm shadow-violet-500/20" },
+    // { key: "articulations",labelKey: "bodyMap.joints",                              icon: Bone,     activeColor: "bg-violet-500/15 text-violet-600 border-violet-500/40 shadow-sm shadow-violet-500/20" },
   ];
 
   const handleToggle = (key: ToggleKeys) => {
